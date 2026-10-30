@@ -16,6 +16,9 @@ four ActiveX DLLs, then Warzone.exe, into bin/.
   interface that VB6 refuses as incompatible
 * references between projects come from the built DLLs' type libraries
   (tools/typelib.py), not from the registry
+* the .vbp files name bin/, compat/ and build/ by paths relative to
+  themselves, so any copy of the tree opens and builds in VB6: it finds an
+  unregistered DLL's type library at the Reference= path
 * Warzone.exe gets an embedded reg-free COM manifest naming every DLL class
   (build/Warzone.exe.manifest -> build/Warzone.res), so bin/ runs without
   regsvr32. VB6 itself registers each DLL it builds; --unregister undoes that
@@ -121,6 +124,7 @@ VBP_TAIL = """Startup="{startup}"
 HelpFile=""
 Title="{name}"
 ExeName32="{name}.{ext}"
+Path32="{path}"
 Command32=""
 Name="{name}"
 HelpContextID="0"
@@ -179,10 +183,13 @@ def dll_path(name):
 
 
 def write_vbp(name, kind, folder, refs, release, resfile):
+    def relative(path):
+        return os.path.relpath(path, folder)
+
     lines = ["Type=" + ("OleDll" if kind == "dll" else "Exe"), STDOLE]
     for ref in refs:
         libname, tlbid, (major, minor), _ = typelib.library(dll_path(ref))
-        lines.append("Reference=*\\G%s#%x.%x#0#%s#%s" % (tlbid, major, minor, dll_path(ref), libname))
+        lines.append("Reference=*\\G%s#%x.%x#0#%s#%s" % (tlbid, major, minor, relative(dll_path(ref)), libname))
     files = [(n, n) for n in sources(folder)]
     files += [(n, "..\\shared\\" + n) for n in sources(SHARED)]
     if os.path.basename(folder) in SHARED_GFX_USERS:
@@ -202,14 +209,14 @@ def write_vbp(name, kind, folder, refs, release, resfile):
         print("WARNING: %s: about %d characters of .OBJ paths for LINK.EXE (limit 32,767): "
               "build from a shorter path (subst)" % (name, link_chars))
     if resfile:
-        lines.append('ResFile32="%s"' % resfile)
+        lines.append('ResFile32="%s"' % relative(resfile))
     compat = ""
     if kind == "dll":
         if os.path.exists(os.path.join(COMPAT, name + ".dll")):
-            compat = 'CompatibleMode="2"\nCompatibleEXE32="%s"\n' % os.path.join(COMPAT, name + ".dll")
+            compat = 'CompatibleMode="2"\nCompatibleEXE32="%s"\n' % relative(os.path.join(COMPAT, name + ".dll"))
         else:
             compat = 'CompatibleMode="0"\n'
-    lines.append(VBP_TAIL.format(name=name, ext=kind if kind == "dll" else "exe",
+    lines.append(VBP_TAIL.format(name=name, ext=kind if kind == "dll" else "exe", path=relative(BIN),
                                  startup="(None)" if kind == "dll" else "Sub Main",
                                  compat=compat, bounds="-1" if release or name in OPTIMISED else "0",
                                  optimisation="0" if name in OPTIMISED else "2",
