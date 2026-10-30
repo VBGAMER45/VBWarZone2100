@@ -1,0 +1,6 @@
+# after options.txt, with --config-of=options: the options screen shows Show FPS On
+wait 90
+click 512 470
+wait 90
+shot fps_kept
+quit

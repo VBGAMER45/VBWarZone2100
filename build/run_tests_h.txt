@@ -1,0 +1,17 @@
+Build of 'WzTests.exe' succeeded.
+383 JSON files, 36 cases, 3085 doubles, 241 WzConfig files, 68 map folders: 2401 commands
+WzTests.exe: 49.5 s
+3346 of 3346 outputs match
+building statsref.exe (g++, the stats loaders from ref/warzone2100) ...
+Warzone.exe --vbtest: 515.5 s, exit code 0
+stats, models and maps: 90 of 90 outputs match
+rush_10p_autogame: Warzone.exe stopped after 13.6 s
+rush_10p_autogame: 120 of 120 ticks match
+official replays: 1 replay(s), all ticks match
+Build of 'VorbisTests.exe' succeeded.
+VorbisTests.exe: 14.4 s, exit code 0
+sounds: 560 of 560 decode as ffmpeg does (samples within 2; files by largest difference: 0: 19, 1: 541); decode 5988 ms
+  lengths: 559 at the last granule position; 1 not (port - granule): shield-hit.ogg -63; ffmpeg's decode is longer in 106 (by 2 to 389), shorter in 6 (by 256 to 256)
+Build of 'MixerTests.exe' succeeded.
+mixer: 66 of 66 checks pass
+mixer: mixing 1 s of audio (44100 Hz stereo): 1 sources 9.93 ms, 8 sources 20.75 ms, 32 sources 76.33 ms

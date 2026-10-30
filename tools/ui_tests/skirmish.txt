@@ -1,0 +1,44 @@
+# a skirmish from the main menu (Single Player, Start Skirmish Game, Start Hosting, Ready), then the game's
+# screens: research (a topic started), manufacture (a truck), design (the truck's template)
+# (the reticule: factory 70 662, research 104 680, build 104 716, design 70 733, intelligence 36 716,
+# commanders 36 680, close 70 697; a left click on the radar orders the selection there, a right click
+# moves the camera)
+wait 90
+shot mainmenu
+click 512 365
+wait 60
+shot singleplayer
+click 512 400
+wait 120
+shot lobby
+click 365 455
+wait 120
+shot hosting
+click 775 90
+wait 600
+shot ingame
+click 104 680
+wait 60
+shot research
+click 41 357
+wait 30
+shot research_started
+click 70 662
+wait 60
+click 41 364
+wait 30
+shot manufacture_started
+click 70 733
+wait 60
+click 103 269
+wait 60
+shot design_truck
+click 988 33
+wait 60
+shot ingamemenu
+click 511 426
+wait 60
+click 514 393
+wait 240
+shot back_to_menu
+quit

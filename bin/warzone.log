@@ -1,0 +1,6 @@
+WarzoneVB 1.0.0
+WzFramework 1.0.0
+WzMap 1.0.0
+WzSound 1.0.0 (uses WzFramework 1.0.0)
+WzGfx 1.0.0 (uses WzFramework 1.0.0)
+WzNet 1.0.0 (uses WzFramework 1.0.0, game WarzoneVB 1.0.0)

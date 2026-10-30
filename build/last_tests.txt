@@ -1,0 +1,2 @@
+Warzone.exe --vbtest: 78.7 s, exit code 0
+stats, models and maps: 89 of 89 outputs match

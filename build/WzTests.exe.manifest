@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <assemblyIdentity type="win32" name="WzTests" version="1.0.0.0"/>
+  <file name="WzFramework.dll">
+    <comClass clsid="{C01BE525-75D0-4E01-821E-CB36541C5EA0}" progid="WzFramework.FrameworkApi" threadingModel="Apartment" tlbid="{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}"/>
+    <typelib tlbid="{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}" version="1.15" helpdir="" flags=""/>
+  </file>
+  <file name="WzMap.dll">
+    <comClass clsid="{92832515-A310-49FB-B68E-B7551CBB9046}" progid="WzMap.MapApi" threadingModel="Apartment" tlbid="{8798B1A0-7FB8-426D-A5D6-496336AB254F}"/>
+    <typelib tlbid="{8798B1A0-7FB8-426D-A5D6-496336AB254F}" version="1.3" helpdir="" flags=""/>
+  </file>
+</assembly>
+ 

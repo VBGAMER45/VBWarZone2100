@@ -1,0 +1,8 @@
+# the options' Audio page (run with --sound): the volumes and HRTF from WzSound
+wait 90
+click 512 470
+wait 90
+click 620 87
+wait 60
+shot audio_options
+quit

@@ -1,0 +1,105 @@
+Build of 'WzTests.exe' succeeded.
+383 JSON files, 36 cases, 3085 doubles, 241 WzConfig files, 68 map folders: 2401 commands
+WzTests.exe: 51.2 s
+3346 of 3346 outputs match
+Warzone.exe --vbtest: 546.9 s, exit code 0
+stats, models and maps: 27 of 90 outputs match
+
+MISMATCH map_000, line 5588 (lines 10389 / 10573)
+  ref: b'message |[addMessage:257] adding message for player 7, type is 3, proximity is 1'
+  vb:  b'message |[addMessage:257] adding message for player 7, type is 3, proximity is 1'
+  ref: b'message |[addProximityDisplay:213] Added prox display for player 7 (proxPos=1)'
+  vb:  b'message |[addProximityDisplay:213] Added prox display for player 7 (proxPos=1)'
+  ref: b'message |[processVisibilityLevel:821] Added message for oil well or artefact, pViewData=%p'
+  vb:  b'info    |[widgAddForm:763] Invalid screen pointer'
+  ref: b'info    |[structureBuild:953] unsigned int underflow?'
+  vb:  b"info    |[widgAddForm:763] Assert in Warzone: lib/widget/widget.cpp:763 (psScreen != nullptr), last script event: ''"
+  ref: b"info    |[structureBuild:953] Assert in Warzone: src/structure.cpp:953 (newBuildPoints <= 1 + 3 * (int)structureBuildPointsToCompletion(*psStruct)), last script event: ''"
+  vb:  b'message |[processVisibilityLevel:821] Added message for oil well or artefact, pViewData=%p'
+
+MISMATCH map_001, line 6773 (lines 8319 / 8524)
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160065 0x27141'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160065 0x27141'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160003 0x27103'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160003 0x27103'
+  ref: b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+  vb:  b'info    |[widgRunScreen:1421] Invalid screen pointer'
+  ref: b'frame 1: gameTime=40100 proj=0 droids=46 ===== BEGIN gameTime=40100, 35 entries, CRC 0x396EFB31 ====='
+  vb:  b"info    |[widgRunScreen:1421] Assert in Warzone: lib/widget/widget.cpp:1421 (psScreen != nullptr), last script event: ''"
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160035 0x27123'
+  vb:  b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+
+MISMATCH map_002, line 4 (lines 9522 / 9721)
+  ref: b'> overrides\t0'
+  vb:  b'> overrides\t0'
+  ref: b'> mapload\twrf/cam1/sub1-2/\ttexpages/tertilesc3hw\t4\tcampaign'
+  vb:  b'> mapload\twrf/cam1/sub1-2/\ttexpages/tertilesc3hw\t4\tcampaign'
+  ref: b'last message repeated 3 times (total 11 repeats)'
+  vb:  b'map     |[loadTerrainTypes:42] Loading: wrf/cam1/sub1-2/ttypes.ttp'
+  ref: b'map     |[loadTerrainTypes:42] Loading: wrf/cam1/sub1-2/ttypes.ttp'
+  vb:  b'map     |[loadMapData_Internal:68] Loading: wrf/cam1/sub1-2/game.map'
+  ref: b'map     |[loadMapData_Internal:68] Loading: wrf/cam1/sub1-2/game.map'
+  vb:  b'terrain |[mapLoadGroundTypes:414] tileset: texpages/tertilesc3hw'
+
+MISMATCH map_003, line 11248 (lines 14796 / 14956)
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160003 0x27103'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160003 0x27103'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160393 0x27289'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160393 0x27289'
+  ref: b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+  vb:  b'info    |[widgRunScreen:1421] Invalid screen pointer'
+  ref: b'frame 1: gameTime=40100 proj=28 droids=55 ===== BEGIN gameTime=40100, 42 entries, CRC 0xDEA895E6 ====='
+  vb:  b"info    |[widgRunScreen:1421] Assert in Warzone: lib/widget/widget.cpp:1421 (psScreen != nullptr), last script event: ''"
+  ref: b'never   |[targetAttackWeightIfGreaterThan:512] Not killing unit - doomed. My ROF: 20 (Light Cannon)'
+  vb:  b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+
+MISMATCH map_004, line 9728 (lines 12443 / 12608)
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160357 0x27265'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160357 0x27265'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160351 0x2725f'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160351 0x2725f'
+  ref: b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+  vb:  b'info    |[widgRunScreen:1421] Invalid screen pointer'
+  ref: b'frame 1: gameTime=40100 proj=31 droids=30 ===== BEGIN gameTime=40100, 28 entries, CRC 0xF1488DFC ====='
+  vb:  b"info    |[widgRunScreen:1421] Assert in Warzone: lib/widget/widget.cpp:1421 (psScreen != nullptr), last script event: ''"
+  ref: b'never   |[targetAttackWeightIfGreaterThan:512] Not killing unit - doomed. My ROF: 20 (Light Cannon)'
+  vb:  b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+
+MISMATCH map_005, line 11048 (lines 14239 / 14405)
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160471 0x272d7'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160471 0x272d7'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160473 0x272d9'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160473 0x272d9'
+  ref: b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+  vb:  b'info    |[widgGetFromID:886] Invalid screen pointer'
+  ref: b'frame 1: gameTime=40100 proj=27 droids=30 ===== BEGIN gameTime=40100, 28 entries, CRC 0x8F58A205 ====='
+  vb:  b"info    |[widgGetFromID:886] Assert in Warzone: lib/widget/widget.cpp:886 (psScreen != nullptr), last script event: ''"
+  ref: b'never   |[targetAttackWeightIfGreaterThan:512] Not killing unit - doomed. My ROF: 16 (*Cyb-Wpn-Rail1*)'
+  vb:  b'info    |[widgRunScreen:1421] Invalid screen pointer'
+
+MISMATCH map_006, line 11271 (lines 14331 / 14496)
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160071 0x27147'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160071 0x27147'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160013 0x2710d'
+  vb:  b'never   |[fpathRoute:512] starting new job for droid 160013 0x2710d'
+  ref: b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+  vb:  b'info    |[widgRunScreen:1421] Invalid screen pointer'
+  ref: b'frame 1: gameTime=40100 proj=22 droids=45 ===== BEGIN gameTime=40100, 35 entries, CRC 0x22263D0A ====='
+  vb:  b"info    |[widgRunScreen:1421] Assert in Warzone: lib/widget/widget.cpp:1421 (psScreen != nullptr), last script event: ''"
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160079 0x2714f'
+  vb:  b'wz      |[pie_ScreenFrameRenderEnd:116] Call to pie_ScreenFrameRenderEnd without matching pie_ScreenFrameRenderBegin'
+
+MISMATCH map_007, line 5386 (lines 12131 / 12297)
+  ref: b'message |[addMessage:257] adding message for player 1, type is 3, proximity is 1'
+  vb:  b'message |[addMessage:257] adding message for player 1, type is 3, proximity is 1'
+  ref: b'message |[addProximityDisplay:213] Added prox display for player 1 (proxPos=1)'
+  vb:  b'message |[addProximityDisplay:213] Added prox display for player 1 (proxPos=1)'
+  ref: b'message |[processVisibilityLevel:821] Added message for oil well or artefact, pViewData=%p'
+  vb:  b'info    |[widgAddForm:763] Invalid screen pointer'
+  ref: b'never   |[fpathRoute:512] starting new job for droid 160019 0x27113'
+  vb:  b"info    |[widgAddForm:763] Assert in Warzone: lib/widget/widget.cpp:763 (psScreen != nullptr), last script event: ''"
+  ref: b'===== BEGIN gameTime=0, 99 entries, CRC 0x24F1E019 ====='
+  vb:  b'message |[processVisibilityLevel:821] Added message for oil well or artefact, pViewData=%p'
+rush_10p_autogame: Warzone.exe stopped after 13.5 s
+rush_10p_autogame: 120 of 120 ticks match
+official replays: 1 replay(s), all ticks match

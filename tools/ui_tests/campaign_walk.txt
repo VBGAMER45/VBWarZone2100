@@ -1,0 +1,199 @@
+# campaign 1 from the main menu to its end (tools/make_campaign_walk.py writes this file): base and
+# off-world levels won with the campaign scripts' chat cheat ('cheat on', then 'let me win') and Continue
+# Game; each 'between' level (SUB_x_xS) launches its transporter: the units board it (embark), then launch
+wait 90
+click 512 365
+wait 60
+click 512 365
+wait 90
+click 607 575
+wait 900
+key 13
+wait 10
+text cheat on
+key 13
+wait 30
+shot 00_CAM_1A
+log level CAM_1A
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 00_CAM_1A_result
+click 511 556
+wait 1200
+shot 01_CAM_1B
+log level CAM_1B
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 01_CAM_1B_result
+click 511 556
+wait 1200
+shot 02_SUB_1_1S
+log level SUB_1_1S
+key 13
+wait 10
+text let me win
+key 13
+wait 900
+embark
+wait 600
+shot 02_SUB_1_1S_boarded
+click 29 30
+wait 1500
+shot 03_SUB_1_1
+log level SUB_1_1
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 03_SUB_1_1_result
+click 511 556
+wait 1200
+shot 04_SUB_1_2S
+log level SUB_1_2S
+wait 900
+embark
+wait 600
+shot 04_SUB_1_2S_boarded
+click 29 30
+wait 1500
+shot 05_SUB_1_2
+log level SUB_1_2
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 05_SUB_1_2_result
+click 511 556
+wait 1200
+shot 06_SUB_1_3S
+log level SUB_1_3S
+wait 900
+embark
+wait 600
+shot 06_SUB_1_3S_boarded
+click 29 30
+wait 1500
+shot 07_SUB_1_3
+log level SUB_1_3
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 07_SUB_1_3_result
+click 511 556
+wait 1200
+shot 08_CAM_1C
+log level CAM_1C
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 08_CAM_1C_result
+click 511 556
+wait 1200
+shot 09_CAM_1CA
+log level CAM_1CA
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 09_CAM_1CA_result
+click 511 556
+wait 1200
+shot 10_SUB_1_4AS
+log level SUB_1_4AS
+wait 900
+embark
+wait 600
+shot 10_SUB_1_4AS_boarded
+click 29 30
+wait 1500
+shot 11_SUB_1_4A
+log level SUB_1_4A
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 11_SUB_1_4A_result
+click 511 556
+wait 1200
+shot 12_SUB_1_5S
+log level SUB_1_5S
+wait 900
+embark
+wait 600
+shot 12_SUB_1_5S_boarded
+click 29 30
+wait 1500
+shot 13_SUB_1_5
+log level SUB_1_5
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 13_SUB_1_5_result
+click 511 556
+wait 1200
+shot 14_CAM_1A_C
+log level CAM_1A-C
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 14_CAM_1A_C_result
+click 511 556
+wait 1200
+shot 15_SUB_1_7S
+log level SUB_1_7S
+wait 900
+embark
+wait 600
+shot 15_SUB_1_7S_boarded
+click 29 30
+wait 1500
+shot 16_SUB_1_7
+log level SUB_1_7
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 16_SUB_1_7_result
+click 511 556
+wait 1200
+shot 17_SUB_1_DS
+log level SUB_1_DS
+wait 900
+embark
+wait 600
+shot 17_SUB_1_DS_boarded
+click 29 30
+wait 1500
+shot 18_SUB_1_D
+log level SUB_1_D
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+shot 18_SUB_1_D_result
+click 511 556
+wait 1200
+shot 19_end
+log done
+wait 5
+quit

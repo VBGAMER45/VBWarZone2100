@@ -1,0 +1,35 @@
+{
+ "challenge": {
+  "bases": 2,
+  "map": "Bloat",
+  "maxPlayers": 5,
+  "powerLevel": 1,
+  "scavengers": 0,
+  "alliances": 0,
+  "version": 2
+ },
+ "player_0": {
+  "team": 0,
+  "spectator": true
+ },
+ "player_1": {
+  "team": 1,
+  "ai": "nexus.js",
+  "difficulty": "Medium"
+ },
+ "player_2": {
+  "team": 2,
+  "ai": "nb_generic.js",
+  "difficulty": "Medium"
+ },
+ "player_3": {
+  "team": 3,
+  "ai": "bonecrusher/bonecrusher.js",
+  "difficulty": "Medium"
+ },
+ "player_4": {
+  "team": 4,
+  "ai": "Cobra.js",
+  "difficulty": "Medium"
+ }
+}

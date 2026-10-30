@@ -1,0 +1,5 @@
+# the main menu: wait for the title screen, take a screenshot
+wait 90
+shot mainmenu
+wait 5
+quit

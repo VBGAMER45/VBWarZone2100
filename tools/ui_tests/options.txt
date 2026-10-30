@@ -1,0 +1,15 @@
+# the options screen from the main menu: Show FPS to On through its drop-down, back to the title screen, and
+# the game's quit (the config is saved); options_check.txt, run with --keep-config, shows it again
+wait 90
+click 512 470
+wait 90
+click 700 311
+wait 30
+click 693 367
+wait 30
+shot fps_on
+click 215 87
+wait 60
+shot back
+click 512 575
+wait 120

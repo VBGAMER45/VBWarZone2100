@@ -1,0 +1,64 @@
+Build of 'WzTests.exe' succeeded.
+383 JSON files, 36 cases, 3085 doubles, 241 WzConfig files, 68 map folders: 2401 commands
+WzTests.exe: 47.9 s
+3346 of 3346 outputs match
+Warzone.exe --vbtest: 522.1 s, exit code 0
+stats, models and maps: 86 of 90 outputs match
+
+MISMATCH set_base, line 755 (lines 5444 / 5944)
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] base/stats/research.json'
+  vb:  b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] base/stats/research.json'
+  ref: b'save    |[WzConfig:162] Opening base/stats/research.json'
+  vb:  b'save    |[WzConfig:162] Opening base/stats/research.json'
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\base] misc/researchimds/icmslcd.pie'
+  vb:  b'info    |[getViewData:924] Message RES_C_CT1 not found, run with --debug=wz to get a list of all known messages'
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\base] misc/icsynapt.pie'
+  vb:  b"info    |[getViewData:924] Assert in Warzone: src/message.cpp:924 (ptr), last script event: ''"
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\base] misc/researchimds/icamrhot.pie'
+  vb:  b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\base] misc/researchimds/icmslcd.pie'
+
+MISMATCH set_mp, line 544 (lines 6174 / 6708)
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] mp/stats/research.json'
+  vb:  b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] mp/stats/research.json'
+  ref: b'save    |[WzConfig:162] Opening mp/stats/research.json'
+  vb:  b'save    |[WzConfig:162] Opening mp/stats/research.json'
+  ref: b'save    |[~WzConfig:46] Closing mp/stats/research.json'
+  vb:  b'info    |[getViewData:924] Message RES_C_CT1 not found, run with --debug=wz to get a list of all known messages'
+  ref: b'result=1'
+  vb:  b"info    |[getViewData:924] Assert in Warzone: src/message.cpp:924 (ptr), last script event: ''"
+  ref: b'> getstring\tZNULLDESIGN'
+  vb:  b'info    |[getViewData:924] Message RES_C_CT2 not found, run with --debug=wz to get a list of all known messages'
+
+MISMATCH case_research, line 84 (lines 8295 / 8327)
+  ref: b"info    |[loadResearch:504] This research should not have a message associated with it, 'Machinegun' the message will be ignored!"
+  vb:  b"info    |[loadResearch:504] This research should not have a message associated with it, 'Machinegun' the message will be ignored!"
+  ref: b"info    |[loadResearch:504] Assert in Warzone: src/research.cpp:504 (research.techCode == TC_MAJOR), last script event: ''"
+  vb:  b"info    |[loadResearch:504] Assert in Warzone: src/research.cpp:504 (research.techCode == TC_MAJOR), last script event: ''"
+  ref: b'warning |[getResearch:1636] Unknown research - R-Missing (**Further warnings of this type are suppressed.)'
+  vb:  b'info    |[getViewData:924] Message RES_MG1MK1 not found, run with --debug=wz to get a list of all known messages'
+  ref: b"info    |[loadResearch:638] Invalid item 'R-Missing' in list of pre-requisites of research 'Machinegun' "
+  vb:  b"info    |[getViewData:924] Assert in Warzone: src/message.cpp:924 (ptr), last script event: ''"
+  ref: b"info    |[loadResearch:638] Assert in Warzone: src/research.cpp:638 (preResItem != nullptr), last script event: ''"
+  vb:  b'info    |[getViewData:924] Message RES_MG1MK1 not found, run with --debug=wz to get a list of all known messages'
+
+MISMATCH map_stats, line 395 (lines 405 / 939)
+  ref: b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] mp/stats/research.json'
+  vb:  b'never   |[openLoadFile:147] Reading...[directory: C:\\Users\\Owner\\desktop\\websites\\warzone\\data\\] mp/stats/research.json'
+  ref: b'save    |[WzConfig:162] Opening mp/stats/research.json'
+  vb:  b'save    |[WzConfig:162] Opening mp/stats/research.json'
+  ref: b'save    |[~WzConfig:46] Closing mp/stats/research.json'
+  vb:  b'info    |[getViewData:924] Message RES_C_CT1 not found, run with --debug=wz to get a list of all known messages'
+  ref: b'result=1'
+  vb:  b"info    |[getViewData:924] Assert in Warzone: src/message.cpp:924 (ptr), last script event: ''"
+  ref: b'> getstring\tZNULLDESIGN'
+  vb:  b'info    |[getViewData:924] Message RES_C_CT2 not found, run with --debug=wz to get a list of all known messages'
+rush_10p_autogame: Warzone.exe stopped after 13.5 s
+rush_10p_autogame: 120 of 120 ticks match
+official replays: 1 replay(s), all ticks match
+Build of 'VorbisTests.exe' succeeded.
+VorbisTests.exe: 14.4 s, exit code 0
+sounds: 560 of 560 decode as ffmpeg does (samples within 2; files by largest difference: 0: 19, 1: 541); decode 4532 ms
+  lengths: 559 at the last granule position; 1 not (port - granule): shield-hit.ogg -63; ffmpeg's decode is longer in 106 (by 2 to 389), shorter in 6 (by 256 to 256)
+Build of 'MixerTests.exe' succeeded.
+mixer: 66 of 66 checks pass
+mixer: mixing 1 s of audio (44100 Hz stereo): 1 sources 2.88 ms, 8 sources 13.78 ms, 32 sources 50.78 ms

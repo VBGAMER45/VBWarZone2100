@@ -1,0 +1,6 @@
+Build of 'WzTests.exe' succeeded.
+383 JSON files, 36 cases, 3085 doubles, 241 WzConfig files, 68 map folders: 2401 commands
+WzTests.exe: 54.4 s
+3346 of 3346 outputs match
+Warzone.exe --vbtest: 82.9 s, exit code 0
+stats, models and maps: 89 of 89 outputs match
