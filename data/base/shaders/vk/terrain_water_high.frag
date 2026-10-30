@@ -1,0 +1,117 @@
+#version 450
+
+#include "terrain_water_high.glsl"
+#include "srgb.glsl"
+
+layout (constant_id = 1) const uint WZ_SHADOW_MODE = 1;
+layout (constant_id = 2) const uint WZ_SHADOW_FILTER_SIZE = 5;
+layout (constant_id = 3) const uint WZ_SHADOW_CASCADES_COUNT = 3;
+layout (constant_id = 4) const uint WZ_POINT_LIGHT_ENABLED = 0;
+
+// Set 2 rather than 1, because the point light block takes a set of its own ahead of these
+layout(set = 2, binding = 0) uniform sampler2DArray tex;
+layout(set = 2, binding = 1) uniform sampler2DArray tex_nm;
+layout(set = 2, binding = 2) uniform sampler2DArray tex_sm;
+layout(set = 2, binding = 3) uniform sampler2D lightmap_tex;
+// depth map
+layout(set = 2, binding = 4) uniform sampler2DArrayShadow shadowMap;
+
+layout(location = 1) in vec4 uv1_uv2;
+layout(location = 2) in vec2 uvLightmap;
+layout(location = 3) in vec3 lightDir;
+layout(location = 4) in vec3 halfVec;
+layout(location = 5) in float depth;
+layout(location = 6) in vec3 eyeVec;
+layout(location = 7) in float fresnel;
+layout(location = 8) in float fresnel_alpha;
+layout(location = 9) in FragData frag;
+
+layout(location = 0) out vec4 FragColor;
+
+#include "shadow_mapping.glsl"
+#include "light.glsl"
+#include "pointlights.glsl"
+#include "water_normals.glsl"
+
+vec3 blendAddEffectLighting(vec3 a, vec3 b) {
+	return min(a + b, vec3(1.0));
+}
+
+vec4 main_bumpMapping()
+{
+	vec2 uv1 = uv1_uv2.xy;
+	vec2 uv2 = uv1_uv2.zw;
+
+	vec3 N = wzWaterModelNormal(tex_nm, uv1, uv2, timeSec, WZ_MIP_LOAD_BIAS);
+
+	// Textures
+	float d = mix(depth * 0.1, depth, 0.5);
+	float noise1 = texture(tex, vec3(uv1, 0.0), WZ_MIP_LOAD_BIAS).r;
+	float noise2 = texture(tex, vec3(uv2, 1.0), WZ_MIP_LOAD_BIAS).r;
+	float foam = texture(tex_sm, vec3(vec2(uv1.x, uv1.y), 0.0), WZ_MIP_LOAD_BIAS).r;
+	foam *= texture(tex_sm, vec3(vec2(uv2.x, uv2.y), 1.0), WZ_MIP_LOAD_BIAS).r;
+	foam = (foam+pow(length(N.xz),2.5)*1000.0)*d*d ;
+	foam = clamp(foam, 0.0, 0.2);
+	// Display values, picked by eye
+	vec3 waterColor = vec3(0.18,0.33,0.42);
+	vec3 fresnelTint = vec3(1.0,0.8,0.63);
+	// Water is a mirror rather than a rough surface, so a point light on it should be mostly highlight.
+	// (But capped to keep the broader shape from washing out.)
+	const float waterGloss = 0.5f;
+
+	// Light
+	float diffuseFactor = lambertTerm(N, lightDir);
+	float visibility = getShadowVisibility(frag.posModelSpace, frag.posViewSpace, diffuseFactor, 0.0f);
+	diffuseFactor = min(diffuseFactor, visibility*diffuseFactor);
+	float specularFactor = blinnTerm(N, halfVec, 0.f, 128.f);
+	vec3 reflectLight = reflect(-lightDir, N);
+	float r = pow(max(dot(reflectLight, halfVec), 0.0), 14.0);
+	specularFactor = (specularFactor + r) * 0.5;
+
+	float alpha = (0.15 + 0.35 + fresnel_alpha) * (1.0-depth);
+	vec4 lightmap = texture(lightmap_tex, uvLightmap, 0.0);
+	vec3 color;
+	if (linearLighting != 0)
+	{
+		// The water was tuned for display values, so it is evaluated in display space
+		vec3 ambientD = wzLinearToSrgb(ambientLight.rgb);
+		vec3 diffuseD = wzLinearToSrgb(diffuseLight.rgb);
+		vec3 specularD = wzLinearToSrgb(specularLight.rgb);
+		// The noise pages decode on sample, and the amount was tuned for their encoded values
+		float noise = wzLinearToSrgb(vec3(noise1)).r * wzLinearToSrgb(vec3(noise2)).r;
+		vec3 display = ambientD * foam + diffuseD * diffuseFactor * waterColor + vec3(noise*noise*0.5) + specularD * specularFactor * diffuseFactor;
+		display = mix(display, (display + fresnelTint) * 0.5, fresnel);
+		display = blendAddEffectLighting(display, lightmap.rgb / 1.5);
+		display *= lightmap.a;
+		color = wzSrgbToLinear(display);
+		// The point lights below shade in linear
+		waterColor = wzSrgbToLinear(waterColor);
+	}
+	else
+	{
+		float noise = noise1 * noise2;
+		vec3 display = ambientLight.rgb * foam + diffuseLight.rgb * diffuseFactor * waterColor + vec3(noise*noise*0.5) + specularLight.rgb * specularFactor * diffuseFactor;
+		display = mix(display, (display + fresnelTint) * 0.5, fresnel);
+		display = blendAddEffectLighting(display, lightmap.rgb / 1.5); // additive color (from environmental point lights / effects)
+		display *= lightmap.a; // ... * tile brightness / ambient occlusion (stored in lightmap.a)
+		color = display;
+	}
+	vec4 finalColor = vec4(color, alpha);
+
+	if (WZ_POINT_LIGHT_ENABLED == 1)
+	{
+		// Water needs no tangent frame: its normal is already in model space and the surface it sits on is flat,
+		// so the geometric normal is just up.
+		vec2 clipSpaceCoord = gl_FragCoord.xy / vec2(float(viewportWidth), float(viewportHeight));
+		finalColor.rgb += iterateOverAllPointLights(clipSpaceCoord, frag.posModelSpace, N, vec3(0.f, 1.f, 0.f), normalize(eyeVec), vec4(waterColor, 1.f), waterGloss).rgb;
+	}
+
+	return finalColor;
+}
+
+void main()
+{
+	vec4 fragColor = main_bumpMapping();
+
+	FragColor = fragColor;
+}
