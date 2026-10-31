@@ -817,6 +817,7 @@ Public Function realmain(ByVal argc As Long, argv() As String) As Long
 
     ' Initialize random number generators
     srand FromU32(time_())
+    sound_srand FromU32(time_())    ' (VB) C's rand() has one state per process: WzSound's (playlist.cpp's) is seeded too
     gameSRand rand()
 
     ' NOTE: it is now safe to use debug() calls to make sure output gets captured.

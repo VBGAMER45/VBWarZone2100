@@ -983,8 +983,9 @@ Private Sub informIfAdminChangedOtherColor(ByVal targetPlayerIdx As Long, ByVal 
         Exit Sub
     End If
 
-    ' (sendQuickChat(INTERNAL_ADMIN_ACTION_NOTICE, ...) and the "Admin %s (%s) changed color of player ..." line
-    ' with the admin's identity: the quick chat and the identities, cluster J)
+    sendQuickChat_data WzQuickChatMessage_INTERNAL_ADMIN_ACTION_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_Context_Color, responsibleIdx, targetPlayerIdx)
+
+    ' (the "Admin %s (%s) changed color of player ..." line with the admin's identity: the identities, cluster J)
 End Sub
 
 Public Function changeColour(ByVal player As Long, ByVal col As Long, ByVal responsibleIdx As Long) As Boolean

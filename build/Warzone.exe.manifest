@@ -11,7 +11,7 @@
   </file>
   <file name="WzSound.dll">
     <comClass clsid="{3041F221-8259-4685-9577-F9441AD0D60D}" progid="WzSound.SoundApi" threadingModel="Apartment" tlbid="{821C1919-795A-4600-A00C-37C5ED95C4D3}"/>
-    <typelib tlbid="{821C1919-795A-4600-A00C-37C5ED95C4D3}" version="1.5" helpdir="" flags=""/>
+    <typelib tlbid="{821C1919-795A-4600-A00C-37C5ED95C4D3}" version="1.8" helpdir="" flags=""/>
   </file>
   <file name="WzGfx.dll">
     <comClass clsid="{41003B7C-9877-4AE6-B3D6-389EF843EC2B}" progid="WzGfx.BatchedImageDrawRequests" threadingModel="Apartment" tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}"/>
@@ -20,15 +20,19 @@
     <comClass clsid="{D67BAFE4-F616-4005-B6AA-DE9142349A04}" progid="WzGfx.WidthLimitedWzText" threadingModel="Apartment" tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}"/>
     <comClass clsid="{57F48AD0-FBFC-4B0C-A708-AF72B47983D2}" progid="WzGfx.WzText" threadingModel="Apartment" tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}"/>
     <comClass clsid="{C0041C0B-9E10-418A-8995-D064B93AAAC5}" progid="WzGfx.iV_Image" threadingModel="Apartment" tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}"/>
-    <typelib tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}" version="1.1" helpdir="" flags=""/>
+    <typelib tlbid="{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}" version="1.2" helpdir="" flags=""/>
   </file>
   <file name="WzNet.dll">
     <comClass clsid="{E9A40746-9AFF-4CC2-BDB4-A3EF845735D2}" progid="WzNet.NetApi" threadingModel="Apartment" tlbid="{784DC337-CFD5-4EA0-8A6D-B8A43C764D60}"/>
-    <typelib tlbid="{784DC337-CFD5-4EA0-8A6D-B8A43C764D60}" version="1.1" helpdir="" flags=""/>
+    <typelib tlbid="{784DC337-CFD5-4EA0-8A6D-B8A43C764D60}" version="1.2" helpdir="" flags=""/>
   </file>
   <file name="WzPlatform.dll">
     <comClass clsid="{C0D6A38E-91E7-4FF7-977F-F166E1FCAD69}" progid="WzPlatform.PlatformApi" threadingModel="Apartment" tlbid="{00B0E319-72B5-40E2-96AD-2070B2737FAD}"/>
     <typelib tlbid="{00B0E319-72B5-40E2-96AD-2070B2737FAD}" version="1.2" helpdir="" flags=""/>
   </file>
+  <file name="WzSequence.dll">
+    <comClass clsid="{6C30A6A5-0FE1-4FB8-9051-C91540C8C989}" progid="WzSequence.SequenceApi" threadingModel="Apartment" tlbid="{798E8961-F846-4ADC-92EB-092451DB8333}"/>
+    <typelib tlbid="{798E8961-F846-4ADC-92EB-092451DB8333}" version="1.0" helpdir="" flags=""/>
+  </file>
 </assembly>
-    
+      

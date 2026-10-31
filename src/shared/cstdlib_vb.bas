@@ -9,7 +9,8 @@ Attribute VB_Name = "cstdlib_vb"
 ' per process).
 Option Explicit
 
-Private Declare Sub ExitProcess Lib "kernel32" (ByVal uExitCode As Long)
+Private Declare Function GetCurrentProcess Lib "kernel32" () As Long
+Private Declare Function TerminateProcess Lib "kernel32" (ByVal hProcess As Long, ByVal uExitCode As Long) As Long
 
 Private holdrand As Long
 Private holdrandSet As Boolean          ' holdrand starts at 1
@@ -283,6 +284,8 @@ End Function
 
 ' C: exit (status). The port's C streams are unbuffered, so there is
 ' nothing to flush; the process ends at once, without unwinding, as in C.
+' TerminateProcess, not ExitProcess: no DLL's detach code runs (exemain_vb's header: ExitProcess ends in
+' an access violation once the GL driver has loaded AppXDeploymentClient).
 Public Sub exit_(ByVal status As Long)
-    ExitProcess status
+    TerminateProcess GetCurrentProcess(), status
 End Sub

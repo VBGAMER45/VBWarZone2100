@@ -1,7 +1,7 @@
 Type=OleDll
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\SysWOW64\stdole2.tlb#OLE Automation
 Reference=*\G{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}#1.f#0#..\..\bin\WzFramework.dll#WzFramework
-Reference=*\G{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}#1.1#0#..\..\bin\WzGfx.dll#WzGfx
+Reference=*\G{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}#1.2#0#..\..\bin\WzGfx.dll#WzGfx
 Class=IPlatformGame; IPlatformGame.cls
 Class=PlatformApi; PlatformApi.cls
 Class=PlatformFramework; PlatformFramework.cls

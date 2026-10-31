@@ -7,9 +7,9 @@ Attribute VB_Name = "campaign_title_c"
 ' class is Nothing for nullopt. A std::vector of objects is a Collection; the shared
 ' std::vector<WzCampaignTweakOptionSetting> is one Collection both forms hold (assignCollection replaces its
 ' contents, as *tweakOptionSettings = ... does).
-' modinfo.h's types (WzCampaignModInfo.cls, WzCampaignTweakOption.cls, the enums below) are here: modinfo.cpp is not
-' ported, loadCampaignModInfoFromFile is a stand-in that loads no mod (i_I4_stubs.bas), and getModCompatibility a
-' stand-in in WzCampaignModInfo.cls. Threads are not ported: loadCampaignModsAsync runs loadCampaignModsAsyncImpl
+' modinfo.h's enums are here (its classes are WzCampaignModInfo.cls and WzCampaignTweakOption.cls; modinfo.cpp is
+' modinfo_c: loadCampaignModInfoFromFile, getModCompatibility). The mods' .wz files mount through WzFramework's
+' PhysFS (physfs_win, physfs_zip_c). Threads are not ported: loadCampaignModsAsync runs loadCampaignModsAsyncImpl
 ' at once (its completion handler queues its work with wzAsyncExecOnMainThread, as from the thread). Translations
 ' (_()) are not ported: the English text is used.
 '

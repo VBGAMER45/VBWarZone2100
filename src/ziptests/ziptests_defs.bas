@@ -1,0 +1,50 @@
+Attribute VB_Name = "ziptests_defs"
+' (VB) ZipTests: what physfs_win, physfs_zip_c and physfs_miniz_c use from WzFramework's API class
+' (FrameworkApi.cls's public enums: physfs.h's PHYSFS_ErrorCode and PHYSFS_FileType, physfs_ext.h's mount
+' order), copied, so the test exe compiles them without the DLL.
+Option Explicit
+
+Public Enum physfs_mount_order
+    PHYSFS_PREPEND = 0
+    PHYSFS_APPEND = 1
+End Enum
+
+Public Enum PHYSFS_ErrorCode
+    PHYSFS_ERR_OK = 0
+    PHYSFS_ERR_OTHER_ERROR = 1
+    PHYSFS_ERR_OUT_OF_MEMORY = 2
+    PHYSFS_ERR_NOT_INITIALIZED = 3
+    PHYSFS_ERR_IS_INITIALIZED = 4
+    PHYSFS_ERR_ARGV0_IS_NULL = 5
+    PHYSFS_ERR_UNSUPPORTED = 6
+    PHYSFS_ERR_PAST_EOF = 7
+    PHYSFS_ERR_FILES_STILL_OPEN = 8
+    PHYSFS_ERR_INVALID_ARGUMENT = 9
+    PHYSFS_ERR_NOT_MOUNTED = 10
+    PHYSFS_ERR_NOT_FOUND = 11
+    PHYSFS_ERR_SYMLINK_FORBIDDEN = 12
+    PHYSFS_ERR_NO_WRITE_DIR = 13
+    PHYSFS_ERR_OPEN_FOR_READING = 14
+    PHYSFS_ERR_OPEN_FOR_WRITING = 15
+    PHYSFS_ERR_NOT_A_FILE = 16
+    PHYSFS_ERR_READ_ONLY = 17
+    PHYSFS_ERR_CORRUPT = 18
+    PHYSFS_ERR_SYMLINK_LOOP = 19
+    PHYSFS_ERR_IO = 20
+    PHYSFS_ERR_PERMISSION = 21
+    PHYSFS_ERR_NO_SPACE = 22
+    PHYSFS_ERR_BAD_FILENAME = 23
+    PHYSFS_ERR_BUSY = 24
+    PHYSFS_ERR_DIR_NOT_EMPTY = 25
+    PHYSFS_ERR_OS_ERROR = 26
+    PHYSFS_ERR_DUPLICATE = 27
+    PHYSFS_ERR_BAD_PASSWORD = 28
+    PHYSFS_ERR_APP_CALLBACK = 29
+End Enum
+
+Public Enum PHYSFS_FileType
+    PHYSFS_FILETYPE_REGULAR = 0
+    PHYSFS_FILETYPE_DIRECTORY = 1
+    PHYSFS_FILETYPE_SYMLINK = 2
+    PHYSFS_FILETYPE_OTHER = 3
+End Enum

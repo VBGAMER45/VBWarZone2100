@@ -1,0 +1,179 @@
+# campaign 3 from the main menu to its end (tools/make_campaign_walk.py writes this file): base and
+# off-world levels won with the campaign scripts' chat cheat ('cheat on', then 'let me win') and Continue
+# Game; each 'between' level (SUB_x_xS) launches its transporter: the units board it (embark), then launch
+wait 90
+click 512 365
+wait 60
+click 512 365
+wait 90
+click 565 441
+wait 60
+click 572 497
+wait 60
+shot selector
+click 607 575
+waitlevel CAM_3A
+quiet 360
+key 13
+wait 10
+text cheat on
+key 13
+wait 30
+wait 2400
+quiet 120
+shot 00_CAM_3A
+log level CAM_3A
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 00_CAM_3A_result
+click 511 556
+wait 900
+waitlevel SUB_3_1S
+quiet 360
+shot 01_SUB_3_1S
+log level SUB_3_1S
+wait 300
+quiet 360
+embark
+wait 600
+quiet 120
+shot 01_SUB_3_1S_boarded
+click 29 30
+wait 1200
+waitlevel SUB_3_1
+quiet 360
+shot 02_SUB_3_1
+log level SUB_3_1
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 02_SUB_3_1_result
+click 511 556
+wait 900
+waitlevel CAM_3B
+quiet 360
+shot 03_CAM_3B
+log level CAM_3B
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 03_CAM_3B_result
+click 511 556
+wait 900
+waitlevel SUB_3_2S
+quiet 360
+shot 04_SUB_3_2S
+log level SUB_3_2S
+wait 300
+quiet 360
+embark
+wait 600
+quiet 120
+shot 04_SUB_3_2S_boarded
+click 29 30
+wait 1200
+waitlevel SUB_3_2
+quiet 360
+shot 05_SUB_3_2
+log level SUB_3_2
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 05_SUB_3_2_result
+click 511 556
+wait 900
+waitlevel CAM3A-B
+quiet 360
+shot 06_CAM3A_B
+log level CAM3A-B
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 06_CAM3A_B_result
+click 511 556
+wait 900
+waitlevel CAM3C
+quiet 360
+shot 07_CAM3C
+log level CAM3C
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 07_CAM3C_result
+click 511 556
+wait 900
+waitlevel CAM3A-D1
+quiet 360
+shot 08_CAM3A_D1
+log level CAM3A-D1
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 08_CAM3A_D1_result
+click 511 556
+wait 900
+waitlevel CAM3A-D2
+quiet 360
+shot 09_CAM3A_D2
+log level CAM3A-D2
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 09_CAM3A_D2_result
+click 511 556
+wait 900
+waitlevel CAM_3_4S
+quiet 360
+shot 10_CAM_3_4S
+log level CAM_3_4S
+wait 300
+quiet 360
+embark
+wait 4200
+quiet 120
+shot 10_CAM_3_4S_boarded
+click 29 30
+wait 1200
+waitlevel CAM_3_4
+quiet 360
+shot 11_CAM_3_4
+log level CAM_3_4
+key 13
+wait 10
+text let me win
+key 13
+wait 300
+quiet 180
+shot 11_CAM_3_4_result
+click 511 556
+wait 900
+quiet 360
+shot 12_end
+log done
+wait 5
+quit

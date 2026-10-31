@@ -1,0 +1,54 @@
+# quick chat (cluster K, fork Q): the lobby's quick chat and the in-game chat's quick chat in a skirmish.
+# Run: python -I tools\ui_test.py quickchat.txt 300 --debug=console   (the log then has addConsoleMessage's
+# "(to player 0): ..." lines: "I want to play", "[hh:mm] Player (Global): Please wait", "... Let's go!")
+# Main menu, Single Player, Start Skirmish Game, Start Hosting (as skirmish.txt); in the lobby the chat box's "+"
+# button (243 689) opens the quick chat overlay above the chat box (x 225-803, y ~134-473 at 1024x768: one panel,
+# three sections 179 wide at x 235, 424, 613; a section's first button at y ~185-210): "I want to play" (Requests,
+# first) is sent, the lobby chat shows it and the overlay closes. Ready (775 90): in the game, Enter opens the chat
+# screen with its quick chat form (x 20-1004 from y 121; tabs Global / End-Game; the Global panel at y 161, four
+# sections 233 wide at x 30, 273, 516, 759; a section's first button at y ~176-201, its second ~203-228):
+# "Please wait" (Requests, first) is sent with the mouse; then, the chat opened again, the form is clicked between
+# its label and its tabs (its panel takes the focus: the sections show their numbers), 1 picks the Requests
+# section (its buttons show their numbers) and 2 sends "Let's go!". The chat screen closes after each message and
+# the console shows it. (The coordinates are computed from the layout code; `widgets` lists psWScreen only, not
+# the overlay screens, so the screenshots are the check.)
+wait 90
+shot mainmenu
+click 512 365
+wait 60
+click 512 400
+wait 120
+shot lobby
+click 365 455
+wait 120
+shot hosting
+click 243 689
+wait 30
+shot lobby_quickchat
+click 324 197
+wait 30
+shot lobby_quickchat_sent
+log lobby quick chat sent
+click 775 90
+wait 600
+shot ingame
+key 13
+wait 30
+shot chat_open
+click 146 188
+wait 30
+shot quickchat_sent_mouse
+log in-game quick chat sent with the mouse
+key 13
+wait 30
+click 300 135
+wait 10
+shot quickchat_focus
+key 49
+wait 10
+shot quickchat_section
+key 50
+wait 30
+shot quickchat_sent_keys
+log in-game quick chat sent with the keys
+quit

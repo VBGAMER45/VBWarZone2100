@@ -7,7 +7,8 @@ wait 60
 click 512 365
 wait 90
 click 607 575
-wait 900
+waitlevel CAM_1A
+quiet 360
 key 13
 wait 10
 text cheat on
@@ -20,9 +21,12 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 00_CAM_1A_result
 click 511 556
-wait 1200
+wait 900
+waitlevel CAM_1B
+quiet 360
 shot 01_CAM_1B
 log level CAM_1B
 key 13
@@ -30,21 +34,28 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 01_CAM_1B_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_1S
+quiet 360
 shot 02_SUB_1_1S
 log level SUB_1_1S
 key 13
 wait 10
 text let me win
 key 13
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 02_SUB_1_1S_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_1
+quiet 360
 shot 03_SUB_1_1
 log level SUB_1_1
 key 13
@@ -52,17 +63,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 03_SUB_1_1_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_2S
+quiet 360
 shot 04_SUB_1_2S
 log level SUB_1_2S
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 04_SUB_1_2S_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_2
+quiet 360
 shot 05_SUB_1_2
 log level SUB_1_2
 key 13
@@ -70,17 +88,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 05_SUB_1_2_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_3S
+quiet 360
 shot 06_SUB_1_3S
 log level SUB_1_3S
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 06_SUB_1_3S_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_3
+quiet 360
 shot 07_SUB_1_3
 log level SUB_1_3
 key 13
@@ -88,9 +113,12 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 07_SUB_1_3_result
 click 511 556
-wait 1200
+wait 900
+waitlevel CAM_1C
+quiet 360
 shot 08_CAM_1C
 log level CAM_1C
 key 13
@@ -98,9 +126,12 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 08_CAM_1C_result
 click 511 556
-wait 1200
+wait 900
+waitlevel CAM_1CA
+quiet 360
 shot 09_CAM_1CA
 log level CAM_1CA
 key 13
@@ -108,17 +139,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 09_CAM_1CA_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_4AS
+quiet 360
 shot 10_SUB_1_4AS
 log level SUB_1_4AS
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 10_SUB_1_4AS_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_4A
+quiet 360
 shot 11_SUB_1_4A
 log level SUB_1_4A
 key 13
@@ -126,17 +164,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 11_SUB_1_4A_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_5S
+quiet 360
 shot 12_SUB_1_5S
 log level SUB_1_5S
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 12_SUB_1_5S_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_5
+quiet 360
 shot 13_SUB_1_5
 log level SUB_1_5
 key 13
@@ -144,9 +189,12 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 13_SUB_1_5_result
 click 511 556
-wait 1200
+wait 900
+waitlevel CAM_1A-C
+quiet 360
 shot 14_CAM_1A_C
 log level CAM_1A-C
 key 13
@@ -154,17 +202,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 14_CAM_1A_C_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_7S
+quiet 360
 shot 15_SUB_1_7S
 log level SUB_1_7S
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 15_SUB_1_7S_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_7
+quiet 360
 shot 16_SUB_1_7
 log level SUB_1_7
 key 13
@@ -172,17 +227,24 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 16_SUB_1_7_result
 click 511 556
-wait 1200
+wait 900
+waitlevel SUB_1_DS
+quiet 360
 shot 17_SUB_1_DS
 log level SUB_1_DS
-wait 900
+wait 300
+quiet 360
 embark
 wait 600
+quiet 120
 shot 17_SUB_1_DS_boarded
 click 29 30
-wait 1500
+wait 1200
+waitlevel SUB_1_D
+quiet 360
 shot 18_SUB_1_D
 log level SUB_1_D
 key 13
@@ -190,9 +252,11 @@ wait 10
 text let me win
 key 13
 wait 300
+quiet 180
 shot 18_SUB_1_D_result
 click 511 556
-wait 1200
+wait 900
+quiet 360
 shot 19_end
 log done
 wait 5

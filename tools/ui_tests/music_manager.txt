@@ -1,0 +1,24 @@
+# the Music Manager title screen (run with --sound: the music is opened only with the sound on): Options > Audio >
+# Open Music Manager; Track 1's campaign checkbox toggled off; Track 2 played from its row (NOW PLAYING, the row
+# highlighted; --vbsndcapture=<wav> to hear it); Return (the form's destructor goes back to the menu music). The
+# checkbox is saved at shutdown (music.json): music_manager_check.txt, run with --config-of=music_manager, sees it.
+wait 90
+click 512 470
+wait 90
+click 620 87
+wait 60
+click 656 452
+wait 90
+shot music_manager
+widgets
+click 662 245
+wait 30
+shot mm_toggled
+click 300 269
+wait 60
+shot mm_track2
+wait 600
+click 247 178
+wait 90
+shot mm_returned
+quit

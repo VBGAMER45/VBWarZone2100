@@ -440,6 +440,12 @@ Public Enum pietypes_defines
     BUTTON_DEPTH = 2000                 ' will be stretched to 16000
 End Enum
 
+' (VB) the GFX objects (pieblitfunc.h's class GFX, private to WzGfx) another project makes through the GFX_
+' methods at the end (lib/sequence's video, cluster K): a handle is the index + 1 (0 = nullptr). Each project
+' has its own GfxApi object, so its own handles.
+Private vbGfx() As GFX
+Private vbGfxCount As Long
+
 ' Name and version of this DLL and of the WzFramework it uses, for the log header.
 Public Function GfxBuildInfo() As String
     GfxBuildInfo = App.EXEName & " " & App.Major & "." & App.Minor & "." & App.Revision & " (uses " & FrameworkBuildInfo() & ")"
@@ -1656,4 +1662,56 @@ End Function
 ' imd.h: void modelReloadAllModelTextures()
 Public Sub modelReloadAllModelTextures()
     imdload_c.modelReloadAllModelTextures
+End Sub
+
+'--------------------------------------------------------------------------
+' (VB) pieblitfunc.h's class GFX for another project (lib/sequence's video, cluster K): a handle (> 0; 0 =
+' nullptr) of this GfxApi object's own table; the methods are GFX's
+
+' std::make_unique<GFX>(type, coordsPerVertex): its handle
+Public Function GFX_vbNew(ByVal type_ As GFXTYPE, Optional ByVal coordsPerVertex As Long = 3) As Long
+    Dim h As Long
+    For h = 0 To vbGfxCount - 1
+        If vbGfx(h) Is Nothing Then Exit For
+    Next
+    If h = vbGfxCount Then
+        vbGfxCount = vbGfxCount + 4
+        ReDim Preserve vbGfx(0 To vbGfxCount - 1)
+    End If
+    Set vbGfx(h) = pieblitfunc_c.GFX_new(type_, coordsPerVertex)
+    GFX_vbNew = h + 1
+End Function
+
+' the unique_ptr's reset (delete)
+Public Sub GFX_vbDelete(ByVal h As Long)
+    If h < 1 Or h > vbGfxCount Then Exit Sub
+    Set vbGfx(h - 1) = Nothing
+End Sub
+
+' void GFX::makeCompatibleTexture(const iV_Image *image, const std::string &filename): image Nothing = nullptr
+Public Sub GFX_makeCompatibleTexture(ByVal h As Long, ByVal image As iV_Image, ByVal filename As String)
+    vbGfx(h - 1).makeCompatibleTexture image, filename
+End Sub
+
+' void GFX::makeTexture(int width, int height, const gfx_api::pixel_format& format, const std::string &debugName)
+Public Sub GFX_makeTexture(ByVal h As Long, ByVal width As Long, ByVal height As Long, Optional ByVal format As pixel_format = pixel_format_FORMAT_RGBA8_UNORM_PACK8, Optional ByVal debugName As String = "")
+    vbGfx(h - 1).makeTexture width, height, format, debugName
+End Sub
+
+' void GFX::updateTexture(const iV_Image& image)
+Public Sub GFX_updateTexture(ByVal h As Long, ByVal image As iV_Image)
+    vbGfx(h - 1).updateTexture image
+End Sub
+
+' void GFX::buffers(int vertices, const void *vertBuf, const void *texBuf): the data's addresses
+Public Sub GFX_buffers(ByVal h As Long, ByVal vertices As Long, ByVal vertBuf As Long, ByVal auxBuf As Long)
+    vbGfx(h - 1).buffers vertices, vertBuf, auxBuf
+End Sub
+
+' template<typename PSO> void GFX::draw(const glm::mat4 &modelViewProjectionMatrix): the PSO (VideoPSO for the
+' video) and the mat4's address
+Public Sub GFX_draw(ByVal h As Long, ByVal pso As pso_type, ByVal pModelViewProjectionMatrix As Long)
+    Dim modelViewProjectionMatrix As mat4
+    modelViewProjectionMatrix = mat4_fromPtr(pModelViewProjectionMatrix)
+    vbGfx(h - 1).draw pso, modelViewProjectionMatrix
 End Sub

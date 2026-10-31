@@ -49,6 +49,7 @@ Private scriptLoaded As Boolean
 Private scriptWait As Long
 Private scriptWaitUntil As Long         ' (wzGetTicks) a wait's end: N frames and N / 60 s at least
 Private scriptPhase As Long             ' a click's frames: 0 move, 1 down, 2 up
+Private scriptQuiet As Long             ' quiet: the frames in a row without a full-screen video
 
 Public Sub drawtest_frame()
     Dim i As Long, x As Long, y As Long, w As Long, h As Long, n As Long, rowH As Long
@@ -274,6 +275,22 @@ Public Sub vbscript_frame()
     Case "embark"
         scriptEmbark
         scriptPos = scriptPos + 1
+    Case "novideo"
+        ' (VB) holds the script while a full-screen video plays (loop.cpp's video mode: the campaign's videos)
+        If Not loop_GetVideoStatus() Then scriptPos = scriptPos + 1
+    Case "quiet"
+        ' (VB) holds the script until N frames in a row have passed without a full-screen video (a level's
+        ' briefing videos start a few seconds in, one after another)
+        If loop_GetVideoStatus() Then scriptQuiet = 0 Else scriptQuiet = scriptQuiet + 1
+        If scriptQuiet >= CLng(w(1)) Then
+            scriptQuiet = 0
+            scriptPos = scriptPos + 1
+        End If
+    Case "waitlevel"
+        ' (VB) holds the script until this level is the current one, in the game and without a video
+        If StrComp(getLevelName(), w(1), vbTextCompare) = 0 And GetGameMode() = GS_NORMAL And Not loop_GetVideoStatus() Then
+            scriptPos = scriptPos + 1
+        End If
     Case "widgets"
         dumpWidgets psWScreen.psForm, 0
         scriptPos = scriptPos + 1

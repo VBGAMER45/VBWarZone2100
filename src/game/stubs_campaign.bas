@@ -114,39 +114,6 @@ continue_:
     getNumDroidsForLevel = count
 End Function
 
-' --- lib/sequence/sequence.h: the video player (not ported: no video plays, as without the sequences) ---
-' bool seq_Play(const std::shared_ptr<VideoProvider>& provider) (provider: 0 = nullptr): false
-Public Function seq_Play(ByVal provider As Long) As Boolean
-    seq_Play = False
-End Function
-
-' bool seq_Update(): false (the video ended)
-Public Function seq_Update() As Boolean
-    seq_Update = False
-End Function
-
-' void seq_Shutdown()
-Public Sub seq_Shutdown()
-End Sub
-
-' double seq_GetFrameTime()
-Public Function seq_GetFrameTime() As Double
-    seq_GetFrameTime = 0#
-End Function
-
-' std::shared_ptr<VideoProvider> makeVideoProvider(PHYSFS_file *fileHandle, const WzString& videoName): no
-' provider; the file it would own is closed
-Public Function makeVideoProvider_file(ByVal fileHandle As Long, ByVal videoName As String) As Long
-    PHYSFS_close fileHandle
-    makeVideoProvider_file = 0
-End Function
-
-' std::shared_ptr<VideoProvider> makeVideoProvider(std::shared_ptr<const std::vector<char>> data, const WzString&
-' videoName): no provider
-Public Function makeVideoProvider_data(ByVal videoName As String) As Long
-    makeVideoProvider_data = 0
-End Function
-
 ' --- lib/framework/wzapp.h: void wzAsyncExecOnMainThread(const std::function<void ()> &func) (the backend's,
 ' not ported: platform's main_win.bas). REAL enough: the functions queue (a Static Collection) and
 ' wzAsyncExecOnMainThread_runPending runs them, which main_c's mainLoop calls first (where the SDL backend's event
@@ -173,13 +140,6 @@ Public Sub wzAsyncExecOnMainThread_runPending()
         WzFunc_call f
     Loop
 End Sub
-
-' --- src/modinfo.cpp (not ported; titleui/campaign.cpp's mods) ---
-' optional<WzCampaignModInfo> loadCampaignModInfoFromFile(const std::string& filePath, const std::string& baseDir):
-' nullopt (Nothing): no campaign mod loads, as when mods/campaign holds none
-Public Function loadCampaignModInfoFromFile(ByVal filePath As String, ByVal baseDir As String) As WzCampaignModInfo
-    Set loadCampaignModInfoFromFile = Nothing
-End Function
 
 ' --- src/urlrequest.h (curl: not ported) ---
 ' AsyncURLRequestHandle urlRequestData(const URLDataRequest& request) (the request's url only): no handle

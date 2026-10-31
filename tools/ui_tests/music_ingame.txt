@@ -1,0 +1,29 @@
+# the music in a skirmish (run with --sound --debug=sound, about 6 minutes): the first track is
+# PlayList_RandomizeCurrentSong's among the skirmish's (the log's cdAudio_OpenTrack); in-game menu > Options > Audio >
+# Open Music Manager over the game (only the skirmish column enabled); Track 3, the OST album's last track (299 s),
+# played from its row and waited out: cdAudio_TrackFinished goes on to the next track enabled for skirmish, the
+# Aftermath album's first (the log's "Now playing ... (was playing ...)"; the open form follows: NOW PLAYING, the row)
+wait 90
+click 512 365
+wait 60
+click 512 400
+wait 120
+click 365 455
+wait 120
+click 775 90
+wait 600
+click 988 33
+wait 60
+click 511 375
+wait 90
+click 518 102
+wait 60
+click 656 467
+wait 90
+shot mm_ingame
+click 260 289
+wait 60
+shot mm_ingame_track3
+wait 18600
+shot mm_ingame_next
+quit

@@ -8,7 +8,7 @@ Attribute VB_Name = "stubs_game"
 ' the C++ checks on its value, but nothing else happens (no damage
 ' modifiers, shadows, terrain reload or log lines).
 ' component.cpp's setPlayerColour, activity.cpp's ActivityManager,
-' seqdisp.cpp's scanline mode (later clusters). gtime.cpp (cluster B),
+' gtime.cpp (cluster B),
 ' keybind.cpp's kf_ScreenDump (cluster D), game.cpp (cluster I).
 ' What clparse.cpp sets or calls in frontend, keybind, loadsave, wrappers,
 ' stdinreader, multilobbycommands and gamehistorylogger: the values are
@@ -79,11 +79,6 @@ Public Const PLAYER_LEAVE_MODE_DESTROY_RESOURCES As Long = 0
 Public Const PLAYER_LEAVE_MODE_SPLIT_WITH_TEAM As Long = 1
 Public Const PLAYER_LEAVE_MODE_MAX As Long = PLAYER_LEAVE_MODE_SPLIT_WITH_TEAM
 Public Const PLAYER_LEAVE_MODE_DEFAULT As Long = PLAYER_LEAVE_MODE_SPLIT_WITH_TEAM
-
-' lib/sequence/sequence.h: SCANLINE_MODE
-Public Const SCANLINES_OFF As Long = 0
-Public Const SCANLINES_50 As Long = 1
-Public Const SCANLINES_BLACK As Long = 2
 
 ' radar.h: RADAR_DRAW_MODE
 
@@ -236,8 +231,6 @@ Private publicIPv4LookupServiceJSONKey As String
 Private publicIPv6LookupService As String
 Private publicIPv6LookupServiceJSONKey As String
 
-Private scanlineMode As Long
-
 '--------------------------------------------------------------------------
 ' The C++ initialisers of the globals above (a VB module has none): called
 ' first thing in realmain, before anything reads them.
@@ -382,16 +375,6 @@ Private bRevealActive As Boolean
 ' campaigninfo.cpp: static uint32_t camNumber = 1; (stubs_game_init)
 Private camNumber As Long
 
-
-' hci/quickchat.h: struct WzQuickChatTargeting (the quick chat: cluster G); all is all_ (a VB word);
-' std::unordered_set<uint32_t> specificPlayers is specificPlayers(0 .. specificPlayers_size - 1)
-Public Type WzQuickChatTargeting
-    all_ As Boolean
-    humanTeammates As Boolean
-    aiTeammates As Boolean
-    specificPlayers() As Long
-    specificPlayers_size As Long
-End Type
 
 ' missiondef.h, mission.h (belong in mission_c)
 
@@ -576,14 +559,6 @@ End Sub
 
 Public Sub ActivityManager_endLoadingSettings()
 End Sub
-
-Public Sub seq_setScanlineMode(ByVal mode As Long)
-    scanlineMode = mode
-End Sub
-
-Public Function seq_getScanlineMode() As Long
-    seq_getScanlineMode = scanlineMode
-End Function
 
 '--------------------------------------------------------------------------
 ' keybind.cpp, game.cpp
@@ -821,7 +796,7 @@ End Sub
 Public Sub wz_command_interface_output_playerResponding(ByVal player_id As Long)
 End Sub
 
-' multirecv.h, multijoin.h, multistat.h, multivote.h, multigifts.h, cheat.h, quickchat.h, teamstrategy.h and
+' multirecv.h, multijoin.h, multistat.h, multivote.h, multigifts.h, cheat.h, teamstrategy.h and
 ' multiplay.cpp's static recvBeacon and recvDataCheck2: the messages recvMessage hands on that do not change the
 ' game state yet: chat, beacons, data checks, pings, votes, host configuration, player statistics (the network,
 ' cluster J); gifts and alliances, a player leaving, debug mode and debug features (with the game messages that
@@ -850,9 +825,6 @@ Public Function recvStrategyPlanUpdate(ByVal queue As Long) As Boolean
     recvStrategyPlanUpdate = True
 End Function
 
-Public Function recvQuickChat(ByVal queue As Long) As Boolean
-    recvQuickChat = True
-End Function
 
 
 Public Function recvPing(ByVal queue As Long) As Boolean
@@ -1151,25 +1123,6 @@ End Sub
 
 
 
-' hci/quickchat.cpp (cluster G): targeting.specificPlayers.insert(player), to_WzQuickChatMessage (WzQuickChatMessage
-' as its uint32_t value; not checked against the enum yet) and sendQuickChat (the message's network part: cluster J)
-Public Sub WzQuickChatTargeting_insertSpecificPlayer(t As WzQuickChatTargeting, ByVal player As Long)
-    Dim i As Long
-    For i = 0 To t.specificPlayers_size - 1
-        If t.specificPlayers(i) = player Then Exit Sub
-    Next
-    ReDim Preserve t.specificPlayers(0 To t.specificPlayers_size)
-    t.specificPlayers(t.specificPlayers_size) = player
-    t.specificPlayers_size = t.specificPlayers_size + 1
-End Sub
-
-Public Function to_WzQuickChatMessage(ByVal value As Long, ByRef output As Long) As Boolean
-    output = value
-    to_WzQuickChatMessage = True
-End Function
-
-Public Sub sendQuickChat(ByVal message As Long, ByVal fromPlayer As Long, targeting As WzQuickChatTargeting)
-End Sub
 
 
 ' screens/guidescreen.cpp (the in-game guide: cluster G): void addGuideTopic(const std::string& guideTopicId,
@@ -1213,11 +1166,6 @@ Public Function setGameStoryLogPlayerDataValue(ByVal playerIndex As Long, ByVal 
 
     ' (NetPlay.scriptSetPlayerDataStrings[playerIndex][key_str] = value_str)
     setGameStoryLogPlayerDataValue = True
-End Function
-
-' quickchat.cpp (the quick chat: clusters G / J): nlohmann::json getWzQuickChatMessageValueMap() (an empty object until then)
-Public Function getWzQuickChatMessageValueMap() As nlohmann_json
-    Set getWzQuickChatMessageValueMap = json_object()
 End Function
 
 '--------------------------------------------------------------------------
@@ -1293,15 +1241,6 @@ End Function
 
 
 
-' hci/quickchat.cpp (cluster G): the chat's spam mute (InGameChatMessage::send asks only when NetPlay.bComms):
-' optional<std::chrono::steady_clock::time_point> playerSpamMutedUntil(uint32_t playerIdx) is has_value()
-' with the value (a QueryPerformanceCounter count) in mutedUntil; never muted yet, nothing recorded
-Public Function playerSpamMutedUntil(ByVal playerIdx As Long, mutedUntil As Currency) As Boolean
-    playerSpamMutedUntil = False
-End Function
-
-Public Sub recordPlayerMessageSent(ByVal playerIdx As Long)
-End Sub
 
 ' notifications.cpp (cluster F): bool cancelOrDismissNotificationsWithTag(const std::string& desiredTag,
 ' NotificationScope scope = NotificationScope::DISPLAYED_AND_QUEUED)

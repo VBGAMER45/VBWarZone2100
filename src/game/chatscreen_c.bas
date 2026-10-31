@@ -6,9 +6,9 @@ Attribute VB_Name = "chatscreen_c"
 ' ~WzInGameChatScreen's setFocus(nullptr) is on the dying screen and has no effect left. psCurrentChatScreen is a
 ' strong reference: an address could outlive the screen; shutdownChatScreen drops it. The std::weak_ptr captures of
 ' widgets are their addresses (WIDGET_fromPtr), as in the other ported screens. createChatScreen keeps its
-' stand-in's signature: a Sub (the caller, hci_c, does not use the returned screen). hci/quickchat.cpp and
-' hci/chatoptions.cpp are stand-ins (createQuickChatForm, createChatOptionsForm: an empty WIDGET; createQuickChatForm
-' takes no WzQuickChatMode); quick chat is offered only in skirmish / multiplayer, so a campaign never makes one.
+' stand-in's signature: a Sub (the caller, hci_c, does not use the returned screen). The quick chat form and the chat
+' options form are quickchat_c's and chatoptions_c's (createQuickChatForm's optional<WzQuickChatMode> is
+' has_startingPanel and the mode); quick chat is offered only in skirmish / multiplayer, so a campaign never makes one.
 ' Translations (_()) are not ported: the English text is used.
 ' (VB) widget class WzInGameChatBoxButton : W_BUTTON
 ' (VB) widget class WzInGameChatBoxForm : IntFormAnimated
@@ -438,6 +438,7 @@ End Function
 
 Private Sub WzInGameChatScreen_CLICKFORM_initialize(ByVal self As WIDGET, ByVal initialChatMode As WzChatMode)
     Dim d As WzInGameChatScreen_CLICKFORM, freeChatEnabled As Boolean, quickChatEnabled As Boolean, weakSelf As Long
+    Dim startingPanel As WzQuickChatMode
     Set d = WzInGameChatScreen_CLICKFORM_(self)
     ' (VB) the C++'s || and && stop early: ingame.hostChatPermissions(selectedPlayer) is read only for a connected player
     If Not bMultiPlayer Then
@@ -464,9 +465,9 @@ Private Sub WzInGameChatScreen_CLICKFORM_initialize(ByVal self As WIDGET, ByVal 
 
     ' for now, quick chat is only available in skirmish / multiplayer mode, for players
     If quickChatEnabled Then
-        ' (createQuickChatForm(WzQuickChatContext::InGame, [weakSelf]() {...}, (initialChatMode == WzChatMode::Team) ?
-        ' WzQuickChatMode::Team : WzQuickChatMode::Global): the stand-in takes no mode)
-        Set d.quickChatForm = createQuickChatForm(WzQuickChatContext_InGame, WzFunc_new(FN_chatQuickChat_onSent, weakSelf))
+        ' (initialChatMode == WzChatMode::Team) ? WzQuickChatMode::Team : WzQuickChatMode::Global
+        If initialChatMode = WzChatMode_Team Then startingPanel = WzQuickChatMode_Team Else startingPanel = WzQuickChatMode_Global
+        Set d.quickChatForm = createQuickChatForm(WzQuickChatContext_InGame, WzFunc_new(FN_chatQuickChat_onSent, weakSelf), True, startingPanel)
         self.attach d.quickChatForm
         d.quickChatForm.setCalcLayout WzFunc_new(FN_chatQuickChatForm_calcLayout)
     End If

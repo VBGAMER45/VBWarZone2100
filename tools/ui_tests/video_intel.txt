@@ -1,0 +1,76 @@
+# the intelligence screen's research film, for tools/video_display_test.py (--game=CAM_2A): the opening videos
+# waited out, 'cheat on', the research screen (104 680), its first topic (41 357), 'work harder' (the topic
+# done: a research message), the intelligence screen (36 716), the message (496 677): res_weapons.ogg plays
+# in the message's view; screenshots every 15 frames while it plays and after
+waitlevel CAM_2A
+quiet 360
+key 13
+wait 10
+text cheat on
+key 13
+wait 30
+click 104 680
+wait 60
+shot research
+click 41 357
+wait 30
+shot research_started
+key 13
+wait 10
+text work harder
+key 13
+wait 120
+quiet 60
+shot finished
+click 36 716
+wait 60
+click 496 677
+wait 15
+shot f00
+wait 15
+shot f01
+wait 15
+shot f02
+wait 15
+shot f03
+wait 15
+shot f04
+wait 15
+shot f05
+wait 15
+shot f06
+wait 15
+shot f07
+wait 15
+shot f08
+wait 15
+shot f09
+wait 15
+shot f10
+wait 15
+shot f11
+wait 15
+shot f12
+wait 15
+shot f13
+wait 15
+shot f14
+wait 15
+shot f15
+wait 15
+shot f16
+wait 15
+shot f17
+wait 15
+shot f18
+wait 15
+shot f19
+wait 15
+shot f20
+wait 15
+shot f21
+wait 15
+shot f22
+wait 15
+shot f23
+quit

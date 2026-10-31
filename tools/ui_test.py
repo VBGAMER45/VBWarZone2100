@@ -5,6 +5,9 @@ script's commands on the game's frames, one at a time (drawtest_vb's vbscript_fr
   wait <frames>        move <x> <y>        click <x> <y>        rclick <x> <y>
   key <virtual key>    text <characters>   shot <name>          log <text>         quit
   widgets              (the widget tree in the log: id, class, screen geometry, hidden, children)
+  novideo              (waits while a full-screen video plays)   embark (the units board the transporter)
+  quiet <frames>       (waits until that many frames in a row passed without a full-screen video)
+  waitlevel <name>     (waits until that level is loaded and the game runs it)
   # a comment
 
 The mouse and the keys are window messages posted to the game's window (client coordinates, the game's

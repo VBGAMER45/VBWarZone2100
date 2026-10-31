@@ -175,6 +175,8 @@ def project_files(sub):
     dirs = [os.path.join(build.SRC, sub), build.SHARED]
     if sub in build.SHARED_GFX_USERS:
         dirs.append(build.SHARED_GFX)
+    if sub in build.SHARED_OGG_USERS:
+        dirs.append(build.SHARED_OGG)
     for d in dirs:
         if os.path.isdir(d):
             files += [os.path.join(d, n) for n in sorted(os.listdir(d)) if n.lower().endswith((".bas", ".cls", ".frm"))]

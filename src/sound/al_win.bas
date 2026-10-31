@@ -56,6 +56,10 @@ Public Const AL_FORMAT_MONO8 As Long = &H1100
 Public Const AL_FORMAT_MONO16 As Long = &H1101
 Public Const AL_FORMAT_STEREO8 As Long = &H1102
 Public Const AL_FORMAT_STEREO16 As Long = &H1103
+Public Const AL_FREQUENCY As Long = &H2001
+Public Const AL_BITS As Long = &H2002
+Public Const AL_CHANNELS As Long = &H2003
+Public Const AL_SIZE As Long = &H2004
 Public Const AL_NO_ERROR As Long = 0
 Public Const AL_INVALID As Long = -1
 Public Const AL_INVALID_NAME As Long = &HA001&
@@ -179,6 +183,7 @@ Private Type AL_BUFFER_T
     frames As Long
     data() As Integer
     refs As Long                            ' the queue entries that hold it (in use when > 0)
+    bits As Long                            ' (cluster K) the bits per sample alBufferData was given (AL_BITS, AL_SIZE)
 End Type
 
 Private Type AL_SOURCE_T
@@ -636,6 +641,7 @@ Public Sub alBufferData(ByVal buffer As Long, ByVal fmt_ As Long, data() As Byte
     n = size \ bytesPerSample
     bufs(b).channels = chans
     bufs(b).freq = freq
+    bufs(b).bits = bytesPerSample * 8
     bufs(b).frames = n \ chans
     If n = 0 Then
         Erase bufs(b).data
@@ -649,6 +655,24 @@ Public Sub alBufferData(ByVal buffer As Long, ByVal fmt_ As Long, data() As Byte
             bufs(b).data(i) = (CLng(data(i)) - 128) * 256   ' unsigned 8 bit
         Next
     End If
+End Sub
+
+' (cluster K: lib/sequence reads AL_SIZE) AL_FREQUENCY, AL_BITS, AL_CHANNELS and AL_SIZE (the data's size as
+' alBufferData was given it, as OpenAL Soft's); a buffer without data: 0 (AL_BITS 16)
+Public Sub alGetBufferi(ByVal buffer As Long, ByVal param As Long, value As Long)
+    Dim b As Long, bits As Long
+    If Not contextCurrent Then Exit Sub
+    b = bufSlot(buffer)
+    If b < 0 Then setError AL_INVALID_NAME: Exit Sub
+    bits = bufs(b).bits
+    If bits = 0 Or bufs(b).frames = 0 Then bits = 16
+    Select Case param
+    Case AL_FREQUENCY: value = bufs(b).freq
+    Case AL_BITS: value = bits
+    Case AL_CHANNELS: value = bufs(b).channels
+    Case AL_SIZE: value = bufs(b).frames * bufs(b).channels * (bits \ 8)
+    Case Else: setError AL_INVALID_ENUM
+    End Select
 End Sub
 
 '--------------------------------------------------------------------------
@@ -950,6 +974,13 @@ End Sub
 ' the capture (test aids)
 
 ' (VB) before alcOpenDevice: no device, the mix goes to this WAV file ("" opens the device again)
+' (VB, cluster K) OpenAL Soft mixes in a thread of its own; al_win mixes when alcProcessContext polls it
+' (sound_Update, in every frame of the game and title loops). lib/sequence's full screen videos run outside
+' those loops (main.cpp's videoLoop): seq_Update polls the current context here, so that their sources play on.
+Public Sub al_vbProcessCurrent()
+    If contextAlive And contextCurrent Then alcProcessContext AL_CONTEXT
+End Sub
+
 Public Sub al_vbSetCapture(ByVal wavPath As String)
     capturePath = wavPath
 End Sub

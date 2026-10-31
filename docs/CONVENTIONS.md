@@ -22,7 +22,10 @@ setting them up. Items marked *(decide in cluster N)* are still open.
   framework modules without state (`wztime_c`). Each project gets its own
   copy, so their state (stdio's open files) never crosses a project, and
   their names cost nothing at the DLL interfaces. Keep it small: each name
-  in it counts in all seven projects.
+  in it counts in all eight projects. Its subfolders are compiled only into
+  their users (tools/build.py): `src/shared/gfx` (glm's types, gfx_api.h's
+  constant buffers) into WzGfx, the exe and WzSequence; `src/shared/ogg`
+  (libogg) into WzSound and WzSequence.
 * Each module starts with a comment naming its C++ source and, for a
   partial port, what is still missing.
 * A function needed before its cluster is ported gets a stand-in in the
@@ -42,12 +45,13 @@ setting them up. Items marked *(decide in cluster N)* are still open.
 
 | Project | C++ | Uses |
 |---|---|---|
-| `WzFramework.dll` | `lib/framework`, the window-free part of `wzapp.h` (ticks, dialogs, threads), `src/wzjsonhelpers` | - |
+| `WzFramework.dll` | `lib/framework`, the window-free part of `wzapp.h` (ticks, dialogs, threads), `src/wzjsonhelpers`; PhysFS 3.2.0 with its zip archiver and miniz's inflate | - |
 | `WzMap.dll` | `lib/wzmaplib` | - |
-| `WzSound.dll` | `lib/sound` | WzFramework |
+| `WzSound.dll` | `lib/sound`; the decoders stb_vorbis (with libvorbis's packet API), libopus 1.5.2 (CELT, SILK), opusfile; libogg | WzFramework |
 | `WzGfx.dll` | `lib/ivis_opengl` | WzFramework |
 | `WzNet.dll` | `lib/netplay` | WzFramework |
 | `WzPlatform.dll` | `lib/sdl` (window, input, event loop, GL backend) | WzFramework, WzGfx |
+| `WzSequence.dll` | `lib/sequence` (the videos); libtheora 1.2.0's decoder; libogg | WzFramework, WzGfx, WzSound |
 | `Warzone.exe` | `src`, `lib/gamelib`, `lib/widget` | all |
 
 A project only calls the projects it uses. Calls the other way go through
@@ -169,10 +173,10 @@ a callback interface (below).
 | `std::stoi`, `std::stof` | `strtoll`/`strtod` (`cstdlib_vb`) with C++'s checks: no digits is `invalid_argument`, out of range is `out_of_range`, with MSVC's `what()` texts |
 | overloads that differ by their parameters' types | the one used more keeps the name, the other gets a suffix saying what it returns or takes: `getWeaponSubClass(WEAPON_SUBCLASS)` is `getWeaponSubClass_name`, `loadTemplateCommon(WzConfig&, ...)` is `loadTemplateCommon_ini` |
 | `WzString::toLower`, `trimmed`, `split` | `WzString_toLower` (A-Z only, as the classic locale), `WzString_trimmed` (" \f\n\r\t\v"), `WzString_split` (`src/shared/wzstring_c`); VB's `LCase$` and `Trim$` do something else |
-| `rand()`, `srand()` | `cstdlib_vb`'s, the Microsoft runtime's generator; each project has its own state |
+| `rand()`, `srand()` | `cstdlib_vb`'s, the Microsoft runtime's generator; each project has its own state, so main.cpp's `srand(time)` must reach every project that draws: `main_c` also seeds WzSound's (`SoundApi.sound_srand`, the same seed; unseeded, a project starts from 1 every run: the first in-game track was always Track 2) |
 | `uint32_t` multiplication (`a * b` wrapping) | `MUL32(a, b)` (`math_vb`) |
 | `MersenneTwister`, `gameRand` | `random_c` (a UDT and procedures that take it) |
-| `int32_t`, `int`, `unsigned` | Long (unsigned compares and divides through QuakeVB's `ULT`/`UDIV` helpers) |
+| `int32_t`, `int`, `unsigned` | Long (unsigned compares and divides through QuakeVB's `ULT`/`UDIV` helpers). A `size_t` expression that wraps in 4.7.0 (the 32-bit build) wraps here too: `+` and `-` on Long wrap (no overflow checks), the compares and divides that follow must be unsigned (table.cpp's relayoutColumns at a table's first, 1-pixel-wide layout: compared signed, it asserted) |
 | `int64_t`, `uint64_t` | Double (exact to 2^53) for times, sizes and power's 32.32 fixed point; a division is `Fix(a / b)` (exact for \|a\| < 2^53); `%lld` / `PRId64` print such a Double in full. Checked case by case |
 | a reference to a static vector returned by a function (`GridList const &gridStartIterate(...)`) | the elements copied into the caller's array, their number returned: `n = gridStartIterate(x, y, r, list)` |
 | `float` | Single; `double` stays Double. Where the result must match C's bit for bit, each float operation is a `float_vb` call (see "Float arithmetic") |
@@ -545,6 +549,36 @@ QuakeVB's numeric helpers named here (`ToInt`, `SAR`, `SHL`, `SHRU`,
   ReDims or Erases its parameter: run-time error 10 ("This array is fixed or
   temporarily locked") when the call runs, not when it compiles.
   `tools\check_redim.py` finds them.
+* Integer arithmetic as the projects are built (tools/build.py removes VB's integer overflow checks):
+  Long `+`, `-`, `*` wrap like C's int32, and a Long stored into an Integer keeps its low 16 bits
+  (measured, cluster K); but Integer op Integer is computed in 16 bits and wraps silently, so every C
+  promotion to int needs a `CLng` (SILK's macros). `2 ^ n` is a floating-point power and slow in a hot
+  loop: a table (`celt_pow2`) made CELT twice as fast.
+* A line that starts with a name equal to one of VB's attribute names (`VB_Name`, `VB_Base`,
+  `VB_Exposed`, `VB_Description`, ...), in any case, followed by `(`, is a syntax error: a Type field
+  `vb_base() As Byte` fails (`vb_bases()` compiles).
+* A local fixed-size array in a procedure called per block (`Dim r(0 To 9)`) is set up and torn down on
+  every call: `Static` when the procedure is not re-entered (theora's filters).
+* A C coroutine (a switch whose case labels sit inside loops: miniz's tinfl) is a `Select Case` on the
+  state that jumps to labels inside `Do` loops and `If` blocks; never into a `For` loop or a `With` block.
+* An API class's enum member must not share its name with a Public Const of a module in the same project
+  ("Ambiguous name detected": al_win's AL_* constants): the client keeps the header's values itself. A
+  public class may call a Friend method of a private class that uses the public class's enums
+  (GfxApi -> GFX.draw). A private class another project needs is reached through handles the API class
+  keeps, one table per client project (GfxApi's GFX handles; each project has its own GlobalMultiUse
+  object).
+* PhysFS (physfs_win, physfs_zip_c, physfs_miniz_c) is PhysFS 3.2.0's own code: a search path entry is a
+  folder or a .wz/.zip archive; with symlinks forbidden, each lookup stats every element of the name in
+  every folder entry; `WZ_PHYSFS_getLastError()` takes the error (clears it), and errors stay set after a
+  success; unmount fails while a file of that entry is open. A `debug_` at a disabled level still
+  evaluates (and so clears) the error where the C++ macro skips its arguments: test `debugPartEnabled`
+  first where a later read of the error matters.
+* A test exe of a DLL's modules without the DLL copies the API class's public enums into a module of its
+  own (`src/ziptests/ziptests_defs.bas`).
+* References for decoders: ffmpeg's frame-threaded video decoders are not deterministic (reference decodes
+  use `-threads 1`); ffmpeg 8.1 links libopus 1.6.1, whose packet-loss concealment differs from 4.7.0's
+  1.5.2: the Opus reference is the official build's `libopus.dll` through Python ctypes (as
+  `libtheoradec.dll` is for the post-processed Theora frames).
 
 ## Editing the sources by script
 
@@ -751,6 +785,13 @@ every inherited method) would pass VB's limits, so:
   addresses into Warzone.exe on the stack (`dps @esp`).
   `tools\dialog_text.ps1` prints an error box's text.
 
+* Quick chat (cluster K): a `std::vector<uint32_t>` of players is `UInt32Vector`; a `std::unordered_set`
+  of players the same UDT with `UInt32Set_*` helpers, iterating in insertion order (MSVC's hash order only
+  shows in display text and a message's byte order). A widget a lambda holds by weak pointer that a
+  scheduled task can outlive registers in widgweak_vb in its `_construct` and unregisters in its
+  `_destruct`; the lambda captures the serial. A pure virtual gets an empty root procedure ("(VB) pure
+  virtual: never reached"). WzFunc ids 15000-15199 are quick chat's and chat options'.
+
 ## The sound (lib/sound, WzSound)
 
 * A `TRACK *`, `AUDIO_SAMPLE *`, `AUDIO_STREAM *` is an object of that WzSound class (Nothing =
@@ -767,6 +808,40 @@ every inherited method) would pass VB's limits, so:
 * The game must not depend on the sound: the test runs are silent (`--nosound`) and must log what they
   logged with the sound's stand-ins; with the sound on, `--vbsndcapture=<file.wav>` mixes into a file
   instead of the device; `tools\wav_activity.py <file.wav>` prints its loudness per window and channel.
+* codecs.h's `WZDecoder` is an interface class, implemented by `WZVorbisDecoder` (stb_vorbis) and
+  `WZOpusDecoder` (oggopus.cpp over opusfile and libopus); openal_track_c chooses by the file's extension.
+  The decoders are pure arithmetic in Single/Long/Byte arrays with offsets (a C pointer into a buffer is
+  the buffer plus an offset); WzSound is compiled optimised without bounds checks, so their tests build
+  the same modules into test exes twice: with bounds checks, and optimised (`src/celttests`,
+  `src/silktests`, `src/opustests`, `src/vorbistests`).
+* libvorbis's decode API (the videos' audio) is stb_vorbis_c's: handles, an ogg_packet as its fields,
+  pcmout copies into `pcm(ch, i)`.
+* al_win mixes only when polled: code that plays sound outside the loops that call sound_Update (the
+  full-screen videos' videoLoop) calls `al_vbProcessCurrent`, or its sources never play nor finish.
+
+## The videos (lib/sequence, WzSequence)
+
+* sequence.cpp and timer.cpp are WzSequence's `sequence_c` and `timer_c`; the exe calls them through
+  `SequenceApi`. A `VideoProvider` is PublicNotCreatable and holds the private derived class
+  (PhysFSVideoProvider, MemoryBufferVideoProvider) with a Friend `buffer_data`.
+* libtheora's decoder (`theora_*`) keeps the C's pointer arithmetic as offsets into one Byte array per
+  decoder (the reference frames stored bottom-up behind negative strides, the post-processing buffer
+  after them); the legacy API's `yuv_buffer` hands out copies of the planes, top row first, stride = width.
+  Its bit reader's window holds 31 bits, so reads are `\` by powers of two with no sign cases.
+* The video's frame is converted to RGBA in a Long array and drawn through GfxApi's GFX handle; libogg is
+  `src/shared/ogg` (ogg_h's UDTs hold copies of the bytes the C points at).
+* The UI test scripts wait for the campaign's videos with `novideo`, `quiet <frames>` and
+  `waitlevel <name>` (tools/ui_test.py): a level's briefing videos start seconds into the level, and a
+  click or key during a full-screen video goes to the video.
+* The legacy theora.h API's `ti.frame_width` x `frame_height` is the picture size (the coded size is
+  `ti.width` x `height`): video_write converts that many pixels from the decoded frame's top left (the
+  picture offset is not applied), so the intelligence screen's 192x168 films (in 192x176 frames) show
+  unsquashed. A research film ends on an empty view, not its last frame: seq_Shutdown releases the
+  texture and seq_RenderVideoToBuffer's VIDEO_HOLD_LAST_FRAME only stops a restart (4.7.0's code).
+* `tools/video_display_test.py` checks the display against a model of sequence.cpp's (the official
+  libtheoradec.dll's frames, video_write's formula and scanline rows, VideoPSO's bilinear quad): every
+  video size and scanline mode and the intelligence screen; `--official` checks the official build's
+  captures against the same model.
 
 ## The network messages (nettypes, netqueue)
 

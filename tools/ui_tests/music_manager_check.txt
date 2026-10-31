@@ -1,0 +1,11 @@
+# after music_manager.txt (run with --config-of=music_manager --sound): the Music Manager again, Track 1's campaign
+# checkbox still off (music.json read back at startup)
+wait 90
+click 512 470
+wait 90
+click 620 87
+wait 60
+click 656 452
+wait 90
+shot mm_check
+quit

@@ -13,7 +13,8 @@ Attribute VB_Name = "stb_vorbis_c"
 ' integer, ties to even: CLng does that too. Floats are VB Singles (the x87 rounds the intermediate
 ' results more precisely than the C's SSE floats: the decoded samples may differ by a unit or so).
 ' Interface for WzSound: H_DESIGN.md's "Fork H1's API"; tools/run_tests.py --sound checks every game
-' sound against ffmpeg's decoder.
+' sound against ffmpeg's decoder. At the end (cluster K): libvorbis's synthesis API over this decoder, packet
+' by packet, for lib/sequence's videos ("libvorbis's synthesis API"; tools/video_audio_test.py checks it).
 Option Explicit
 
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (dest As Any, src As Any, ByVal n As Long)
@@ -297,6 +298,14 @@ Private Type vorb
     channel_buffer_end As Long
 
     in_use As Boolean                       ' (VB) the pool's slot holds a decoder
+
+    ' (VB) libvorbis's vorbis_info, for the synthesis API (vorbis_info_init's decoders)
+    vp_info As Boolean                      ' the slot is a vorbis_info
+    vp_setup As Boolean                     ' vi->codec_setup != NULL
+    vp_version As Long                      ' vi->version
+    vp_bitrate_upper As Long                ' vi->bitrate_upper
+    vp_bitrate_nominal As Long              ' vi->bitrate_nominal
+    vp_bitrate_lower As Long                ' vi->bitrate_lower
 End Type
 
 ' (VB) the decoders: a stb_vorbis * is an index + 1
@@ -321,6 +330,76 @@ Private buf2() As Single
 Private buf2Size As Long
 Private part_classdata() As Long            ' (VB) part_classdata[j][class_set] is the classdata row: (j * part_read + class_set)
 Private part_classdataSize As Long
+
+' (VB) libvorbis's synthesis API (at the end of the module, "libvorbis's synthesis API"): codec.h's error codes
+Private Const OV_EFAULT As Long = -129
+Private Const OV_EINVAL As Long = -131
+Private Const OV_ENOTVORBIS As Long = -132
+Private Const OV_EBADHEADER As Long = -133
+Private Const OV_EVERSION As Long = -134
+Private Const OV_ENOTAUDIO As Long = -135
+Private Const OV_EBADPACKET As Long = -136
+
+' (VB) libvorbis's oggpack_buffer reading a packet (bitwise.c's oggpack_read: least significant bit first)
+Private Type VpPack
+    pos As Long                             ' the bits read: endbyte * 8 + endbit
+    storage As Long                         ' the packet's bytes
+    overrun As Boolean                      ' a read went past the end (endbyte = storage, endbit = 1): every later read gives -1
+End Type
+
+' (VB) codec.h's vorbis_comment
+Private Type VpCommentT
+    in_use As Boolean
+    user_comments() As String               ' char **user_comments (comments + 1 of them)
+    comment_lengths() As Long               ' int *comment_lengths
+    comments As Long
+    vendor As String                        ' char *vendor
+    has_vendor As Boolean                   ' vendor != NULL
+End Type
+
+' (VB) codec.h's vorbis_dsp_state (the synthesis side) and its private_state's sample_count
+Private Type VpDspT
+    in_use As Boolean
+    vi As Long                              ' vorbis_info *: the decoder's handle
+    channels As Long                        ' vi->channels
+    pcm() As FloatArr                       ' float **pcm: channels x pcm_storage
+    pcm_storage As Long
+    pcm_current As Long
+    pcm_returned As Long
+    eofflag As Long
+    lW As Long
+    W As Long
+    nW As Long
+    centerW As Long
+    granulepos As Double                    ' ogg_int64_t
+    sequence As Double                      ' ogg_int64_t
+    sample_count As Double                  ' ((private_state *)backend_state)->sample_count: ogg_int64_t
+End Type
+
+' (VB) codec.h's vorbis_block (the synthesis side)
+Private Type VpBlockT
+    in_use As Boolean
+    pcm() As FloatArr                       ' float **pcm: the decoded block, channels x pcmend (allocated: pcmReady)
+    pcmReady As Boolean                     ' (VB) pcm's arrays allocated (blocksize_1 each)
+    hasPcm As Boolean                       ' vb->pcm != NULL
+    pcmend As Long
+    lW As Long
+    W As Long
+    nW As Long
+    mode As Long
+    eofflag As Long
+    granulepos As Double                    ' ogg_int64_t
+    sequence As Double                      ' ogg_int64_t
+    vd As Long                              ' vorbis_dsp_state *: its handle
+End Type
+
+' (VB) the synthesis API's structs: a handle is an index + 1 (0: a cleared struct)
+Private vpc() As VpCommentT
+Private vpcCount As Long
+Private vpd() As VpDspT
+Private vpdCount As Long
+Private vpb() As VpBlockT
+Private vpbCount As Long
 
 ' (VB) the module's tables (the C's static initialisers)
 Private Sub stb_tables()
@@ -3595,4 +3674,958 @@ Public Function stb_vorbis_decode_memory(data() As Byte, ByVal len_ As Long, cha
     Loop
     stb_vorbis_close v
     stb_vorbis_decode_memory = data_len
+End Function
+
+'//////////////////////////////////////////////////////////////////////////////
+' (VB) libvorbis's synthesis API
+'
+' libvorbis 1.3.7's decoding functions of codec.h (info.c, block.c, synthesis.c), for lib/sequence's videos
+' (sequence.cpp; WzSequence calls them through SoundApi): the caller's Ogg demuxer hands over the packets one
+' at a time, as an ogg_packet's fields (the packet's bytes from index 0, bytes, b_o_s, e_o_s, granulepos,
+' packetno). The structs are handles: a vorbis_info is a decoder of the pool above (index + 1), a
+' vorbis_comment, vorbis_dsp_state and vorbis_block an entry of vpc, vpd and vpb (index + 1); 0 is a cleared
+' struct. libvorbis's semantics with stb_vorbis's decoder:
+' * vorbis_synthesis_headerin reads the identification and comment headers as info.c does (with its bit
+'   reader: vp_read); the setup header goes through stb_vorbis's setup code (start_decoder's third packet:
+'   vp_setup_decoder), the packet laid out as Ogg pages of the decoder's stream (vp_set_packet);
+' * vorbis_synthesis checks the packet's type and mode as libvorbis does, then decodes it with
+'   vorbis_decode_initial and vorbis_decode_packet_rest (the floors, residues, coupling and inverse MDCT: the
+'   block's n samples per channel, not windowed, as libvorbis's mapping0_inverse leaves them) into the block;
+' * vorbis_synthesis_blockin is libvorbis's overlap-add into the dsp state's two-stage buffer, with its granule
+'   position bookkeeping (the first block returns nothing; a first page whose granule position is below the
+'   samples decoded trims the start, the last page's the end); the windows are stb_vorbis's (the power sine of
+'   libvorbis's vwin tables); vorbis_synthesis_pcmout and _read are libvorbis's. pcmout's float ***pcm is a
+'   copy: pcm(channel, i) = pcm[channel][i] for i < the count returned.
+' Not ported: floor 0 (stb_vorbis's VORBIS_feature_not_supported: OV_EBADHEADER), more than 16 channels
+' (STB_VORBIS_MAX_CHANNELS: OV_EBADHEADER), the half rate decode, vorbis_synthesis_trackonly, _lapout,
+' _idheader, the bitrate window, the analysis (encoder) side. Where libvorbis would read a NULL struct (a
+' crash) the functions return OV_EFAULT (or nothing).
+
+' (VB) the handles' checks
+Private Function vp_info_ok(ByVal vi As Long) As Boolean
+    If vi < 1 Or vi > poolCount Then Exit Function
+    If Not pool(vi - 1).in_use Then Exit Function
+    vp_info_ok = pool(vi - 1).vp_info
+End Function
+
+Private Function vp_comment_ok(ByVal vc As Long) As Boolean
+    If vc < 1 Or vc > vpcCount Then Exit Function
+    vp_comment_ok = vpc(vc - 1).in_use
+End Function
+
+Private Function vp_dsp_ok(ByVal vd As Long) As Boolean
+    If vd < 1 Or vd > vpdCount Then Exit Function
+    vp_dsp_ok = vpd(vd - 1).in_use
+End Function
+
+Private Function vp_block_ok(ByVal vb As Long) As Boolean
+    If vb < 1 Or vb > vpbCount Then Exit Function
+    vp_block_ok = vpb(vb - 1).in_use
+End Function
+
+' bitwise.c's oggpack_read(b, bits) on the packet: -1 past its end (and from then on)
+Private Function vp_read(packet() As Byte, b As VpPack, ByVal bits As Long) As Long
+    Dim i As Long, p As Long, ret As Double
+    If bits < 0 Or bits > 32 Then GoTo overflow
+    If b.overrun Then GoTo overflow
+    If b.pos + bits > b.storage * 8 Then GoTo overflow
+    For i = 0 To bits - 1
+        p = b.pos + i
+        If (packet(p \ 8) And pow2tab(p And 7)) <> 0 Then ret = ret + 2# ^ i
+    Next
+    b.pos = b.pos + bits
+    If ret >= 2147483648# Then ret = ret - 4294967296#      ' (long: 32 bits)
+    vp_read = ret
+    Exit Function
+overflow:
+    b.overrun = True                        ' b->ptr=NULL; b->endbyte=b->storage; b->endbit=1;
+    vp_read = -1
+End Function
+
+' bitwise.c's oggpack_bytes(b)
+Private Function vp_bytes(b As VpPack) As Long
+    If b.overrun Then
+        vp_bytes = b.storage + 1
+    Else
+        vp_bytes = (b.pos + 7) \ 8
+    End If
+End Function
+
+' info.c's _v_readstring(o, buf, bytes): (VB) the chars as a String
+Private Function vp_readstring(packet() As Byte, o As VpPack, ByVal bytes As Long) As String
+    Dim b() As Byte, i As Long
+    If bytes <= 0 Then Exit Function
+    ReDim b(0 To bytes - 1)
+    For i = 0 To bytes - 1
+        b(i) = vp_read(packet, o, 8) And &HFF&
+    Next
+    vp_readstring = StrConv(b, vbUnicode)
+End Function
+
+' void vorbis_info_init(vorbis_info *vi): (VB) a new decoder of the pool, its handle in vi
+Public Sub vorbis_info_init(vi As Long)
+    Dim h As Long, i As Long
+    If Not tablesReady Then stb_tables
+    ' (VB) a free slot of the pool (as stb_vorbis_open_memory's vorbis_alloc)
+    h = -1
+    For i = 0 To poolCount - 1
+        If Not pool(i).in_use Then h = i: Exit For
+    Next
+    If h < 0 Then
+        h = poolCount
+        poolCount = poolCount * 2 + 4
+        ReDim Preserve pool(0 To poolCount - 1)
+    End If
+    vorbis_reset pool(h)                    ' memset(vi,0,sizeof(*vi));
+    pool(h).in_use = True
+    pool(h).vp_info = True
+    pool(h).vp_setup = True                 ' vi->codec_setup=_ogg_calloc(1,sizeof(codec_setup_info));
+    vi = h + 1
+End Sub
+
+' void vorbis_info_clear(vorbis_info *vi): (VB) the decoder freed, vi = 0
+Public Sub vorbis_info_clear(vi As Long)
+    If vp_info_ok(vi) Then
+        vorbis_reset pool(vi - 1)           ' (the codec setup freed; memset(vi,0,sizeof(*vi)))
+        pool(vi - 1).in_use = False
+    End If
+    vi = 0
+End Sub
+
+' (VB) info.c's error paths: vorbis_info_clear(vi) on the caller's struct, which stays (codec_setup = NULL)
+Private Sub vp_info_cleared(ByVal h As Long)
+    vorbis_reset pool(h)
+    pool(h).in_use = True
+    pool(h).vp_info = True
+End Sub
+
+' vi->channels
+Public Function vorbis_info_channels(ByVal vi As Long) As Long
+    If vp_info_ok(vi) Then vorbis_info_channels = pool(vi - 1).channels
+End Function
+
+' vi->rate
+Public Function vorbis_info_rate(ByVal vi As Long) As Long
+    If vp_info_ok(vi) Then vorbis_info_rate = pool(vi - 1).sample_rate
+End Function
+
+' void vorbis_comment_init(vorbis_comment *vc): (VB) a new entry, its handle in vc
+Public Sub vorbis_comment_init(vc As Long)
+    Dim h As Long, i As Long, blank As VpCommentT
+    h = -1
+    For i = 0 To vpcCount - 1
+        If Not vpc(i).in_use Then h = i: Exit For
+    Next
+    If h < 0 Then
+        h = vpcCount
+        vpcCount = vpcCount * 2 + 4
+        ReDim Preserve vpc(0 To vpcCount - 1)
+    End If
+    vpc(h) = blank                          ' memset(vc,0,sizeof(*vc));
+    vpc(h).in_use = True
+    vc = h + 1
+End Sub
+
+' void vorbis_comment_clear(vorbis_comment *vc): (VB) the entry freed, vc = 0
+Public Sub vorbis_comment_clear(vc As Long)
+    Dim blank As VpCommentT
+    If vp_comment_ok(vc) Then vpc(vc - 1) = blank
+    vc = 0
+End Sub
+
+' int vorbis_synthesis_headerin(vorbis_info *vi,vorbis_comment *vc,ogg_packet *op): the packet's fields
+Public Function vorbis_synthesis_headerin(ByVal vi As Long, ByVal vc As Long, packet() As Byte, ByVal bytes As Long, _
+        ByVal b_o_s As Long, ByVal e_o_s As Long, ByVal granulepos As Double, ByVal packetno As Double) As Long
+    Dim opb As VpPack, packtype As Long, buffer(0 To 5) As Byte, i As Long, rate As Long, hasVendor As Boolean
+
+    If Not tablesReady Then stb_tables
+    ' (op is never NULL here)
+    opb.storage = bytes                     ' oggpack_readinit(&opb,op->packet,op->bytes);
+
+    ' Which of the three types of header is this?
+    ' Also verify header-ness, vorbis
+    packtype = vp_read(packet, opb, 8)
+    ' memset(buffer,0,6); _v_readstring(&opb,buffer,6);
+    For i = 0 To 5
+        buffer(i) = vp_read(packet, opb, 8) And &HFF&
+    Next
+    If vorbis_validate(buffer) = 0 Then
+        ' not a vorbis header
+        vorbis_synthesis_headerin = OV_ENOTVORBIS
+        Exit Function
+    End If
+    If vp_info_ok(vi) Then rate = pool(vi - 1).sample_rate     ' (VB) vi->rate (0: a cleared struct)
+    If vp_comment_ok(vc) Then hasVendor = vpc(vc - 1).has_vendor
+    Select Case packtype
+    Case 1 ' least significant *bit* is read first
+        If b_o_s = 0 Then
+            ' Not the initial packet
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+        If rate <> 0 Then
+            ' previously initialized info header
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+
+        vorbis_synthesis_headerin = vp_unpack_info(vi, packet, opb)
+
+    Case 3 ' least significant *bit* is read first
+        If rate = 0 Then
+            ' um... we didn't get the initial header
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+        If hasVendor Then
+            ' previously initialized comment header
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+
+        vorbis_synthesis_headerin = vp_unpack_comment(vc, packet, opb)
+
+    Case 5 ' least significant *bit* is read first
+        If rate = 0 Or Not hasVendor Then
+            ' um... we didn;t get the initial header or comments yet
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+        If Not pool(vi - 1).vp_setup Then
+            ' improperly initialized vorbis_info
+            vorbis_synthesis_headerin = OV_EFAULT
+            Exit Function
+        End If
+        If pool(vi - 1).codebook_count > 0 Then
+            ' previously initialized setup header
+            vorbis_synthesis_headerin = OV_EBADHEADER
+            Exit Function
+        End If
+
+        vorbis_synthesis_headerin = vp_unpack_books(vi, packet, bytes)
+
+    Case Else
+        ' Not a valid vorbis header type
+        vorbis_synthesis_headerin = OV_EBADHEADER
+    End Select
+End Function
+
+' info.c's _vorbis_unpack_info(vi, opb)
+Private Function vp_unpack_info(ByVal vi As Long, packet() As Byte, opb As VpPack) As Long
+    Dim h As Long, bs As Long, version As Long, channels As Long, rate As Long, bs0 As Long, bs1 As Long
+    Dim upper As Long, nominal As Long, lower As Long
+    If Not vp_info_ok(vi) Then vp_unpack_info = OV_EFAULT: Exit Function
+    h = vi - 1
+    If Not pool(h).vp_setup Then vp_unpack_info = OV_EFAULT: Exit Function     ' if(!ci)return(OV_EFAULT);
+
+    version = vp_read(packet, opb, 32)
+    pool(h).vp_version = version
+    If version <> 0 Then vp_unpack_info = OV_EVERSION: Exit Function
+
+    channels = vp_read(packet, opb, 8)
+    rate = vp_read(packet, opb, 32)
+
+    upper = vp_read(packet, opb, 32)
+    nominal = vp_read(packet, opb, 32)
+    lower = vp_read(packet, opb, 32)
+
+    bs = vp_read(packet, opb, 4)
+    If bs < 0 Then GoTo err_out
+    bs0 = pow2tab(bs)                       ' ci->blocksizes[0]=1<<bs;
+    bs = vp_read(packet, opb, 4)
+    If bs < 0 Then GoTo err_out
+    bs1 = pow2tab(bs)                       ' ci->blocksizes[1]=1<<bs;
+
+    If rate < 1 Then GoTo err_out
+    If channels < 1 Then GoTo err_out
+    If bs0 < 64 Then GoTo err_out
+    If bs1 < bs0 Then GoTo err_out
+    If bs1 > 8192 Then GoTo err_out
+    If channels > STB_VORBIS_MAX_CHANNELS Then GoTo err_out    ' (VB) stb_vorbis's limit
+
+    If vp_read(packet, opb, 1) <> 1 Then GoTo err_out ' EOP check
+
+    pool(h).channels = channels
+    pool(h).sample_rate = rate
+    pool(h).vp_bitrate_upper = upper
+    pool(h).vp_bitrate_nominal = nominal
+    pool(h).vp_bitrate_lower = lower
+    pool(h).blocksize_0 = bs0
+    pool(h).blocksize_1 = bs1
+    vp_unpack_info = 0
+    Exit Function
+err_out:
+    vp_info_cleared h                       ' vorbis_info_clear(vi);
+    vp_unpack_info = OV_EBADHEADER
+End Function
+
+' info.c's _vorbis_unpack_comment(vc, opb)
+Private Function vp_unpack_comment(ByVal vc As Long, packet() As Byte, opb As VpPack) As Long
+    Dim h As Long, i As Long, vendorlen As Long, len_ As Long, blank As VpCommentT
+    If Not vp_comment_ok(vc) Then vp_unpack_comment = OV_EFAULT: Exit Function    ' (VB) a cleared handle
+    h = vc - 1
+    vendorlen = vp_read(packet, opb, 32)
+    If vendorlen < 0 Then GoTo err_out
+    If vendorlen > opb.storage - 8 Then GoTo err_out
+    vpc(h).vendor = vp_readstring(packet, opb, vendorlen)   ' vc->vendor=_ogg_calloc(vendorlen+1,1); _v_readstring
+    vpc(h).has_vendor = True
+    i = vp_read(packet, opb, 32)
+    If i < 0 Then GoTo err_out
+    If i > (opb.storage - vp_bytes(opb)) \ 4 Then GoTo err_out
+    vpc(h).comments = i
+    ReDim vpc(h).user_comments(0 To vpc(h).comments)
+    ReDim vpc(h).comment_lengths(0 To vpc(h).comments)
+
+    For i = 0 To vpc(h).comments - 1
+        len_ = vp_read(packet, opb, 32)
+        If len_ < 0 Then GoTo err_out
+        If len_ > opb.storage - vp_bytes(opb) Then GoTo err_out
+        vpc(h).comment_lengths(i) = len_
+        vpc(h).user_comments(i) = vp_readstring(packet, opb, len_)
+    Next
+    If vp_read(packet, opb, 1) <> 1 Then GoTo err_out ' EOP check
+
+    vp_unpack_comment = 0
+    Exit Function
+err_out:
+    vpc(h) = blank                          ' vorbis_comment_clear(vc);
+    vpc(h).in_use = True                    ' (VB) the caller's struct stays
+    vp_unpack_comment = OV_EBADHEADER
+End Function
+
+' info.c's _vorbis_unpack_books(vi, opb): stb_vorbis's setup code on the packet
+Private Function vp_unpack_books(ByVal vi As Long, packet() As Byte, ByVal bytes As Long) As Long
+    Dim h As Long
+    h = vi - 1
+    vp_set_packet pool(h), packet, bytes
+    If vp_setup_decoder(pool(h)) = 0 Then
+        vp_info_cleared h                   ' err_out: vorbis_info_clear(vi);
+        vp_unpack_books = OV_EBADHEADER
+        Exit Function
+    End If
+    vp_unpack_books = 0
+End Function
+
+' (VB) start_decoder from its third packet (the setup header) on the packet vp_set_packet laid out, with
+' libvorbis's top level EOP check after the modes; then the buffers start_decoder makes
+Private Function vp_setup_decoder(f As vorb) As Long
+    Dim header(0 To 5) As Byte, x As Long, i As Long, max_submaps As Long, z As Long
+    Dim longest_floorlist As Long, imdct_mem As Long, classify_mem As Long, max_part_read As Long, actual_size As Long
+    Dim limit_r_begin As Long, limit_r_end As Long, n_read As Long, part_read As Long
+
+    max_submaps = 0
+    longest_floorlist = 0
+
+    ' third packet!
+    If start_packet(f) = 0 Then Exit Function
+
+    crc32_init ' always init it, to avoid multithread race conditions
+
+    If get8_packet(f) <> VORBIS_packet_setup Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+    For i = 0 To 5
+        header(i) = get8_packet(f) And &HFF&
+    Next
+    If vorbis_validate(header) = 0 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+
+    ' codebooks
+
+    f.codebook_count = get_bits(f, 8) + 1
+    ReDim f.codebooks(0 To f.codebook_count - 1)
+    setup_malloc f, 2120 * f.codebook_count   ' sizeof(*f->codebooks) (32-bit)
+    For i = 0 To f.codebook_count - 1
+        If start_decoder_codebook(f, f.codebooks(i)) = 0 Then Exit Function
+    Next
+
+    ' time domain transfers (notused)
+
+    x = get_bits(f, 6) + 1
+    For i = 0 To x - 1
+        z = get_bits(f, 16)
+        If z <> 0 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+    Next
+
+    ' Floors
+    f.floor_count = get_bits(f, 6) + 1
+    ReDim f.floor_config(0 To f.floor_count - 1)
+    setup_malloc f, 1356 * f.floor_count      ' f->floor_count * sizeof(*f->floor_config)
+    For i = 0 To f.floor_count - 1
+        f.floor_types(i) = get_bits(f, 16)
+        If f.floor_types(i) > 1 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+        If f.floor_types(i) = 0 Then
+            start_decoder_floor0 f, f.floor_config(i).floor0
+            vp_setup_decoder = error_(f, VORBIS_feature_not_supported)
+            Exit Function
+        Else
+            If start_decoder_floor1(f, f.floor_config(i).floor1, longest_floorlist) = 0 Then Exit Function
+        End If
+    Next
+
+    ' Residue
+    f.residue_count = get_bits(f, 6) + 1
+    ReDim f.residue_config(0 To f.residue_count - 1)
+    setup_malloc f, 20 * f.residue_count      ' f->residue_count * sizeof(f->residue_config[0])
+    For i = 0 To f.residue_count - 1
+        If start_decoder_residue(f, f.residue_config(i), i) = 0 Then Exit Function
+    Next
+
+    f.mapping_count = get_bits(f, 6) + 1
+    ReDim f.mapping(0 To f.mapping_count - 1)
+    setup_malloc f, 36 * f.mapping_count      ' f->mapping_count * sizeof(*f->mapping)
+    For i = 0 To f.mapping_count - 1
+        If start_decoder_mapping(f, f.mapping(i), max_submaps) = 0 Then Exit Function
+    Next
+
+    ' Modes
+    f.mode_count = get_bits(f, 6) + 1
+    For i = 0 To f.mode_count - 1
+        f.mode_config(i).blockflag = get_bits(f, 1)
+        f.mode_config(i).windowtype = get_bits(f, 16)
+        f.mode_config(i).transformtype = get_bits(f, 16)
+        f.mode_config(i).mapping = get_bits(f, 8)
+        If f.mode_config(i).windowtype <> 0 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+        If f.mode_config(i).transformtype <> 0 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+        If f.mode_config(i).mapping >= f.mapping_count Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+    Next
+
+    ' (libvorbis's info.c: if(oggpack_read(opb,1)!=1)goto err_out; /* top level EOP check */)
+    If get_bits(f, 1) <> 1 Then vp_setup_decoder = error_(f, VORBIS_invalid_setup): Exit Function
+
+    flush_packet f
+
+    f.previous_length = 0
+
+    For i = 0 To f.channels - 1
+        ReDim f.channel_buffers(i).v(0 To f.blocksize_1 - 1)     ' (memset to 0: VB's new array)
+        setup_malloc f, 4 * f.blocksize_1
+        ReDim f.previous_window(i).v(0 To f.blocksize_1 \ 2 - 1)
+        setup_malloc f, 4 * f.blocksize_1 \ 2
+        If longest_floorlist > 0 Then ReDim f.finalY(i).v(0 To longest_floorlist - 1)
+        setup_malloc f, 2 * longest_floorlist
+    Next
+
+    If init_blocksize(f, 0, f.blocksize_0) = 0 Then Exit Function
+    If init_blocksize(f, 1, f.blocksize_1) = 0 Then Exit Function
+    f.blocksize(0) = f.blocksize_0
+    f.blocksize(1) = f.blocksize_1
+
+    ' compute how much temporary memory is needed
+
+    ' 1.
+    imdct_mem = (f.blocksize_1 * 4) \ 2     ' (f->blocksize_1 * sizeof(float) >> 1)
+    max_part_read = 0
+    For i = 0 To f.residue_count - 1
+        actual_size = f.blocksize_1 \ 2
+        If f.residue_config(i).begin_ < actual_size Then limit_r_begin = f.residue_config(i).begin_ Else limit_r_begin = actual_size
+        If f.residue_config(i).end_ < actual_size Then limit_r_end = f.residue_config(i).end_ Else limit_r_end = actual_size
+        n_read = limit_r_end - limit_r_begin
+        part_read = n_read \ f.residue_config(i).part_size
+        If part_read > max_part_read Then max_part_read = part_read
+    Next
+    classify_mem = f.channels * (4 + max_part_read * 4)   ' (sizeof(void*) + max_part_read * sizeof(uint8 *))
+
+    ' maximum reasonable partition size is f->blocksize_1
+
+    f.temp_memory_required = classify_mem
+    If imdct_mem > f.temp_memory_required Then f.temp_memory_required = imdct_mem
+
+    ' (first_audio_page_offset: the packets come one at a time, there is no file to seek in)
+
+    vp_setup_decoder = 1
+End Function
+
+' (VB) the packet as the decoder's stream, read from its start: an Ogg page per 255 lacing values (the first
+' starts a packet, the next ones continue it; granule position -1, serial 0, no CRC), so that start_packet,
+' maybe_start_packet, next_segment and get8_packet_raw read the packet as they read a file's
+Private Sub vp_set_packet(f As vorb, packet() As Byte, ByVal bytes As Long)
+    Dim nseg As Long, total As Long, p As Long, s As Long, i As Long, segs As Long, k As Long, body As Long
+    Dim pageno As Long, lace As Long
+    If bytes < 0 Then bytes = 0
+    nseg = bytes \ 255 + 1                  ' the lacing values: 255s, then one below 255
+    total = ((nseg + 254) \ 255) * 27 + nseg + bytes
+    ReDim f.stream(0 To total - 1)
+    p = 0: s = 0: body = 0: pageno = 0
+    Do While s < nseg
+        segs = nseg - s
+        If segs > 255 Then segs = 255
+        ' capture pattern; stream structure version 0; header flag; granule position -1; serial 0; page
+        ' sequence number; CRC 0; page_segments
+        f.stream(p) = &H4F: f.stream(p + 1) = &H67: f.stream(p + 2) = &H67: f.stream(p + 3) = &H53
+        If pageno > 0 Then f.stream(p + 5) = PAGEFLAG_continued_packet
+        For i = 6 To 13
+            f.stream(p + i) = &HFF
+        Next
+        f.stream(p + 18) = pageno And &HFF&
+        f.stream(p + 19) = (pageno \ &H100&) And &HFF&
+        f.stream(p + 26) = segs
+        p = p + 27
+        k = 0
+        For i = 0 To segs - 1
+            If s + i < nseg - 1 Then lace = 255 Else lace = bytes Mod 255
+            f.stream(p + i) = lace
+            k = k + lace
+        Next
+        p = p + segs
+        If k > 0 Then CopyMemory f.stream(p), packet(body), k
+        p = p + k
+        body = body + k
+        s = s + segs
+        pageno = pageno + 1
+    Loop
+    f.stream_pos = 0
+    f.stream_len = total
+    f.eof_ = 0
+    f.next_seg = -1                         ' a page header next
+    f.first_decode = 0
+    f.last_seg = 0
+    f.bytes_in_seg = 0
+    f.valid_bits = 0
+    f.packet_bytes = 0
+End Sub
+
+' int vorbis_synthesis_init(vorbis_dsp_state *v,vorbis_info *vi): (VB) a new dsp state, its handle in vd (0
+' when it fails)
+Public Function vorbis_synthesis_init(vd As Long, ByVal vi As Long) As Long
+    Dim h As Long, i As Long, f As Long, blank As VpDspT
+
+    ' _vds_shared_init(v,vi,0):
+    If Not vp_info_ok(vi) Then GoTo fail
+    f = vi - 1
+    If Not pool(f).vp_setup Then GoTo fail
+    If pool(f).mode_count <= 0 Or pool(f).blocksize_0 < 64 Or pool(f).blocksize_1 < pool(f).blocksize_0 Then GoTo fail
+
+    h = -1
+    For i = 0 To vpdCount - 1
+        If Not vpd(i).in_use Then h = i: Exit For
+    Next
+    If h < 0 Then
+        h = vpdCount
+        vpdCount = vpdCount * 2 + 4
+        ReDim Preserve vpd(0 To vpdCount - 1)
+    End If
+    vpd(h) = blank                          ' memset(v,0,sizeof(*v));
+    vpd(h).in_use = True
+
+    vpd(h).vi = vi
+    ' (b->modebits=ov_ilog(ci->modes-1): stb_vorbis's ilog(mode_count - 1), where vorbis_synthesis reads it)
+
+    ' (the MDCT, the windows, the floor and residue lookups: the decoder's, made by the setup header)
+
+    ' Vorbis I uses only window type 0
+    ' (the windows: the decoder's window_(0) and window_(1), blocksize_0 / 2 and blocksize_1 / 2 values)
+
+    vpd(h).pcm_storage = pool(f).blocksize_1
+    vpd(h).channels = pool(f).channels
+    ReDim vpd(h).pcm(0 To vpd(h).channels - 1)
+    For i = 0 To vpd(h).channels - 1
+        ReDim vpd(h).pcm(i).v(0 To vpd(h).pcm_storage - 1)  ' _ogg_calloc(v->pcm_storage,sizeof(*v->pcm[i]))
+    Next
+
+    ' all 1 (large block) or 0 (small block)
+    ' explicitly set for the sake of clarity
+    vpd(h).lW = 0 ' previous window size
+    vpd(h).W = 0  ' current window size
+
+    ' all vector indexes
+    vpd(h).centerW = pool(f).blocksize_1 \ 2
+
+    vpd(h).pcm_current = vpd(h).centerW
+
+    vp_synthesis_restart h
+    vd = h + 1
+    vorbis_synthesis_init = 0
+    Exit Function
+fail:
+    vd = 0                                  ' vorbis_dsp_clear(v);
+    vorbis_synthesis_init = 1
+End Function
+
+' block.c's vorbis_synthesis_restart(v) (hs = 0: no half rate)
+Private Sub vp_synthesis_restart(ByVal h As Long)
+    Dim f As Long
+    f = vpd(h).vi - 1
+    vpd(h).centerW = pool(f).blocksize_1 \ 2      ' ci->blocksizes[1]>>(hs+1)
+    vpd(h).pcm_current = vpd(h).centerW           ' v->centerW>>hs
+
+    vpd(h).pcm_returned = -1
+    vpd(h).granulepos = -1
+    vpd(h).sequence = -1
+    vpd(h).eofflag = 0
+    vpd(h).sample_count = -1
+End Sub
+
+' int vorbis_block_init(vorbis_dsp_state *v, vorbis_block *vb): (VB) a new block, its handle in vb
+Public Function vorbis_block_init(ByVal vd As Long, vb As Long) As Long
+    Dim h As Long, i As Long, blank As VpBlockT
+    h = -1
+    For i = 0 To vpbCount - 1
+        If Not vpb(i).in_use Then h = i: Exit For
+    Next
+    If h < 0 Then
+        h = vpbCount
+        vpbCount = vpbCount * 2 + 4
+        ReDim Preserve vpb(0 To vpbCount - 1)
+    End If
+    vpb(h) = blank                          ' memset(vb,0,sizeof(*vb));
+    vpb(h).in_use = True
+    vpb(h).vd = vd                          ' vb->vd=v;
+    ' (vb->localalloc=0; vb->localstore=NULL: VB's arrays; v->analysisp is 0)
+    vb = h + 1
+    vorbis_block_init = 0
+End Function
+
+' int vorbis_block_clear(vorbis_block *vb): (VB) the entry freed, vb = 0
+Public Function vorbis_block_clear(vb As Long) As Long
+    Dim blank As VpBlockT
+    If vp_block_ok(vb) Then vpb(vb - 1) = blank   ' (the storage freed; memset(vb,0,sizeof(*vb)))
+    vb = 0
+    vorbis_block_clear = 0
+End Function
+
+' void vorbis_dsp_clear(vorbis_dsp_state *v): (VB) the entry freed, vd = 0
+Public Sub vorbis_dsp_clear(vd As Long)
+    Dim blank As VpDspT
+    If vp_dsp_ok(vd) Then vpd(vd - 1) = blank     ' (the buffers freed; memset(v,0,sizeof(*v)))
+    vd = 0
+End Sub
+
+' int vorbis_synthesis(vorbis_block *vb,ogg_packet *op): the packet's fields
+Public Function vorbis_synthesis(ByVal vb As Long, packet() As Byte, ByVal bytes As Long, ByVal b_o_s As Long, _
+        ByVal e_o_s As Long, ByVal granulepos As Double, ByVal packetno As Double) As Long
+    Dim b As Long, d As Long, f As Long, opb As VpPack, mode As Long, i As Long, n As Long, m As Long
+    Dim left_start As Long, left_end As Long, right_start As Long, right_end As Long, len_ As Long
+
+    ' if (!vd || !b || !vi || !ci || !opb) return OV_EBADPACKET;
+    If Not vp_block_ok(vb) Then vorbis_synthesis = OV_EBADPACKET: Exit Function
+    b = vb - 1
+    If Not vp_dsp_ok(vpb(b).vd) Then vorbis_synthesis = OV_EBADPACKET: Exit Function
+    d = vpb(b).vd - 1
+    If Not vp_info_ok(vpd(d).vi) Then vorbis_synthesis = OV_EBADPACKET: Exit Function
+    f = vpd(d).vi - 1
+    If Not pool(f).vp_setup Then vorbis_synthesis = OV_EBADPACKET: Exit Function
+
+    ' first things first.  Make sure decode is ready
+    ' (_vorbis_block_ripcord(vb): VB's arrays are kept)
+    opb.storage = bytes                     ' oggpack_readinit(opb,op->packet,op->bytes);
+
+    ' Check the packet type
+    If vp_read(packet, opb, 1) <> 0 Then
+        ' Oops.  This is not an audio data packet
+        vorbis_synthesis = OV_ENOTAUDIO
+        Exit Function
+    End If
+
+    ' read our mode and pre/post windowsize
+    mode = vp_read(packet, opb, ilog(pool(f).mode_count - 1))   ' b->modebits
+    If mode = -1 Then
+        vorbis_synthesis = OV_EBADPACKET
+        Exit Function
+    End If
+
+    vpb(b).mode = mode
+    If mode >= pool(f).mode_count Then      ' if(!ci->mode_param[mode])
+        vorbis_synthesis = OV_EBADPACKET
+        Exit Function
+    End If
+
+    vpb(b).W = pool(f).mode_config(mode).blockflag
+    If vpb(b).W <> 0 Then
+
+        ' this doesn;t get mapped through mode selection as it's used
+        ' only for window selection
+        vpb(b).lW = vp_read(packet, opb, 1)
+        vpb(b).nW = vp_read(packet, opb, 1)
+        If vpb(b).nW = -1 Then
+            vorbis_synthesis = OV_EBADPACKET
+            Exit Function
+        End If
+    Else
+        vpb(b).lW = 0
+        vpb(b).nW = 0
+    End If
+
+    ' more setup
+    vpb(b).granulepos = granulepos
+    vpb(b).sequence = packetno
+    vpb(b).eofflag = e_o_s
+
+    ' alloc pcm passback storage
+    vpb(b).pcmend = pool(f).blocksize(vpb(b).W)
+    If Not vpb(b).pcmReady Then
+        ReDim vpb(b).pcm(0 To pool(f).channels - 1)
+        For i = 0 To pool(f).channels - 1
+            ReDim vpb(b).pcm(i).v(0 To pool(f).blocksize_1 - 1)
+        Next
+        vpb(b).pcmReady = True
+    End If
+    vpb(b).hasPcm = True
+
+    ' unpack_header enforces range checking
+    ' (VB) _mapping_P[type]->inverse(vb, ...): stb_vorbis's decode of the packet (it reads the type, the mode and
+    ' the window flags again) leaves the block's samples in the decoder's channel buffers
+    vp_set_packet pool(f), packet, bytes
+    If vorbis_decode_initial(pool(f), left_start, left_end, right_start, right_end, m) = 0 Then
+        vorbis_synthesis = OV_EBADPACKET
+        Exit Function
+    End If
+    If vorbis_decode_packet_rest(pool(f), len_, m, left_start, left_end, right_start, right_end, left_start) = 0 Then
+        vorbis_synthesis = OV_EBADPACKET
+        Exit Function
+    End If
+    n = vpb(b).pcmend
+    For i = 0 To pool(f).channels - 1
+        CopyMemory vpb(b).pcm(i).v(0), pool(f).channel_buffers(i).v(0), 4 * n
+    Next
+    vorbis_synthesis = 0
+End Function
+
+' int vorbis_synthesis_blockin(vorbis_dsp_state *v,vorbis_block *vb)
+Public Function vorbis_synthesis_blockin(ByVal vd As Long, ByVal vb As Long) As Long
+    Dim d As Long, b As Long, f As Long, j As Long, n As Long, n0 As Long, n1 As Long
+    Dim thisCenter As Long, prevCenter As Long, extra As Double
+
+    If Not vp_block_ok(vb) Then vorbis_synthesis_blockin = OV_EINVAL: Exit Function   ' if(!vb)return(OV_EINVAL);
+    If Not vp_dsp_ok(vd) Then vorbis_synthesis_blockin = OV_EFAULT: Exit Function
+    d = vd - 1
+    b = vb - 1
+    If Not vp_info_ok(vpd(d).vi) Then vorbis_synthesis_blockin = OV_EFAULT: Exit Function
+    f = vpd(d).vi - 1
+    ' (hs = ci->halfrate_flag = 0)
+    If vpd(d).pcm_current > vpd(d).pcm_returned And vpd(d).pcm_returned <> -1 Then
+        vorbis_synthesis_blockin = OV_EINVAL
+        Exit Function
+    End If
+
+    vpd(d).lW = vpd(d).W
+    vpd(d).W = vpb(b).W
+    vpd(d).nW = -1
+
+    If (vpd(d).sequence = -1) Or (vpd(d).sequence + 1 <> vpb(b).sequence) Then
+        vpd(d).granulepos = -1 ' out of sequence; lose count
+        vpd(d).sample_count = -1
+    End If
+
+    vpd(d).sequence = vpb(b).sequence
+
+    If vpb(b).hasPcm Then ' no pcm to process if vorbis_synthesis_trackonly was called on block
+        n = pool(f).blocksize(vpd(d).W) \ 2         ' >>(hs+1)
+        n0 = pool(f).blocksize_0 \ 2
+        n1 = pool(f).blocksize_1 \ 2
+
+        ' (v->glue_bits+=vb->glue_bits; ...: the bit counts are not kept)
+
+        If vpd(d).centerW <> 0 Then
+            thisCenter = n1
+            prevCenter = 0
+        Else
+            thisCenter = 0
+            prevCenter = n1
+        End If
+
+        ' v->pcm is now used like a two-stage double buffer.  We don't want
+        ' to have to constantly shift *or* adjust memory usage.  Don't
+        ' accept a new block until the old is shifted out
+
+        For j = 0 To vpd(d).channels - 1
+            ' the overlap/add section
+            If vpd(d).lW <> 0 Then
+                If vpd(d).W <> 0 Then
+                    ' large/large
+                    vp_overlap vpd(d).pcm(j).v, prevCenter, vpb(b).pcm(j).v, 0, pool(f).window_(1).v, n1
+                Else
+                    ' large/small
+                    vp_overlap vpd(d).pcm(j).v, prevCenter + n1 \ 2 - n0 \ 2, vpb(b).pcm(j).v, 0, pool(f).window_(0).v, n0
+                End If
+            Else
+                If vpd(d).W <> 0 Then
+                    ' small/large
+                    vp_overlap vpd(d).pcm(j).v, prevCenter, vpb(b).pcm(j).v, n1 \ 2 - n0 \ 2, pool(f).window_(0).v, n0
+                    ' for(;i<n1/2+n0/2;i++) pcm[i]=p[i];
+                    vp_copy vpd(d).pcm(j).v, prevCenter + n0, vpb(b).pcm(j).v, n1 \ 2 - n0 \ 2 + n0, n1 \ 2 + n0 \ 2 - n0
+                Else
+                    ' small/small
+                    vp_overlap vpd(d).pcm(j).v, prevCenter, vpb(b).pcm(j).v, 0, pool(f).window_(0).v, n0
+                End If
+            End If
+
+            ' the copy section
+            vp_copy vpd(d).pcm(j).v, thisCenter, vpb(b).pcm(j).v, n, n
+        Next
+
+        If vpd(d).centerW <> 0 Then
+            vpd(d).centerW = 0
+        Else
+            vpd(d).centerW = n1
+        End If
+
+        ' deal with initial packet state; we do this using the explicit
+        ' pcm_returned==-1 flag otherwise we're sensitive to first block
+        ' being short or long
+
+        If vpd(d).pcm_returned = -1 Then
+            vpd(d).pcm_returned = thisCenter
+            vpd(d).pcm_current = thisCenter
+        Else
+            vpd(d).pcm_returned = prevCenter
+            vpd(d).pcm_current = prevCenter + (pool(f).blocksize(vpd(d).lW) \ 4 + pool(f).blocksize(vpd(d).W) \ 4)
+        End If
+
+    End If
+
+    ' track the frame number... This is for convenience, but also
+    ' making sure our last packet doesn't end with added padding.  If
+    ' the last packet is partial, the number of samples we'll have to
+    ' return will be past the vb->granulepos.
+    '
+    ' This is not foolproof!  It will be confused if we begin
+    ' decoding at the last page after a seek or hole.  In that case,
+    ' we don't have a starting point to judge where the last frame
+    ' is.  For this reason, vorbisfile will always try to make sure
+    ' it reads the last two marked pages in proper sequence
+
+    If vpd(d).sample_count = -1 Then
+        vpd(d).sample_count = 0
+    Else
+        vpd(d).sample_count = vpd(d).sample_count + pool(f).blocksize(vpd(d).lW) \ 4 + pool(f).blocksize(vpd(d).W) \ 4
+    End If
+
+    If vpd(d).granulepos = -1 Then
+        If vpb(b).granulepos <> -1 Then ' only set if we have a position to set to
+
+            vpd(d).granulepos = vpb(b).granulepos
+
+            ' is this a short page?
+            If vpd(d).sample_count > vpd(d).granulepos Then
+                ' corner case; if this is both the first and last audio page,
+                ' then spec says the end is cut, not beginning
+                extra = vpd(d).sample_count - vpb(b).granulepos     ' (long extra)
+
+                ' we use ogg_int64_t for granule positions because a
+                ' uint64 isn't universally available.  Unfortunately,
+                ' that means granposes can be 'negative' and result in
+                ' extra being negative
+                If extra < 0 Then extra = 0
+
+                If vpb(b).eofflag <> 0 Then
+                    ' trim the end
+                    ' no preceding granulepos; assume we started at zero (we'd
+                    ' have to in a short single-page stream)
+                    ' granulepos could be -1 due to a seek, but that would result
+                    ' in a long count, not short count
+
+                    ' Guard against corrupt/malicious frames that set EOP and
+                    ' a backdated granpos; don't rewind more samples than we
+                    ' actually have
+                    If extra > vpd(d).pcm_current - vpd(d).pcm_returned Then   ' (<<hs)
+                        extra = vpd(d).pcm_current - vpd(d).pcm_returned
+                    End If
+
+                    vpd(d).pcm_current = vpd(d).pcm_current - extra       ' (extra>>hs)
+                Else
+                    ' trim the beginning
+                    vpd(d).pcm_returned = vpd(d).pcm_returned + extra     ' (extra>>hs)
+                    If vpd(d).pcm_returned > vpd(d).pcm_current Then
+                        vpd(d).pcm_returned = vpd(d).pcm_current
+                    End If
+                End If
+
+            End If
+
+        End If
+    Else
+        vpd(d).granulepos = vpd(d).granulepos + pool(f).blocksize(vpd(d).lW) \ 4 + pool(f).blocksize(vpd(d).W) \ 4
+        If vpb(b).granulepos <> -1 And vpd(d).granulepos <> vpb(b).granulepos Then
+
+            If vpd(d).granulepos > vpb(b).granulepos Then
+                extra = vpd(d).granulepos - vpb(b).granulepos
+
+                If extra <> 0 Then
+                    If vpb(b).eofflag <> 0 Then
+                        ' partial last frame.  Strip the extra samples off
+
+                        ' Guard against corrupt/malicious frames that set EOP and
+                        ' a backdated granpos; don't rewind more samples than we
+                        ' actually have
+                        If extra > vpd(d).pcm_current - vpd(d).pcm_returned Then   ' (<<hs)
+                            extra = vpd(d).pcm_current - vpd(d).pcm_returned
+                        End If
+
+                        ' we use ogg_int64_t for granule positions because a
+                        ' uint64 isn't universally available.  Unfortunately,
+                        ' that means granposes can be 'negative' and result in
+                        ' extra being negative
+                        If extra < 0 Then extra = 0
+
+                        vpd(d).pcm_current = vpd(d).pcm_current - extra   ' (extra>>hs)
+                    ' else {Shouldn't happen *unless* the bitstream is out of
+                    ' spec.  Either way, believe the bitstream }
+                    End If
+                End If
+            ' else {Shouldn't happen *unless* the bitstream is out of
+            ' spec.  Either way, believe the bitstream }
+            End If
+            vpd(d).granulepos = vpb(b).granulepos
+        End If
+    End If
+
+    ' Update, cleanup
+
+    If vpb(b).eofflag <> 0 Then vpd(d).eofflag = 1
+    vorbis_synthesis_blockin = 0
+End Function
+
+' (VB) blockin's overlap-add: pcm[po + i] = pcm[po + i] * w[n - i - 1] + p[pp + i] * w[i], i < n
+Private Sub vp_overlap(pcm() As Single, ByVal po As Long, p() As Single, ByVal pp As Long, w() As Single, ByVal n As Long)
+    Dim i As Long
+    For i = 0 To n - 1
+        pcm(po + i) = pcm(po + i) * w(n - i - 1) + p(pp + i) * w(i)
+    Next
+End Sub
+
+' (VB) pcm[po + i] = p[pp + i], i < n
+Private Sub vp_copy(pcm() As Single, ByVal po As Long, p() As Single, ByVal pp As Long, ByVal n As Long)
+    If n > 0 Then CopyMemory pcm(po), p(pp), 4 * n
+End Sub
+
+' int vorbis_synthesis_pcmout(vorbis_dsp_state *v,float ***pcm): pcm(channel, i) = pcm[channel][i], i < the
+' count returned (a copy; the array is made anew when there is pcm)
+Public Function vorbis_synthesis_pcmout(ByVal vd As Long, pcm() As Single) As Long
+    Dim d As Long, i As Long, n As Long
+    If Not vp_dsp_ok(vd) Then Exit Function
+    d = vd - 1
+    If vpd(d).pcm_returned > -1 And vpd(d).pcm_returned < vpd(d).pcm_current Then
+        n = vpd(d).pcm_current - vpd(d).pcm_returned
+        ReDim pcm(0 To vpd(d).channels - 1, 0 To n - 1)
+        For i = 0 To vpd(d).channels - 1
+            vp_pcmret pcm, i, vpd(d).pcm(i).v, vpd(d).pcm_returned, n     ' v->pcmret[i]=v->pcm[i]+v->pcm_returned;
+        Next
+        vorbis_synthesis_pcmout = n          ' return(v->pcm_current-v->pcm_returned);
+        Exit Function
+    End If
+    vorbis_synthesis_pcmout = 0
+End Function
+
+' (VB) pcm(ch, i) = src(s + i), i < n
+Private Sub vp_pcmret(pcm() As Single, ByVal ch As Long, src() As Single, ByVal s As Long, ByVal n As Long)
+    Dim i As Long
+    For i = 0 To n - 1
+        pcm(ch, i) = src(s + i)
+    Next
+End Sub
+
+' int vorbis_synthesis_read(vorbis_dsp_state *v,int n)
+Public Function vorbis_synthesis_read(ByVal vd As Long, ByVal n As Long) As Long
+    Dim d As Long
+    If Not vp_dsp_ok(vd) Then vorbis_synthesis_read = OV_EFAULT: Exit Function
+    d = vd - 1
+    If n <> 0 And vpd(d).pcm_returned + n > vpd(d).pcm_current Then
+        vorbis_synthesis_read = OV_EINVAL
+        Exit Function
+    End If
+    vpd(d).pcm_returned = vpd(d).pcm_returned + n
+    vorbis_synthesis_read = 0
+End Function
+
+' v->granulepos
+Public Function vorbis_dsp_granulepos(ByVal vd As Long) As Double
+    If vp_dsp_ok(vd) Then vorbis_dsp_granulepos = vpd(vd - 1).granulepos
 End Function

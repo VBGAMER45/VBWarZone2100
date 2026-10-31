@@ -4,8 +4,9 @@ Attribute VB_Name = "audio_c"
 ' The two std::list<AUDIO_SAMPLE *> are Collections (the front is item 1); free(psSample) is the sample
 ' dropped from its list. mutating_list_iterate runs over a copy of the list's items (the body may remove
 ' the current one). aud.h's functions, realTime and sound_GetGameTime go to the game through ISoundGame
-' (soundgame_vb). WZAudioDataResourceInterface and WzAudioDataPhysFSHandle (oggopus.cpp's audio data, not
-' ported) are left out. A UDWORD time difference is udiff's (mod 2^32).
+' (soundgame_vb). WZAudioDataResourceInterface and WzAudioDataPhysFSHandle are codecs.h's WzSound classes;
+' ~WzAudioDataPhysFSHandle (audio.cpp:58-66) is WzAudioDataPhysFSHandle.cls's Class_Terminate. A UDWORD time
+' difference is udiff's (mod 2^32).
 Option Explicit
 
 ' defines

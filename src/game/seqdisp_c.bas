@@ -1,11 +1,11 @@
 Attribute VB_Name = "seqdisp_c"
 ' src/seqdisp.cpp, seqdisp.h: the full screen videos' list, their text overlays and subtitles, the
-' intelligence screen's videos. The video player (lib/sequence: seq_Play, seq_Update, seq_Shutdown,
-' seq_GetFrameTime, seq_SetDisplaySize, makeVideoProvider) is not ported: its functions are stand-ins
-' (stubs_ui) that play nothing, as an install without the sequences, whose paths run. A
-' std::shared_ptr<VideoProvider> is a Long (0 = nullptr). The on-demand downloader's URL requests (curl,
-' urlrequest.cpp) are not ported either: urlRequestData (stubs_ui) returns no handle, so a request fails as
-' when it cannot be made. std::vector<WzText> wzCachedSeqText is a Collection of WzText.
+' intelligence screen's videos. The video player is lib/sequence's (WzSequence's SequenceApi: seq_Play,
+' seq_Update, seq_Shutdown, seq_GetFrameTime, seq_SetDisplaySize, makeVideoProvider_file / _data); a
+' std::shared_ptr<VideoProvider> is its VideoProvider (Nothing = nullptr). The on-demand downloader's URL
+' requests (curl, urlrequest.cpp) are not ported: urlRequestData (stubs_campaign) returns no handle, so a
+' request fails as when it cannot be made, and no response data is kept. std::vector<WzText>
+' wzCachedSeqText is a Collection of WzText.
 '
 ' Functions for the display of the Escape Sequences (FMV).
 Option Explicit
@@ -75,7 +75,7 @@ Private bSeqSubtitles As Boolean        ' = true (seqdisp_c_init)
 Private bSeqPlaying As Boolean          ' = false
 Private currVideoName As String
 Private currAudioName As String
-Private aVideoProvider As Long          ' std::shared_ptr<VideoProvider> (0 = nullptr)
+Private aVideoProvider As VideoProvider ' std::shared_ptr<VideoProvider> (Nothing = nullptr)
 Private aSeqList(0 To MAX_SEQ_LIST - 1) As SEQLIST
 Private currentSeq As Long              ' = -1 (seqdisp_c_init)
 Private currentPlaySeq As Long          ' = -1 (seqdisp_c_init)
@@ -368,8 +368,9 @@ End Sub
 
 Private Function seqPlayOrQueueFetch(ByVal videoName As String, ByVal audioName As String) As Boolean
     Dim aVideoName As String, fpInfile As Long, isNoVideo As Boolean, log_part As code_part, aAudioName As String
+    Dim videoData() As Byte
     Const maxVolume As Single = 1!
-    aVideoProvider = 0                  ' aVideoProvider.reset();
+    Set aVideoProvider = Nothing        ' aVideoProvider.reset();
     currVideoName = videoName
     currAudioName = audioName
 
@@ -378,7 +379,7 @@ Private Function seqPlayOrQueueFetch(ByVal videoName As String, ByVal audioName 
     fpInfile = PHYSFS_openRead(aVideoName)
 
     If fpInfile <> 0 Then
-        aVideoProvider = makeVideoProvider_file(fpInfile, videoName)
+        Set aVideoProvider = makeVideoProvider_file(fpInfile, videoName)
     Else
         isNoVideo = Left$(videoName, 7) = "novideo"
 
@@ -410,7 +411,9 @@ Private Function seqPlayOrQueueFetch(ByVal videoName As String, ByVal audioName 
             Exit Function
         End If
 
-        aVideoProvider = makeVideoProvider_data(videoName)
+        ' (videoData: the request's response data, which nothing keeps while the URL requests are not ported;
+        ' no request succeeds, so this is not reached)
+        Set aVideoProvider = makeVideoProvider_data(videoData, videoName)
     End If
 
     If Not seq_Play(aVideoProvider) Then
@@ -491,7 +494,7 @@ Public Function seq_UpdateFullScreenVideo() As Boolean
     Dim frameTime As Double, seqtext_ As SEQTEXT, currentText As SEQTEXT, t As WzText
     update_user_resolution
 
-    If aVideoProvider = 0 Then
+    If aVideoProvider Is Nothing Then
         ' request has been queued
         ' try again and see if it's available
         If Not seqPlayOrQueueFetch_Retry() Then
@@ -499,7 +502,7 @@ Public Function seq_UpdateFullScreenVideo() As Boolean
             Exit Function
         End If
 
-        If aVideoProvider = 0 Then
+        If aVideoProvider Is Nothing Then
             ' still don't have the video data yet, but it's being fetched
             ' display loading message
             Set t = cachedSeqText(1)        ' if (wzCachedSeqText.size() < 2) wzCachedSeqText.resize(2);
@@ -600,7 +603,7 @@ End Function
 
 Public Sub seqReleaseAll()
     seq_Shutdown
-    aVideoProvider = 0
+    Set aVideoProvider = Nothing
     Set wzCachedSeqText = New Collection
 End Sub
 
@@ -613,7 +616,7 @@ Public Function seq_StopFullScreenVideo() As Boolean
 
     seq_Shutdown
 
-    aVideoProvider = 0
+    Set aVideoProvider = Nothing
     Set wzCachedSeqText = New Collection
 
     seq_StopFullScreenVideo = True

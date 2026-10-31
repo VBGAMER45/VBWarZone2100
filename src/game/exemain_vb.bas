@@ -3,6 +3,11 @@ Attribute VB_Name = "exemain_vb"
 ' is "return realmain(argc, argv)": here the command line is split into argv
 ' the way the C runtime splits it, and a VB run-time error is logged and ends
 ' the process with code 1 instead of opening VB's modal error box.
+' A non-zero exit ends the process with TerminateProcess, not ExitProcess: ExitProcess runs the DLLs'
+' detach code in the reverse order of their loading, so a DLL loaded late (AppXDeploymentClient, which
+' the NVIDIA GL driver loads) is torn down before MSVBVM60, whose detach then calls CoFreeUnusedLibraries,
+' and combase calls the torn-down DLL's DllCanUnloadNow: an access violation (exit code 0xC0000005 after
+' the error was logged). A return from Sub Main frees the libraries while all of them are alive.
 Option Explicit
 
 Private Declare Function GetCommandLineW Lib "kernel32" () As Long
@@ -10,7 +15,8 @@ Private Declare Function CommandLineToArgvW Lib "shell32" (ByVal lpCmdLine As Lo
 Private Declare Function LocalFree Lib "kernel32" (ByVal hMem As Long) As Long
 Private Declare Function lstrlenW Lib "kernel32" (ByVal lpString As Long) As Long
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (dest As Any, src As Any, ByVal n As Long)
-Private Declare Sub ExitProcess Lib "kernel32" (ByVal uExitCode As Long)
+Private Declare Function GetCurrentProcess Lib "kernel32" () As Long
+Private Declare Function TerminateProcess Lib "kernel32" (ByVal hProcess As Long, ByVal uExitCode As Long) As Long
 
 Private Sub GetArgs(argv() As String, argc As Long)
     Dim p As Long, i As Long, sp As Long, n As Long
@@ -69,7 +75,7 @@ Sub Main()
     GetArgs argv, argc
     exitCode = realmain(argc, argv)
     debug_exit                            ' (VB) closes the log file; init.cpp's systemShutdown does this in C++
-    If exitCode <> 0 Then ExitProcess exitCode
+    If exitCode <> 0 Then TerminateProcess GetCurrentProcess(), exitCode
     Exit Sub
 fail:
     errNumber = Err.Number
@@ -77,5 +83,5 @@ fail:
     On Error Resume Next
     debug__ 0, LOG_ERROR, "main", "(VB) run-time error %d: %s", errNumber, errDescription
     debug_exit
-    ExitProcess 1
+    TerminateProcess GetCurrentProcess(), 1
 End Sub

@@ -676,12 +676,14 @@ Private Sub informIfAdminChangedOtherTeam(ByVal targetPlayerIdx As Long, ByVal r
         Exit Sub
     End If
 
-    ' (sendQuickChat(INTERNAL_ADMIN_ACTION_NOTICE, ...) and the "Admin %s (%s) changed team of player ..." line
-    ' with the admin's identity: the quick chat and the identities, cluster J)
+    sendQuickChat_data WzQuickChatMessage_INTERNAL_ADMIN_ACTION_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_Context_Team, responsibleIdx, targetPlayerIdx)
+
+    ' (the "Admin %s (%s) changed team of player ..." line with the admin's identity: the identities, cluster J)
 End Sub
 
 Public Sub handlePossiblePlayersShouldCheckReadyChange(ByVal previousPlayersShouldCheckReadyValue As Boolean)
     Dim currentPlayersShouldCheckReadyValue As Boolean, now_ As Currency, i As Long, shouldAccumulateNotReadyTime As Boolean
+    Dim autoNotReadyKickSeconds As Long, autoNotReadyKickSecondsData As Long
     currentPlayersShouldCheckReadyValue = multiplayPlayersShouldCheckReady()
     If previousPlayersShouldCheckReadyValue <> currentPlayersShouldCheckReadyValue Then
         If currentPlayersShouldCheckReadyValue Then
@@ -700,8 +702,9 @@ Public Sub handlePossiblePlayersShouldCheckReadyChange(ByVal previousPlayersShou
             Next
 
             If NetPlay_isHost And bMultiPlayer And NetPlay_bComms Then
-                ' (sendQuickChat(INTERNAL_LOCALIZED_LOBBY_NOTICE, ..., PlayerShouldCheckReadyNotice,
-                ' war_getAutoNotReadyKickSeconds()): the quick chat, cluster J)
+                autoNotReadyKickSeconds = war_getAutoNotReadyKickSeconds()
+                If autoNotReadyKickSeconds > 0 Then autoNotReadyKickSecondsData = autoNotReadyKickSeconds Else autoNotReadyKickSecondsData = 0
+                sendQuickChat_data WzQuickChatMessage_INTERNAL_LOCALIZED_LOBBY_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_Context_PlayerShouldCheckReadyNotice, NetPlay_hostPlayer, autoNotReadyKickSecondsData)
             End If
         Else
             debug_ 2453, LOG_NET, "handlePossiblePlayersShouldCheckReadyChange", "Stopping not-ready time tracking"
@@ -881,8 +884,9 @@ Private Sub informIfAdminChangedOtherPosition(ByVal targetPlayerIdx As Long, ByV
         Exit Sub
     End If
 
-    ' (sendQuickChat(INTERNAL_ADMIN_ACTION_NOTICE, ...) and the "Admin %s (%s) changed position of player ..."
-    ' line with the admin's identity: the quick chat and the identities, cluster J)
+    sendQuickChat_data WzQuickChatMessage_INTERNAL_ADMIN_ACTION_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_Context_Position, responsibleIdx, targetPlayerIdx)
+
+    ' (the "Admin %s (%s) changed position of player ..." line with the admin's identity: the identities, cluster J)
 End Sub
 
 Public Function changePosition(ByVal player As Long, ByVal position As Long, ByVal responsibleIdx As Long) As Boolean
@@ -963,8 +967,9 @@ Private Sub informIfAdminChangedOtherFaction(ByVal targetPlayerIdx As Long, ByVa
         Exit Sub
     End If
 
-    ' (sendQuickChat(INTERNAL_ADMIN_ACTION_NOTICE, ...) and the "Admin %s (%s) changed faction of player ..."
-    ' line with the admin's identity: the quick chat and the identities, cluster J)
+    sendQuickChat_data WzQuickChatMessage_INTERNAL_ADMIN_ACTION_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_ADMIN_ACTION_NOTICE_Context_Faction, responsibleIdx, targetPlayerIdx)
+
+    ' (the "Admin %s (%s) changed faction of player ..." line with the admin's identity: the identities, cluster J)
 End Sub
 
 Public Function changeFaction(ByVal player As Long, ByVal faction_ As Long, ByVal responsibleIdx As Long) As Boolean

@@ -11,11 +11,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-' lib/sound/oggvorbis.cpp, oggvorbis.h: class WZVorbisDecoder (codecs.h's WZDecoder: no other implementation
-' is ported, so the class is used itself), over stb_vorbis (stb_vorbis_c) in place of libvorbisfile.
+' lib/sound/oggvorbis.cpp, oggvorbis.h: class WZVorbisDecoder (codecs.h's WZDecoder, the interface
+' WZDecoder.cls), over stb_vorbis (stb_vorbis_c) in place of libvorbisfile.
 ' WZVorbisDecoder::fromFilename is oggvorbis_c's WZVorbisDecoder_fromFilename. decode's
 ' optional<size_t>: decode returns false for nullopt, the bytes in written.
 Option Explicit
+
+Implements WZDecoder
 
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (dest As Any, src As Any, ByVal n As Long)
 
@@ -107,3 +109,20 @@ Private Sub Class_Terminate()
         m_file = 0
     End If
 End Sub
+
+' (VB) codecs.h's WZDecoder
+Private Function WZDecoder_decode(buffer() As Byte, ByVal bufferSize As Long, written As Long) As Boolean
+    WZDecoder_decode = decode(buffer, bufferSize, written)
+End Function
+
+Private Function WZDecoder_totalTime() As Double
+    WZDecoder_totalTime = totalTime()
+End Function
+
+Private Function WZDecoder_channels() As Long
+    WZDecoder_channels = channels()
+End Function
+
+Private Function WZDecoder_frequency() As Long
+    WZDecoder_frequency = frequency()
+End Function

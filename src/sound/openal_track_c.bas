@@ -6,7 +6,7 @@ Attribute VB_Name = "openal_track_c"
 ' may remove the current one). sound_GetError() and sound_GetContextError(device) pass their
 ' "file:line" (openal_error_c). ALC_SOFT_HRTF is defined, as in 4.7's builds with OpenAL Soft's headers:
 ' al_win has no extension, so the HRTF is Unsupported. WZ_OS_UNIX and DEBUG are not defined (AL_PITCH
-' 1.0; a release build). WZOpusDecoder is not ported: a stream of an .opus file gets no decoder.
+' 1.0; a release build). A WZDecoder * is the interface WZDecoder (WZVorbisDecoder, WZOpusDecoder).
 ' The statics' initialisers run at the first call (staticsInit). sound_vbSetCapture (VB): a test aid.
 Option Explicit
 
@@ -762,7 +762,7 @@ End Function
 ' Only frees whatever was allocated by itself.
 ' \returns nb of buffers copied (but not enqueued yet) to openAL
 ' (VB) alBuffersIds(first ...): the C's alBuffersIds pointer
-Private Function sound_fillNBuffers(alBuffersIds() As Long, ByVal first As Long, ByVal decoder As WZVorbisDecoder, ByVal n As Long, ByVal buffSize As Long) As Long
+Private Function sound_fillNBuffers(alBuffersIds() As Long, ByVal first As Long, ByVal decoder As WZDecoder, ByVal n As Long, ByVal buffSize As Long) As Long
     Static pcm() As Byte, pcmSize As Long
     Dim fmt_ As Long, i As Long, i_max As Long, written As Long
 
@@ -819,7 +819,7 @@ End Function
 Public Function sound_PlayStream(ByVal fileName As String, ByVal bufferEntireStream As Boolean, ByVal volume As Single, _
                                  ByVal onFinished As IStreamFinished, ByVal user_data As Variant) As AUDIO_STREAM
     Static alBuffersIds() As Long, idsReady As Boolean
-    Dim decoder As WZVorbisDecoder, length As Long, stream As AUDIO_STREAM, ids(0 To 0) As Long, res As Long, i As Long
+    Dim decoder As WZDecoder, length As Long, stream As AUDIO_STREAM, ids(0 To 0) As Long, res As Long, i As Long
     staticsInit
 
     If Not openal_initialized Then
@@ -834,7 +834,7 @@ Public Function sound_PlayStream(ByVal fileName As String, ByVal bufferEntireStr
     If length > 4 And LCase$(Right$(fileName, 4)) = ".ogg" Then
         Set decoder = WZVorbisDecoder_fromFilename(fileName)
     ElseIf length > 5 And LCase$(Right$(fileName, 5)) = ".opus" Then
-        ' decoder = WZOpusDecoder::fromFilename(fileName, bufferEntireStream): (VB) Opus is not ported
+        Set decoder = WZOpusDecoder_fromFilename(fileName, bufferEntireStream)
     End If
     If decoder Is Nothing Then
         debug_ 951, LOG_ERROR, "sound_PlayStream", "couldn't allocate decoder for %s", fileName
@@ -1033,7 +1033,7 @@ Public Sub sound_SetStreamVolume(ByVal stream As AUDIO_STREAM, ByVal volume As S
 End Sub
 
 Public Function sound_GetStreamTotalTime(ByVal stream As AUDIO_STREAM) As Double
-    Dim decoder As WZVorbisDecoder
+    Dim decoder As WZDecoder
     Set decoder = stream.decoder
     sound_GetStreamTotalTime = decoder.totalTime()
 End Function
@@ -1042,7 +1042,7 @@ End Function
 ' \param stream the stream to update
 ' \return true when the stream is still playing, false when it has stopped
 Private Function sound_UpdateStream(ByVal stream As AUDIO_STREAM) As Boolean
-    Dim state As Long, buffers_processed_count As Long, alBuffersIds() As Long, res As Long, decoder As WZVorbisDecoder
+    Dim state As Long, buffers_processed_count As Long, alBuffersIds() As Long, res As Long, decoder As WZDecoder
     alGetError
     alGetSourcei stream.source, AL_SOURCE_STATE, state
     sound_GetError "lib/sound/openal_track.cpp:1174"

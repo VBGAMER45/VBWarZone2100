@@ -17,7 +17,6 @@ Public Const NetStatisticUncompressedBytes As Long = 1
 
 Public Const NetStatisticPackets As Long = 2
 
-' --- src/seqdisp.h, lib/sequence/sequence.h: the videos (not ported) ---
 
 
 
@@ -68,12 +67,6 @@ Public Enum SpectatorToPlayerMoveResult
     SpectatorToPlayerMoveResult_SUCCESS
     SpectatorToPlayerMoveResult_NEEDS_SLOT_SELECTION
     SpectatorToPlayerMoveResult_FAILED
-End Enum
-
-' src/hci/quickchat.h: enum class WzQuickChatContext
-Public Enum WzQuickChatContext
-    WzQuickChatContext_Lobby
-    WzQuickChatContext_InGame
 End Enum
 
 ' struct screeninfo
@@ -160,9 +153,6 @@ Public Function createReplayControllerOverlay() As Boolean
     createReplayControllerOverlay = False
 End Function
 
-' src/hci/quickchat.cpp: void quickChatInitInGame() (S)
-Public Sub quickChatInitInGame()
-End Sub
 
 
 
@@ -300,9 +290,6 @@ Public Sub ActivityManager_completedMission(ByVal result As Boolean, ByVal cheat
 End Sub
 
 
-' void seq_SetDisplaySize(int sizeX, int sizeY, int posX, int posY) (S: nothing)
-Public Sub seq_SetDisplaySize(ByVal sizeX As Long, ByVal sizeY As Long, ByVal posX As Long, ByVal posY As Long)
-End Sub
 
 
 ' void renderResearchToBuffer(RESEARCH *psResearch, UDWORD OriginX, UDWORD OriginY, bool rotate = true)
@@ -620,15 +607,14 @@ End Sub
 
 
 
-' std::shared_ptr<W_FORM> createQuickChatForm(WzQuickChatContext context, const std::function<void ()>& onQuickChatSent):
-' an empty widget
-Public Function createQuickChatForm(ByVal context As WzQuickChatContext, ByVal onQuickChatSent As WzFunc) As WIDGET
-    Set createQuickChatForm = WIDGET_new()
-End Function
-
-' std::shared_ptr<WIDGET> createChatOptionsForm(bool isHost, const std::function<void ()>& onSettingsChange): an empty widget
-Public Function createChatOptionsForm(ByVal isHost As Boolean, ByVal onSettingsChange As WzFunc) As WIDGET
-    Set createChatOptionsForm = WIDGET_new()
+' src/hci/teamstrategy.cpp (multiplayer: cluster J; quickchat_c calls it):
+' int32_t checkedGetPlayerTeam(int32_t i) (REAL: teamstrategy.cpp:128)
+Public Function checkedGetPlayerTeam(ByVal i As Long) As Long
+    If alliancesSetTeamsBeforeGame(game.alliance) Then
+        checkedGetPlayerTeam = NetPlay_players_team(i)
+    Else
+        checkedGetPlayerTeam = i
+    End If
 End Function
 
 
@@ -664,17 +650,6 @@ Public Function nthOccurrenceOfChar(ByVal str_ As String, ByVal c As String, ByV
     nthOccurrenceOfChar = -1
 End Function
 
-
-' src/musicmanager.cpp: std::shared_ptr<WIDGET> makeMusicManagerForm(bool ingame)
-Public Function makeMusicManagerForm(ByVal ingame As Boolean) As WIDGET
-    Set makeMusicManagerForm = Nothing
-End Function
-
-' src/titleui/musicmanagertitleui.cpp: std::make_shared<WzMusicManagerTitleUI>(std::shared_ptr<WzTitleUI> parent)
-' (stand-in: the parent itself, so changeTitleUI stays on the options screen)
-Public Function WzMusicManagerTitleUI_new(ByVal parent As WzTitleUI) As WzTitleUI
-    Set WzMusicManagerTitleUI_new = parent
-End Function
 
 
 ' src/urlhelpers.cpp: bool openFolderInDefaultFileManager(const char* path) (Windows: ShellExecuteW "open")

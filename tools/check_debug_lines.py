@@ -71,7 +71,10 @@ def enclosing_function(lines, n):
             rules = (rules[0], rules[1], i + 1)
     if prefix is not None and rules is not None and n > rules[0] and (len(rules) == 2 or n < rules[2]):
         return prefix + rules[1]
+    in_comment = block_comment_lines(lines)
     for i in range(n - 1, -1, -1):
+        if in_comment[i]:
+            continue        # a line inside /* */ (sequence.cpp's "buffer the compressed data (ie, let")
         m = FUNC_DEF.match(lines[i]) or CTOR_DEF.match(lines[i])
         if not m and i > 0 and TYPE_LINE.match(lines[i - 1]) and not lines[i - 1].lstrip().startswith(("#", "//", "return")):
             m = NAME_DEF.match(lines[i])
@@ -103,6 +106,44 @@ def enclosing_function(lines, n):
 
 
 _class_cache = {}
+_comment_cache = {}
+
+
+def block_comment_lines(lines):
+    """For each line, whether it starts inside a /* */ comment (strings and // comments are skipped)."""
+    key = id(lines)
+    if key not in _comment_cache:
+        flags = []
+        inside = False
+        for l in lines:
+            flags.append(inside)
+            k = 0
+            quote = None
+            while k < len(l):
+                if inside:
+                    e = l.find("*/", k)
+                    if e < 0:
+                        break
+                    inside = False
+                    k = e + 2
+                elif quote:
+                    if l[k] == "\\":
+                        k += 2
+                        continue
+                    if l[k] == quote:
+                        quote = None
+                    k += 1
+                elif l.startswith("//", k):
+                    break
+                elif l.startswith("/*", k):
+                    inside = True
+                    k += 2
+                else:
+                    if l[k] in "\"'":
+                        quote = l[k]
+                    k += 1
+        _comment_cache[key] = flags
+    return _comment_cache[key]
 
 
 def class_names(lines):

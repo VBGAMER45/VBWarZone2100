@@ -815,9 +815,159 @@ Public Sub PlayList_SetTrackMusicMode(ByVal track As WZ_TRACK, ByVal mode As Mus
     playlist_c.PlayList_SetTrackMusicMode track, mode, enabled
 End Sub
 
+Public Function PlayList_GetCurrentMusicMode() As MusicGameMode
+    PlayList_GetCurrentMusicMode = playlist_c.PlayList_GetCurrentMusicMode()
+End Function
+
+' (VB) C's rand() has one state per process, src/shared's cstdlib_vb one per project: the game's srand (main.cpp's
+' srand((unsigned int)time(NULL))) seeds WzSound's too, whose one rand() call is PlayList_RandomizeCurrentSong's
+' (the first in-game track; unseeded it would be the same track in every run)
+Public Sub sound_srand(ByVal seed As Long)
+    cstdlib_vb.srand seed
+End Sub
+
 '--------------------------------------------------------------------------
 ' audio_id.cpp
 
 Public Function audio_GetIDFromStr(ByVal fileName As String) As INGAME_AUDIO
     audio_GetIDFromStr = audio_id_c.audio_GetIDFromStr(fileName)
 End Function
+
+'--------------------------------------------------------------------------
+' (VB) For lib/sequence (WzSequence, cluster K): libvorbis's synthesis API (codec.h), over WzSound's stb_vorbis
+' port (stb_vorbis_c's "libvorbis's synthesis API"). vorbis_info, vorbis_comment, vorbis_dsp_state and
+' vorbis_block are handles (0 = a cleared struct); the _init functions write the new handle, the _clear ones
+' free it and write 0. An ogg_packet is passed as its fields (packet: its bytes from index 0, as libogg's
+' ogg_stream_packetout gives them; the array may be empty when bytes is 0). vorbis_synthesis_pcmout's
+' float ***pcm is a copy: pcm(channel, i) = pcm[channel][i] for i below the count returned.
+
+Public Sub vorbis_info_init(vi As Long)
+    stb_vorbis_c.vorbis_info_init vi
+End Sub
+
+Public Sub vorbis_info_clear(vi As Long)
+    stb_vorbis_c.vorbis_info_clear vi
+End Sub
+
+' vi->channels
+Public Function vorbis_info_channels(ByVal vi As Long) As Long
+    vorbis_info_channels = stb_vorbis_c.vorbis_info_channels(vi)
+End Function
+
+' vi->rate
+Public Function vorbis_info_rate(ByVal vi As Long) As Long
+    vorbis_info_rate = stb_vorbis_c.vorbis_info_rate(vi)
+End Function
+
+Public Sub vorbis_comment_init(vc As Long)
+    stb_vorbis_c.vorbis_comment_init vc
+End Sub
+
+Public Sub vorbis_comment_clear(vc As Long)
+    stb_vorbis_c.vorbis_comment_clear vc
+End Sub
+
+Public Function vorbis_synthesis_headerin(ByVal vi As Long, ByVal vc As Long, packet() As Byte, ByVal bytes As Long, _
+        ByVal b_o_s As Long, ByVal e_o_s As Long, ByVal granulepos As Double, ByVal packetno As Double) As Long
+    vorbis_synthesis_headerin = stb_vorbis_c.vorbis_synthesis_headerin(vi, vc, packet, bytes, b_o_s, e_o_s, granulepos, packetno)
+End Function
+
+Public Function vorbis_synthesis_init(vd As Long, ByVal vi As Long) As Long
+    vorbis_synthesis_init = stb_vorbis_c.vorbis_synthesis_init(vd, vi)
+End Function
+
+Public Function vorbis_block_init(ByVal vd As Long, vb As Long) As Long
+    vorbis_block_init = stb_vorbis_c.vorbis_block_init(vd, vb)
+End Function
+
+Public Function vorbis_synthesis(ByVal vb As Long, packet() As Byte, ByVal bytes As Long, ByVal b_o_s As Long, _
+        ByVal e_o_s As Long, ByVal granulepos As Double, ByVal packetno As Double) As Long
+    vorbis_synthesis = stb_vorbis_c.vorbis_synthesis(vb, packet, bytes, b_o_s, e_o_s, granulepos, packetno)
+End Function
+
+Public Function vorbis_synthesis_blockin(ByVal vd As Long, ByVal vb As Long) As Long
+    vorbis_synthesis_blockin = stb_vorbis_c.vorbis_synthesis_blockin(vd, vb)
+End Function
+
+Public Function vorbis_synthesis_pcmout(ByVal vd As Long, pcm() As Single) As Long
+    vorbis_synthesis_pcmout = stb_vorbis_c.vorbis_synthesis_pcmout(vd, pcm)
+End Function
+
+Public Function vorbis_synthesis_read(ByVal vd As Long, ByVal samples As Long) As Long
+    vorbis_synthesis_read = stb_vorbis_c.vorbis_synthesis_read(vd, samples)
+End Function
+
+' vd->granulepos
+Public Function vorbis_dsp_granulepos(ByVal vd As Long) As Double
+    vorbis_dsp_granulepos = stb_vorbis_c.vorbis_dsp_granulepos(vd)
+End Function
+
+Public Function vorbis_block_clear(vb As Long) As Long
+    vorbis_block_clear = stb_vorbis_c.vorbis_block_clear(vb)
+End Function
+
+Public Sub vorbis_dsp_clear(vd As Long)
+    stb_vorbis_c.vorbis_dsp_clear vd
+End Sub
+
+'--------------------------------------------------------------------------
+' (VB) For lib/sequence (cluster K): OpenAL (al_win) as sequence.cpp calls it, with al.h's names and
+' semantics; a pointer to ALuint names is an array and the index of its first element. al.h's constants are
+' not here: an enum member named like one of al_win's constants is ambiguous inside WzSound (measured), so
+' the caller keeps al.h's values.
+
+Public Sub alGenSources(ByVal n As Long, sources() As Long, Optional ByVal first As Long = 0)
+    al_win.alGenSources n, sources, first
+End Sub
+
+Public Sub alDeleteSources(ByVal n As Long, sources() As Long, Optional ByVal first As Long = 0)
+    al_win.alDeleteSources n, sources, first
+End Sub
+
+Public Sub alGenBuffers(ByVal n As Long, buffers() As Long, Optional ByVal first As Long = 0)
+    al_win.alGenBuffers n, buffers, first
+End Sub
+
+Public Sub alDeleteBuffers(ByVal n As Long, buffers() As Long, Optional ByVal first As Long = 0)
+    al_win.alDeleteBuffers n, buffers, first
+End Sub
+
+' data: the bytes from index 0 (16-bit samples in little-endian order for the 16-bit formats)
+Public Sub alBufferData(ByVal buffer As Long, ByVal fmt_ As Long, data() As Byte, ByVal size As Long, ByVal freq As Long)
+    al_win.alBufferData buffer, fmt_, data, size, freq
+End Sub
+
+Public Sub alSourceQueueBuffers(ByVal source As Long, ByVal nb As Long, buffers() As Long, Optional ByVal first As Long = 0)
+    al_win.alSourceQueueBuffers source, nb, buffers, first
+End Sub
+
+Public Sub alSourceUnqueueBuffers(ByVal source As Long, ByVal nb As Long, buffers() As Long, Optional ByVal first As Long = 0)
+    al_win.alSourceUnqueueBuffers source, nb, buffers, first
+End Sub
+
+Public Sub alGetSourcei(ByVal source As Long, ByVal param As Long, value As Long)
+    al_win.alGetSourcei source, param, value
+End Sub
+
+Public Sub alGetBufferi(ByVal buffer As Long, ByVal param As Long, value As Long)
+    al_win.alGetBufferi buffer, param, value
+End Sub
+
+Public Sub alSourcef(ByVal source As Long, ByVal param As Long, ByVal value As Single)
+    al_win.alSourcef source, param, value
+End Sub
+
+Public Sub alSourcePlay(ByVal source As Long)
+    al_win.alSourcePlay source
+End Sub
+
+' openal_error.h: the macro sound_GetError() (location_description: the call's "file:line", the macro's AT_MACRO)
+Public Function sound_GetError(ByVal location_description As String) As Long
+    sound_GetError = openal_error_c.sound_GetError(location_description)
+End Function
+
+' (VB) al_win mixes only when polled (OpenAL Soft: in a thread of its own); lib/sequence polls the current
+' context while a video plays (the full screen videos run outside the loops that call sound_Update)
+Public Sub al_vbProcessCurrent()
+    al_win.al_vbProcessCurrent
+End Sub

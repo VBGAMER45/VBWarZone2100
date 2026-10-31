@@ -41,7 +41,7 @@ def build_exe():
     al_win = os.path.join(ROOT, "src", "sound", "al_win.bas")
     build.normalise(al_win)
     lines.append("Module=al_win; ..\\sound\\al_win.bas")
-    lines.append(build.VBP_TAIL.format(name="MixerTests", ext="exe", startup="Sub Main", compat="", bounds="0", optimisation="2",
+    lines.append(build.VBP_TAIL.format(name="MixerTests", ext="exe", path=os.path.relpath(build.BIN, FOLDER), startup="Sub Main", compat="", bounds="0", optimisation="2",
                                        threading=""))
     vbp = os.path.join(FOLDER, "MixerTests.vbp")
     with open(vbp, "w", encoding="latin-1", newline="\r\n") as f:

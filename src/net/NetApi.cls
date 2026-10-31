@@ -637,6 +637,14 @@ Public Function NETbeginEncode(ByVal queue As Long, ByVal typ As Long) As Messag
     Set NETbeginEncode = nettypes_c.NETbeginEncode(queue, typ)
 End Function
 
+Public Function NETbeginEncodeSecured(ByVal queue As Long, ByVal typ As Long) As MessageWriter
+    Set NETbeginEncodeSecured = nettypes_c.NETbeginEncodeSecured(queue, typ)
+End Function
+
+Public Function NETbeginDecodeSecured(ByVal queue As Long, ByVal typ As Long) As MessageReader
+    Set NETbeginDecodeSecured = nettypes_c.NETbeginDecodeSecured(queue, typ)
+End Function
+
 Public Function NETbeginDecode(ByVal queue As Long, ByVal typ As Long) As MessageReader
     Set NETbeginDecode = nettypes_c.NETbeginDecode(queue, typ)
 End Function

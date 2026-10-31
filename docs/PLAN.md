@@ -1474,7 +1474,97 @@ Findings:
 * Open: the videos (lib/sequence) and the music; quick chat; campaign mods (modinfo.cpp); the two
   structures' height after a load; the in-game save screen's black background (to check against 4.7.0);
   campaigns 2 and 3 not walked yet.
-* Next: cluster J (network) or K (optional).
+* Next: cluster J (network) or K (optional). (K: section 34.)
+
+### 34. Archives, mods, music, videos, quick chat (cluster K) and the campaign's open items
+
+* The user's request (2026-10-30): everything section 33 left open. Two choices were the user's: the music
+  ported as Opus ("port libopus", not converted to Vorbis) and the videos downloaded and ported (libtheora).
+* The data (`tools/setup_data.py`, hard links into ref/warzone2100/data, where 4.7.0's source tree has them):
+  the official 4.7.0 build's music (data/music: menu.opus and 4 albums, 110 MB of Opus) and campaign mods
+  (data/mods/campaign/*.wz), and the videos (data/sequences.wz: wz-sequences release v3, the one 4.7.0's
+  data/CMakeLists.txt downloads, its low-quality English set, 170 MB, in ref/videos). The sources, at the
+  versions of 4.7.0's vcpkg baseline (their SHA-512s as vcpkg's): ref/physfs (PhysFS 3.2.0), ref/ogg (libogg
+  1.3.6), ref/theora (libtheora 1.2.0), ref/opus (opus 1.5.2); opusfile is 4.7.0's submodule (9d718345).
+* The contract first (scratchpad K_DESIGN.md: the forks' files, the VB signatures between them, ogg_h.bas's
+  types written first); seven forks, about 42,000 lines of VB:
+  * Z: PhysFS 3.2.0's archiver dispatch with its DIR and ZIP archivers and miniz's inflate in WzFramework
+    (physfs_win rewritten, physfs_zip_c, physfs_miniz_c: 5,400 lines); modinfo.cpp (`modinfo_c`);
+  * O1: libogg's framing.c (`src/shared/ogg`), opusfile whole but HTTP (float, OP_HAVE_LRINTF), oggopus.cpp
+    (`WZOpusDecoder`), codecs.h's `WZDecoder` interface (6,500 lines);
+  * O2: libopus's CELT decoder and range decoder (5,400 lines); O3: its SILK decoder, opus.c, opus_decoder.c
+    and the multistream decoder (6,300 lines);
+  * V1: libtheora's decoder with the legacy theora.h API, the post-processing included (6,200 lines);
+  * V2: lib/sequence (sequence.cpp, timer.cpp) in a new DLL, **WzSequence** (optimised like WzSound;
+    references WzFramework, WzGfx, WzSound), libvorbis's synthesis API over stb_vorbis for the videos' audio,
+    GfxApi's GFX handles, al_win's alGetBufferi;
+  * Q: quickchat.cpp and chatoptions.cpp whole, lib/widget's paneltabbutton.cpp (4,900 lines; gen_widgets:
+    170 classes).
+* The merge built at the first try (the exe: 427 modules, 185,000 lines; its LINK.EXE command line at 31,097
+  of 32,767 characters: the next clusters build from a shorter path, `subst`). Found by the forks' tests and
+  the merge: opus_packet_get_samples_per_frame read SILK's shift table before any decoder made it (opusfile
+  asks first: no music); ffmpeg 8.1 links libopus 1.6.1 (other packet-loss concealment): the Opus reference
+  is the official build's libopus.dll through ctypes, as libtheoradec.dll is for the post-processed frames;
+  ffmpeg's frame-threaded Theora decode is not deterministic (`-threads 1`); the full-screen videos run
+  outside the loops that poll al_win, so their audio never played nor ended (seq_Update polls it:
+  `al_vbProcessCurrent`); WZOpusDecoder::decode writes past its 16 KiB buffer with 60 ms packets (the port
+  grows the buffer; the game's tracks use 20 ms); 4.7.0's oggopus.cpp SEEK_END is off by one byte, so each
+  track's last Ogg page never plays (kept). Not bugs: CELT's pitch-based concealment differs from 1.5.2 by
+  float rounding the LPC filter amplifies (about 5 units in 16 bits).
+* Tests (`run_tests.py --media`, in the full run too; each tools/<name>.py's run(keep)):
+  * zip_test: every entry of the four mods, sequences.wz, mp.wz (and base.wz with `--base`) and synthetic
+    archives (deflate block types, zip64, data before the archive, symlinks) read through the port's PhysFS
+    equals Python zipfile's, whole and in chunks with seeks; 98 single PhysFS calls: 109 of 109; inflate
+    about 25 MB/s (WzFramework unoptimised);
+  * celt_test (src/celttests): 27 of 27 CELT-only streams (mono, stereo, 2.5 to 60 ms, 8 to 256 kbps, lost
+    packets) within 1.2e-6 of libopus 1.5.2 (lost: 1.6e-4); silk_test (src/silktests): 50 of 50 (SILK bit
+    exact, hybrid 3e-8, mode switches 7.8e-7, 5.1 1.8e-7); opus_test: 24 of 24 files through opusfile (the
+    official music, synthetic streams, a dropped page) as libopus 1.5.2 decodes them, op_read_stereo's
+    dithering bit for bit; the music decodes at about 160x real time (WzSound optimised);
+  * theora_test: all 179 videos (64,256 frames) bit exact, at post-processing level 0 against ffmpeg and at
+    level 7 (sequence.cpp's) against the official libtheoradec.dll; 391 frames/s at level 7 (2.6 ms a frame);
+    the default run a subset of 25 (`--all`);
+  * video_audio_test: 168 of 168 videos' Vorbis streams through the packet API within 1 of ffmpeg in 16 bits.
+  The full suite after the merge: 3362 of 3362, 90 of 90 (the PhysFS rewrite changed no output), the official
+  replay's 120 of 120 ticks, 560 of 560 sounds, the mixer's 66 of 66 (its build script was stale: fixed).
+* Checked in the game (tools/ui_tests): the campaign's opening video plays full screen with its titles and
+  subtitles (campaign.txt); the menu music plays (captured: correlation 0.9991 with ffmpeg's decode of
+  menu.opus, at the music volume's 0.5); the campaign selector lists the four mods, Reclamation shows its
+  banner and starts its level L1 from its .wz (campaign_mods.txt); quick chat in the lobby and in the game,
+  by mouse and by keys (quickchat.txt, `--debug=console`); the mid-mission save and its load (save_menu.txt,
+  save_load.txt: the 47 droids, 56 structures, 36 features as before) and the start save's round trip
+  (save_test.py: 23 of 23).
+* Campaign walks (`tools/make_campaign_walk.py [1|2|3]`, campaign2_walk.txt and campaign3_walk.txt new): the
+  UI scripts got `novideo`, `quiet <frames>` and `waitlevel <name>` (a key or click during a full-screen video
+  goes to the video; a level's briefing videos start seconds in, SUB_1_1S's when the cheat's transporter
+  lands), and CAM_3_4S a minute to board (its landing zone is at the far end of CAM3A-D2's map); Continue Game
+  waits out a video the win starts (CAM_2C's cheat destroys its air base, which plays MB2_C_MSG2), and CAM_3A
+  plays 40 s before its win (campaign 3 from the menu flies its units in: won before they land, SUB_3_1S has
+  no truck nor factory and libcampaign's __camPlayerDead loses it at once, as 4.7.0's would). **Campaign 1
+  with its videos: CAM_1A to CAM_1END, 50 videos (18,787 frames, 76 dropped), no error or assert (1,500 s).**
+  **Campaign 2: CAM_2A to CAM_2END (whose win loads CAM_3A), 47 videos (12,088 frames, 29 dropped), no error
+  or assert (1,431 s); campaign 3: CAM_3A to CAM_3_4's win and the outro (outro.ogg), 42 videos (12,191
+  frames, 86 dropped, 38 of them in cam3bg.ogg), no error or assert (1,097 s).**
+* Section 33's open items:
+  * the in-game save screen's black background is 4.7.0's: addLoadSave sets setAllPauseStates(true), renderLoop
+    draws the world only while the game update runs (loop.cpp ~322), and gfx_api_gl's endRenderPass clears
+    after each swap; the Esc menu pauses with kf_TogglePauseMode, which leaves the game update on;
+  * the two structures' height after a load is 4.7.0's: loadSaveStructure2 rebuilds the structures in the
+    save's order and alignStructure recomputes their height ((min + max) / 2 of the footprint's vertices, then
+    flattened); a simulation of exactly that from the first save (scratchpad flatten_sim.py) gives the second
+    save's tiles: 0 differ;
+  * the access violation after a VB run-time error: ExitProcess runs the DLLs' detach code in reverse load
+    order, so AppXDeploymentClient (loaded by the NVIDIA GL driver) is torn down before MSVBVM60, whose
+    detach calls CoFreeUnusedLibraries, and combase calls the dead DLL's DllCanUnloadNow (cdb); exemain_vb's
+    error and non-zero exits and src/shared's exit_ use TerminateProcess: exit code 1 now;
+  * the asserts qtscript.cpp:1464 (scriptsReady) a cheat-won CAM_3_4S logged: setUpMission shuts the scripts
+    down and the next frame's gameStateUpdate runs before renderLoop returns GAMECODE_NEWLEVEL, as in 4.7.0
+    (code read, not run on 4.7.0); the walk with videos, its timing other, logged none.
+* Open: the music's in-game album changes (only the menu's checked); the videos' scanline modes and the
+  intelligence screen's small video (sequence.cpp's 240x180 path) seen once only; the chat options form (a
+  hosted network game: cluster J); team strategy (J); the lookups over folders are about 1.8 times slower
+  with PhysFS's per-element checks (startup not measured yet); translations.
+* Next: cluster J (network).
 
 ## Architecture decisions
 
@@ -1565,10 +1655,13 @@ Done (section 32): the OpenAL calls openal_track.cpp makes are implemented by a 
 pans), polled from sound_Update over waveOut as QuakeVB's; stb_vorbis v1.22 is the decoder,
 checked against ffmpeg's. No music ships with the data.
 
+Done (section 34): the music is ported as Opus after all (the user's choice): opusfile and
+libopus 1.5.2's decoder (CELT, SILK) in WzSound, checked against the official build's
+libopus.dll; tools/setup_data.py puts the official music in data/music.
+
 ### What is not ported
 
-Vulkan and the null backend, Theora video sequences (Warzone shows the
-briefing text without them), Discord, curl (news, updates, downloads),
+Vulkan and the null backend, Discord, curl (news, updates, downloads),
 GameNetworkingSockets, UPnP, the crash handler, autohost/stdin, the script
 debugger (perhaps later), SQLite player statistics (a JSON file instead),
 basis/KTX2 textures, the JPEG encoder, Emscripten, libsodium player
@@ -1614,7 +1707,7 @@ before it had a renderer.
 | H Sound | mixer, stb_vorbis port, audio, track, audio_id. **Done:** stb_vorbis, an OpenAL subset mixed over waveOut, openal_track, audio, track, cdaudio, playlist, the game's side (see "The sound"). **Cluster H's milestone is reached.** | sound effects in game |
 | I Campaign | levels, mission (off-world), transporter, campaign scripts, save/load (`game.cpp`), briefings without video. **Done:** game.cpp's save and load, mission, transporter, the campaign selector, seqdisp, scores, loadsave, challenge, message, cheat, the chat screen (see "The campaign, save and load"). **Cluster I's milestone is reached.** | campaign 1 from start to finish; save/load round trip |
 | J Network | the rest of netplay in WzNet (connections over Winsock TCP, zlib streams, sessions) with the full `INetGame`; direct-IP joining; the multiplayer parts of multiint | two copies play a skirmish over LAN |
-| K Optional | `.wz` archives (zip, inflate) for maps and mods, music, translations, shadows and other effects, videos, interop with official builds | |
+| K Optional | `.wz` archives (zip, inflate) for maps and mods, music, translations, shadows and other effects, videos, interop with official builds. **Done:** PhysFS's zip archives, the campaign mods, the music (opusfile, libopus), the videos (libtheora, lib/sequence in WzSequence), quick chat and chat options; campaigns 2 and 3 walked (see "Archives, mods, music, videos, quick chat"). Left: translations, shadows and the other effects, interop | |
 
 ## Risks
 
@@ -1635,7 +1728,9 @@ before it had a renderer.
 5. **OpenGL 3.3** is required, as for Warzone itself. It was tested here
    only on NVIDIA; Intel and AMD drivers are still to check.
 6. **VB6 build limits:** 850 modules and about 32,100 names per project,
-   and a LINK.EXE command-line limit; `build.py` reports each.
+   and a LINK.EXE command-line limit; `build.py` reports each. After cluster K
+   the exe's .OBJ paths take 31,097 of LINK.EXE's 32,767 characters: build
+   from a shorter path (`subst`) before it grows much more.
 
 ## Tools
 
@@ -1667,6 +1762,9 @@ before it had a renderer.
 | `python -I tools\check_redim.py [project]` | a fixed-size array passed to a procedure that ReDims or Erases that parameter (VB's run-time error 10) |
 | `python -I tools\save_test.py [level] [--keep]` | cluster I's save round trip: a level saved at its start (`--saveandquit`), loaded and saved again, the two saves compared (but for what 4.7.0 changes too, each named with its C++ line) |
 | `python -I tools\ui_test.py campaign_walk.txt 1800` | campaign 1 from the main menu to CAM_1END (cheats and transporter launches; `tools\make_campaign_walk.py` writes the script); `save_menu.txt`, then `save_load.txt --config-of=save_menu`: a mid-mission save from the in-game menu, loaded and saved again |
+| `python -I tools\setup_data.py [--check]` | puts the data 4.7.0's source tree lacks where 4.7.0 looks for it: the official build's music and campaign mods, the videos (ref/videos) |
+| `python -I tools\run_tests.py --media [--keep]` | cluster K's tests: zip_test, celt_test, silk_test (src/silktests), opus_test, theora_test, video_audio_test (each also alone: `python -I tools\<name>.py`) |
+| `python -I tools\ui_test.py campaign2_walk.txt 3000` | campaign 2 (and campaign3_walk.txt: 3) from the selector's Start at to its end, videos waited out (`tools\make_campaign_walk.py 2`); campaign_mods.txt: Reclamation from its .wz; quickchat.txt (`--debug=console`) |
 | `python -I tools\statsref_stubs.py` | statsref's own stand-ins whose VB port is now real and not skipped in the vbtest runs (`vbDisplayOff`): what to gate when statsref's outputs stop matching after a cluster ports such a function |
 | `python -I tools\name_budget.py ref\warzone2100` | VB6 name budget of the C++ per area and per project |
 | `python -I tools\typelib.py bin\WzGfx.dll` | a DLL's type library and class GUIDs, without the registry |

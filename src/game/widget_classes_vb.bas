@@ -9,159 +9,183 @@ Public Enum WIDGET_KIND
     K_AlignmentWidget = 1
     K_CampaignStartOptionsForm = 2
     K_ChatBoxPlayerNameWidget = 3
-    K_ClipRectWidget = 4
-    K_DropdownItemWrapper = 5
-    K_DropdownOverlay = 6
-    K_DropdownWidget = 7
-    K_GridLayout = 8
-    K_HorizontalButtonsWidget = 9
-    K_HostingAdvancedOptionsForm = 10
-    K_InGameOptionsTitleBar = 11
-    K_ListTabWidget = 12
-    K_ListWidget = 13
-    K_LobbyHostOptionsForm = 14
-    K_MarginWidget = 15
-    K_MenuItemWrapper = 16
-    K_OptionsBrowserForm = 17
-    K_OptionsKeyBindingsEdit = 18
-    K_OptionsRowWidgetBase = 19
-    K_OptionsSlider = 20
-    K_Paragraph = 21
-    K_ParagraphTextWidget = 22
-    K_PlayerColorOptionsSelector = 23
-    K_PopoverMenuWidget = 24
-    K_PopoverWidget = 25
-    K_RadarWidget = 26
-    K_ScrollBarWidget = 27
-    K_ScrollableListWidget = 28
-    K_ScrollableTableWidget = 29
-    K_TabSelectionWidget = 30
-    K_TitleFormSideText = 31
-    K_TitleFormWrapper = 32
-    K_WZOptionTitleLabel = 33
-    K_W_BARGRAPH = 34
-    K_W_BUTTON = 35
-    K_W_EDITBOX = 36
-    K_W_FORM = 37
-    K_W_LABEL = 38
-    K_W_SLIDER = 39
-    K_WidgetInfoButtonWrapper = 40
-    K_WzCampaignHelpPanel = 41
-    K_WzCampaignListSection = 42
-    K_WzCampaignSelectorForm = 43
-    K_WzCampaignSubInfoBox = 44
-    K_WzCampaignTitleWidget = 45
-    K_WzCampaignTweakOptionsEditForm = 46
-    K_WzCampaignTweakOptionsSummaryWidget = 47
-    K_WzHelpPopoverWidget = 48
-    K_WzLobbyPasswordOptionPopover = 49
-    K_WzMultiLobbyOptionsWidgetBase = 50
-    K_WzMultiLobbyStatusBar = 51
-    K_WzOptionsChoiceWidget = 52
-    K_WzPlayerBoxTabs = 53
-    K_WzPlayerRow = 54
-    K_WzPositionChooser = 55
-    K_CampaignStartButton = 56
-    K_ChatBoxButton = 57
-    K_ClickableScrollableList = 58
-    K_DeliveryPointButton = 59
-    K_DesignStatsBar = 60
-    K_FixedIdealWidthLabel = 61
-    K_HorizontalScrollButton = 62
-    K_InGameOptionsTitleBarButton = 63
-    K_IntFormAnimated = 64
-    K_IntFormTransparent = 65
-    K_IntListTabWidget = 66
-    K_LoopProductionButton = 67
-    K_LoopProductionLabel = 68
-    K_MultibuttonWidget = 69
-    K_MultipleChoiceButton = 70
-    K_OptionRow = 71
-    K_OptionsButton = 72
-    K_OptionsForm = 73
-    K_OptionsKeyBindingWidget = 74
-    K_OptionsPaddingRow = 75
-    K_OptionsSectionRow = 76
-    K_OptionsValueChangerWidgetWrapper = 77
-    K_PowerBar = 78
-    K_ReadyBoxContainerWidget = 79
-    K_TableHeader = 80
-    K_TableRow = 81
-    K_W_CLICKFORM = 82
-    K_W_INGAMEOPTIONS_BUTTON = 83
-    K_W_INTELLIGENCEOVERLAY_FORM = 84
-    K_WzAdvCheckbox = 85
-    K_WzCampaignModButton = 86
-    K_WzCampaignOptionButton = 87
-    K_WzCheckboxButton = 88
-    K_WzClickableOptionsChoiceWidget = 89
-    K_WzClippableButton = 90
-    K_WzFrontendImageButton = 91
-    K_WzInGameChatBoxButton = 92
-    K_WzLobbyMultiOptionButton = 93
-    K_WzMultiButton = 94
-    K_WzMultiLobbyOptionsImpl = 95
-    K_WzOptionsDropdownWidget = 96
-    K_WzPlayerBoxOptionsButton = 97
-    K_WzPlayerBoxTabButton = 98
-    K_WzPlayerIndexSwapPositionRow = 99
-    K_WzPlayerSelectionChangePositionRow = 100
-    K_WzStartHostingButton = 101
-    K_ChatBoxWidget = 102
-    K_DesignPowerBar = 103
-    K_GroupsForum = 104
-    K_InGameOptionsBaseForm = 105
-    K_IntFancyButton = 106
-    K_IntFormAnimatedWrapper = 107
-    K_KeyOptionsForm = 108
-    K_LobbyMultiOptionsChoiceWidget = 109
-    K_LobbyMultiOptionsSectionWidget = 110
-    K_MultichoiceWidget = 111
-    K_ObjectsForm = 112
-    K_OptionsDropdown = 113
-    K_StatsForm = 114
-    K_W_FULLSCREENOVERLAY_CLICKFORM = 115
-    K_WzInGameChatBoxForm = 116
-    K_WzInGameChatScreen_CLICKFORM = 117
-    K_WzInGameOptionsScreen_CLICKFORM = 118
-    K_WzInfoButton = 119
-    K_WzMessageView = 120
-    K_BuildObjectsForm = 121
-    K_CommanderObjectsForm = 122
-    K_DynamicIntFancyButton = 123
-    K_IntMessageButton = 124
-    K_IntObjectButton = 125
-    K_IntStatsButton = 126
-    K_IntTransportButton = 127
-    K_ManufactureObjectsForm = 128
-    K_ObjectStatsForm = 129
-    K_ResearchObjectsForm = 130
-    K_WzFullscreenKeyBindingEditingOverlay = 131
-    K_BuildStatsForm = 132
-    K_GroupButton = 133
-    K_IntStatusButton = 134
-    K_ManufactureStatsForm = 135
-    K_ObjectButton = 136
-    K_ResearchStatsForm = 137
-    K_StatsButton = 138
-    K_BuildObjectButton = 139
-    K_BuildStatsButton = 140
-    K_CommanderObjectButton = 141
-    K_CommanderStatsButton = 142
-    K_ManufactureObjectButton = 143
-    K_ManufactureStatsButton = 144
-    K_ResearchObjectButton = 145
-    K_ResearchStatsButton = 146
-    K_StatsFormButton = 147
-    K_BuildOptionButton = 148
-    K_ManufactureOptionButton = 149
-    K_ResearchOptionButton = 150
+    K_ChooserOverlay = 4
+    K_ClipRectWidget = 5
+    K_DropdownItemWrapper = 6
+    K_DropdownOverlay = 7
+    K_DropdownWidget = 8
+    K_GridLayout = 9
+    K_HorizontalButtonsWidget = 10
+    K_HostingAdvancedOptionsForm = 11
+    K_InGameOptionsTitleBar = 12
+    K_ListTabWidget = 13
+    K_ListWidget = 14
+    K_LobbyHostOptionsForm = 15
+    K_MarginWidget = 16
+    K_MenuItemWrapper = 17
+    K_OptionsBrowserForm = 18
+    K_OptionsKeyBindingsEdit = 19
+    K_OptionsRowWidgetBase = 20
+    K_OptionsSlider = 21
+    K_Paragraph = 22
+    K_ParagraphTextWidget = 23
+    K_PlayerColorOptionsSelector = 24
+    K_PopoverMenuWidget = 25
+    K_PopoverWidget = 26
+    K_RadarWidget = 27
+    K_ScrollBarWidget = 28
+    K_ScrollableListWidget = 29
+    K_ScrollableTableWidget = 30
+    K_TabSelectionWidget = 31
+    K_TitleFormSideText = 32
+    K_TitleFormWrapper = 33
+    K_WZOptionTitleLabel = 34
+    K_W_BARGRAPH = 35
+    K_W_BUTTON = 36
+    K_W_EDITBOX = 37
+    K_W_FORM = 38
+    K_W_LABEL = 39
+    K_W_SLIDER = 40
+    K_WidgetInfoButtonWrapper = 41
+    K_WzCampaignHelpPanel = 42
+    K_WzCampaignListSection = 43
+    K_WzCampaignSelectorForm = 44
+    K_WzCampaignSubInfoBox = 45
+    K_WzCampaignTitleWidget = 46
+    K_WzCampaignTweakOptionsEditForm = 47
+    K_WzCampaignTweakOptionsSummaryWidget = 48
+    K_WzHelpPopoverWidget = 49
+    K_WzLobbyPasswordOptionPopover = 50
+    K_WzMultiLobbyOptionsWidgetBase = 51
+    K_WzMultiLobbyStatusBar = 52
+    K_WzOptionsChoiceWidget = 53
+    K_WzPlayerBoxTabs = 54
+    K_WzPlayerMuteStatusLabel = 55
+    K_WzPlayerRow = 56
+    K_WzPositionChooser = 57
+    K_WzQuickChatPanel = 58
+    K_WzQuickChatSendToPlayersSelector = 59
+    K_WzQuickChatSendToSelector = 60
+    K_CampaignStartButton = 61
+    K_ChatBoxButton = 62
+    K_ClickableScrollableList = 63
+    K_DeliveryPointButton = 64
+    K_DesignStatsBar = 65
+    K_FixedIdealWidthLabel = 66
+    K_HorizontalScrollButton = 67
+    K_InGameOptionsTitleBarButton = 68
+    K_IntFormAnimated = 69
+    K_IntFormTransparent = 70
+    K_IntListTabWidget = 71
+    K_LoopProductionButton = 72
+    K_LoopProductionLabel = 73
+    K_MultibuttonWidget = 74
+    K_MultipleChoiceButton = 75
+    K_MusicManagerForm = 76
+    K_OptionRow = 77
+    K_OptionsButton = 78
+    K_OptionsForm = 79
+    K_OptionsKeyBindingWidget = 80
+    K_OptionsPaddingRow = 81
+    K_OptionsSectionRow = 82
+    K_OptionsValueChangerWidgetWrapper = 83
+    K_PowerBar = 84
+    K_ReadyBoxContainerWidget = 85
+    K_TableHeader = 86
+    K_TableRow = 87
+    K_TrackDetailsForm = 88
+    K_W_CLICKFORM = 89
+    K_W_INGAMEOPTIONS_BUTTON = 90
+    K_W_INTELLIGENCEOVERLAY_FORM = 91
+    K_W_MusicListHeaderColImage = 92
+    K_W_MusicModeCheckboxButton = 93
+    K_WzAdvCheckbox = 94
+    K_WzCampaignModButton = 95
+    K_WzCampaignOptionButton = 96
+    K_WzChatMuteColButtonBase = 97
+    K_WzChatOptionsButton = 98
+    K_WzCheckboxButton = 99
+    K_WzClickableOptionsChoiceWidget = 100
+    K_WzClippableButton = 101
+    K_WzFrontendImageButton = 102
+    K_WzInGameChatBoxButton = 103
+    K_WzLobbyMultiOptionButton = 104
+    K_WzMultiButton = 105
+    K_WzMultiLobbyOptionsImpl = 106
+    K_WzOptionsDropdownWidget = 107
+    K_WzPanelTabButton = 108
+    K_WzPlayerBoxOptionsButton = 109
+    K_WzPlayerBoxTabButton = 110
+    K_WzPlayerChatMuteButtonBase = 111
+    K_WzPlayerIndexSwapPositionRow = 112
+    K_WzPlayerSelectionChangePositionRow = 113
+    K_WzQuickChatButton = 114
+    K_WzQuickChatPlayerButton = 115
+    K_WzQuickChatToggleMixedCheckButton = 116
+    K_WzStartHostingButton = 117
+    K_ChatBoxWidget = 118
+    K_DesignPowerBar = 119
+    K_GroupsForum = 120
+    K_InGameOptionsBaseForm = 121
+    K_IntFancyButton = 122
+    K_IntFormAnimatedWrapper = 123
+    K_KeyOptionsForm = 124
+    K_LobbyMultiOptionsChoiceWidget = 125
+    K_LobbyMultiOptionsSectionWidget = 126
+    K_MultichoiceWidget = 127
+    K_ObjectsForm = 128
+    K_OptionsDropdown = 129
+    K_StatsForm = 130
+    K_W_FULLSCREENOVERLAY_CLICKFORM = 131
+    K_WzChatOptionsForm = 132
+    K_WzGlobalChatMuteColButton = 133
+    K_WzHostFreeChatPlayerMuteButton = 134
+    K_WzInGameChatBoxForm = 135
+    K_WzInGameChatScreen_CLICKFORM = 136
+    K_WzInGameOptionsScreen_CLICKFORM = 137
+    K_WzInfoButton = 138
+    K_WzLocalChatMuteColButton = 139
+    K_WzMessageView = 140
+    K_WzQuickChatForm = 141
+    K_WzQuickChatSection = 142
+    K_BuildObjectsForm = 143
+    K_CommanderObjectsForm = 144
+    K_DynamicIntFancyButton = 145
+    K_IntMessageButton = 146
+    K_IntObjectButton = 147
+    K_IntStatsButton = 148
+    K_IntTransportButton = 149
+    K_ManufactureObjectsForm = 150
+    K_ObjectStatsForm = 151
+    K_ResearchObjectsForm = 152
+    K_WzFullscreenKeyBindingEditingOverlay = 153
+    K_WzQuickChatPanelTabs = 154
+    K_BuildStatsForm = 155
+    K_GroupButton = 156
+    K_IntStatusButton = 157
+    K_ManufactureStatsForm = 158
+    K_ObjectButton = 159
+    K_ResearchStatsForm = 160
+    K_StatsButton = 161
+    K_BuildObjectButton = 162
+    K_BuildStatsButton = 163
+    K_CommanderObjectButton = 164
+    K_CommanderStatsButton = 165
+    K_ManufactureObjectButton = 166
+    K_ManufactureStatsButton = 167
+    K_ResearchObjectButton = 168
+    K_ResearchStatsButton = 169
+    K_StatsFormButton = 170
+    K_BuildOptionButton = 171
+    K_ManufactureOptionButton = 172
+    K_ResearchOptionButton = 173
 End Enum
 
 Public Const DEPTH_WIDGET As Long = 0
 Public Const DEPTH_AlignmentWidget As Long = 1
 Public Const DEPTH_CampaignStartOptionsForm As Long = 1
 Public Const DEPTH_ChatBoxPlayerNameWidget As Long = 1
+Public Const DEPTH_ChooserOverlay As Long = 1
 Public Const DEPTH_ClipRectWidget As Long = 1
 Public Const DEPTH_DropdownItemWrapper As Long = 1
 Public Const DEPTH_DropdownOverlay As Long = 1
@@ -212,8 +236,12 @@ Public Const DEPTH_WzMultiLobbyOptionsWidgetBase As Long = 1
 Public Const DEPTH_WzMultiLobbyStatusBar As Long = 1
 Public Const DEPTH_WzOptionsChoiceWidget As Long = 1
 Public Const DEPTH_WzPlayerBoxTabs As Long = 1
+Public Const DEPTH_WzPlayerMuteStatusLabel As Long = 1
 Public Const DEPTH_WzPlayerRow As Long = 1
 Public Const DEPTH_WzPositionChooser As Long = 1
+Public Const DEPTH_WzQuickChatPanel As Long = 1
+Public Const DEPTH_WzQuickChatSendToPlayersSelector As Long = 1
+Public Const DEPTH_WzQuickChatSendToSelector As Long = 1
 Public Const DEPTH_CampaignStartButton As Long = 2
 Public Const DEPTH_ChatBoxButton As Long = 2
 Public Const DEPTH_ClickableScrollableList As Long = 2
@@ -229,6 +257,7 @@ Public Const DEPTH_LoopProductionButton As Long = 2
 Public Const DEPTH_LoopProductionLabel As Long = 2
 Public Const DEPTH_MultibuttonWidget As Long = 2
 Public Const DEPTH_MultipleChoiceButton As Long = 2
+Public Const DEPTH_MusicManagerForm As Long = 2
 Public Const DEPTH_OptionRow As Long = 2
 Public Const DEPTH_OptionsButton As Long = 2
 Public Const DEPTH_OptionsForm As Long = 2
@@ -240,12 +269,17 @@ Public Const DEPTH_PowerBar As Long = 2
 Public Const DEPTH_ReadyBoxContainerWidget As Long = 2
 Public Const DEPTH_TableHeader As Long = 2
 Public Const DEPTH_TableRow As Long = 2
+Public Const DEPTH_TrackDetailsForm As Long = 2
 Public Const DEPTH_W_CLICKFORM As Long = 2
 Public Const DEPTH_W_INGAMEOPTIONS_BUTTON As Long = 2
 Public Const DEPTH_W_INTELLIGENCEOVERLAY_FORM As Long = 2
+Public Const DEPTH_W_MusicListHeaderColImage As Long = 2
+Public Const DEPTH_W_MusicModeCheckboxButton As Long = 2
 Public Const DEPTH_WzAdvCheckbox As Long = 2
 Public Const DEPTH_WzCampaignModButton As Long = 2
 Public Const DEPTH_WzCampaignOptionButton As Long = 2
+Public Const DEPTH_WzChatMuteColButtonBase As Long = 2
+Public Const DEPTH_WzChatOptionsButton As Long = 2
 Public Const DEPTH_WzCheckboxButton As Long = 2
 Public Const DEPTH_WzClickableOptionsChoiceWidget As Long = 2
 Public Const DEPTH_WzClippableButton As Long = 2
@@ -255,10 +289,15 @@ Public Const DEPTH_WzLobbyMultiOptionButton As Long = 2
 Public Const DEPTH_WzMultiButton As Long = 2
 Public Const DEPTH_WzMultiLobbyOptionsImpl As Long = 2
 Public Const DEPTH_WzOptionsDropdownWidget As Long = 2
+Public Const DEPTH_WzPanelTabButton As Long = 2
 Public Const DEPTH_WzPlayerBoxOptionsButton As Long = 2
 Public Const DEPTH_WzPlayerBoxTabButton As Long = 2
+Public Const DEPTH_WzPlayerChatMuteButtonBase As Long = 2
 Public Const DEPTH_WzPlayerIndexSwapPositionRow As Long = 2
 Public Const DEPTH_WzPlayerSelectionChangePositionRow As Long = 2
+Public Const DEPTH_WzQuickChatButton As Long = 2
+Public Const DEPTH_WzQuickChatPlayerButton As Long = 2
+Public Const DEPTH_WzQuickChatToggleMixedCheckButton As Long = 2
 Public Const DEPTH_WzStartHostingButton As Long = 2
 Public Const DEPTH_ChatBoxWidget As Long = 3
 Public Const DEPTH_DesignPowerBar As Long = 3
@@ -274,11 +313,17 @@ Public Const DEPTH_ObjectsForm As Long = 3
 Public Const DEPTH_OptionsDropdown As Long = 3
 Public Const DEPTH_StatsForm As Long = 3
 Public Const DEPTH_W_FULLSCREENOVERLAY_CLICKFORM As Long = 3
+Public Const DEPTH_WzChatOptionsForm As Long = 3
+Public Const DEPTH_WzGlobalChatMuteColButton As Long = 3
+Public Const DEPTH_WzHostFreeChatPlayerMuteButton As Long = 3
 Public Const DEPTH_WzInGameChatBoxForm As Long = 3
 Public Const DEPTH_WzInGameChatScreen_CLICKFORM As Long = 3
 Public Const DEPTH_WzInGameOptionsScreen_CLICKFORM As Long = 3
 Public Const DEPTH_WzInfoButton As Long = 3
+Public Const DEPTH_WzLocalChatMuteColButton As Long = 3
 Public Const DEPTH_WzMessageView As Long = 3
+Public Const DEPTH_WzQuickChatForm As Long = 3
+Public Const DEPTH_WzQuickChatSection As Long = 3
 Public Const DEPTH_BuildObjectsForm As Long = 4
 Public Const DEPTH_CommanderObjectsForm As Long = 4
 Public Const DEPTH_DynamicIntFancyButton As Long = 4
@@ -290,6 +335,7 @@ Public Const DEPTH_ManufactureObjectsForm As Long = 4
 Public Const DEPTH_ObjectStatsForm As Long = 4
 Public Const DEPTH_ResearchObjectsForm As Long = 4
 Public Const DEPTH_WzFullscreenKeyBindingEditingOverlay As Long = 4
+Public Const DEPTH_WzQuickChatPanelTabs As Long = 4
 Public Const DEPTH_BuildStatsForm As Long = 5
 Public Const DEPTH_GroupButton As Long = 5
 Public Const DEPTH_IntStatusButton As Long = 5
@@ -321,6 +367,10 @@ End Function
 
 Public Function ChatBoxPlayerNameWidget_(ByVal w As WIDGET) As ChatBoxPlayerNameWidget
     Set ChatBoxPlayerNameWidget_ = w.ext(DEPTH_ChatBoxPlayerNameWidget)
+End Function
+
+Public Function ChooserOverlay_(ByVal w As WIDGET) As ChooserOverlay
+    Set ChooserOverlay_ = w.ext(DEPTH_ChooserOverlay)
 End Function
 
 Public Function ClipRectWidget_(ByVal w As WIDGET) As ClipRectWidget
@@ -511,12 +561,28 @@ Public Function WzPlayerBoxTabs_(ByVal w As WIDGET) As WzPlayerBoxTabs
     Set WzPlayerBoxTabs_ = w.ext(DEPTH_WzPlayerBoxTabs)
 End Function
 
+Public Function WzPlayerMuteStatusLabel_(ByVal w As WIDGET) As WzPlayerMuteStatusLabel
+    Set WzPlayerMuteStatusLabel_ = w.ext(DEPTH_WzPlayerMuteStatusLabel)
+End Function
+
 Public Function WzPlayerRow_(ByVal w As WIDGET) As WzPlayerRow
     Set WzPlayerRow_ = w.ext(DEPTH_WzPlayerRow)
 End Function
 
 Public Function WzPositionChooser_(ByVal w As WIDGET) As WzPositionChooser
     Set WzPositionChooser_ = w.ext(DEPTH_WzPositionChooser)
+End Function
+
+Public Function WzQuickChatPanel_(ByVal w As WIDGET) As WzQuickChatPanel
+    Set WzQuickChatPanel_ = w.ext(DEPTH_WzQuickChatPanel)
+End Function
+
+Public Function WzQuickChatSendToPlayersSelector_(ByVal w As WIDGET) As QCSendToPlayersSelectorData
+    Set WzQuickChatSendToPlayersSelector_ = w.ext(DEPTH_WzQuickChatSendToPlayersSelector)
+End Function
+
+Public Function WzQuickChatSendToSelector_(ByVal w As WIDGET) As WzQuickChatSendToSelector
+    Set WzQuickChatSendToSelector_ = w.ext(DEPTH_WzQuickChatSendToSelector)
 End Function
 
 Public Function CampaignStartButton_(ByVal w As WIDGET) As CampaignStartButton
@@ -575,6 +641,10 @@ Public Function MultipleChoiceButton_(ByVal w As WIDGET) As MultipleChoiceButton
     Set MultipleChoiceButton_ = w.ext(DEPTH_MultipleChoiceButton)
 End Function
 
+Public Function MusicManagerForm_(ByVal w As WIDGET) As MusicManagerForm
+    Set MusicManagerForm_ = w.ext(DEPTH_MusicManagerForm)
+End Function
+
 Public Function OptionRow_(ByVal w As WIDGET) As OptionRow
     Set OptionRow_ = w.ext(DEPTH_OptionRow)
 End Function
@@ -619,6 +689,10 @@ Public Function TableRow_(ByVal w As WIDGET) As TableRow
     Set TableRow_ = w.ext(DEPTH_TableRow)
 End Function
 
+Public Function TrackDetailsForm_(ByVal w As WIDGET) As TrackDetailsForm
+    Set TrackDetailsForm_ = w.ext(DEPTH_TrackDetailsForm)
+End Function
+
 Public Function W_CLICKFORM_(ByVal w As WIDGET) As W_CLICKFORM
     Set W_CLICKFORM_ = w.ext(DEPTH_W_CLICKFORM)
 End Function
@@ -631,6 +705,14 @@ Public Function W_INTELLIGENCEOVERLAY_FORM_(ByVal w As WIDGET) As W_INTELLIGENCE
     Set W_INTELLIGENCEOVERLAY_FORM_ = w.ext(DEPTH_W_INTELLIGENCEOVERLAY_FORM)
 End Function
 
+Public Function W_MusicListHeaderColImage_(ByVal w As WIDGET) As W_MusicListHeaderColImage
+    Set W_MusicListHeaderColImage_ = w.ext(DEPTH_W_MusicListHeaderColImage)
+End Function
+
+Public Function W_MusicModeCheckboxButton_(ByVal w As WIDGET) As W_MusicModeCheckboxButton
+    Set W_MusicModeCheckboxButton_ = w.ext(DEPTH_W_MusicModeCheckboxButton)
+End Function
+
 Public Function WzAdvCheckbox_(ByVal w As WIDGET) As WzAdvCheckbox
     Set WzAdvCheckbox_ = w.ext(DEPTH_WzAdvCheckbox)
 End Function
@@ -641,6 +723,14 @@ End Function
 
 Public Function WzCampaignOptionButton_(ByVal w As WIDGET) As WzCampaignOptionButton
     Set WzCampaignOptionButton_ = w.ext(DEPTH_WzCampaignOptionButton)
+End Function
+
+Public Function WzChatMuteColButtonBase_(ByVal w As WIDGET) As WzChatMuteColButtonBase
+    Set WzChatMuteColButtonBase_ = w.ext(DEPTH_WzChatMuteColButtonBase)
+End Function
+
+Public Function WzChatOptionsButton_(ByVal w As WIDGET) As WzChatOptionsButton
+    Set WzChatOptionsButton_ = w.ext(DEPTH_WzChatOptionsButton)
 End Function
 
 Public Function WzCheckboxButton_(ByVal w As WIDGET) As WzCheckboxButton
@@ -679,6 +769,10 @@ Public Function WzOptionsDropdownWidget_(ByVal w As WIDGET) As WzOptionsDropdown
     Set WzOptionsDropdownWidget_ = w.ext(DEPTH_WzOptionsDropdownWidget)
 End Function
 
+Public Function WzPanelTabButton_(ByVal w As WIDGET) As WzPanelTabButton
+    Set WzPanelTabButton_ = w.ext(DEPTH_WzPanelTabButton)
+End Function
+
 Public Function WzPlayerBoxOptionsButton_(ByVal w As WIDGET) As WzPlayerBoxOptionsButton
     Set WzPlayerBoxOptionsButton_ = w.ext(DEPTH_WzPlayerBoxOptionsButton)
 End Function
@@ -687,12 +781,28 @@ Public Function WzPlayerBoxTabButton_(ByVal w As WIDGET) As WzPlayerBoxTabButton
     Set WzPlayerBoxTabButton_ = w.ext(DEPTH_WzPlayerBoxTabButton)
 End Function
 
+Public Function WzPlayerChatMuteButtonBase_(ByVal w As WIDGET) As WzPlayerChatMuteButtonBase
+    Set WzPlayerChatMuteButtonBase_ = w.ext(DEPTH_WzPlayerChatMuteButtonBase)
+End Function
+
 Public Function WzPlayerIndexSwapPositionRow_(ByVal w As WIDGET) As WzPlayerIndexSwapPositionRow
     Set WzPlayerIndexSwapPositionRow_ = w.ext(DEPTH_WzPlayerIndexSwapPositionRow)
 End Function
 
 Public Function WzPlayerSelectionChangePositionRow_(ByVal w As WIDGET) As WzPlayerSelChangePosRowData
     Set WzPlayerSelectionChangePositionRow_ = w.ext(DEPTH_WzPlayerSelectionChangePositionRow)
+End Function
+
+Public Function WzQuickChatButton_(ByVal w As WIDGET) As WzQuickChatButton
+    Set WzQuickChatButton_ = w.ext(DEPTH_WzQuickChatButton)
+End Function
+
+Public Function WzQuickChatPlayerButton_(ByVal w As WIDGET) As WzQuickChatPlayerButton
+    Set WzQuickChatPlayerButton_ = w.ext(DEPTH_WzQuickChatPlayerButton)
+End Function
+
+Public Function WzQuickChatToggleMixedCheckButton_(ByVal w As WIDGET) As QCToggleMixedCheckButtonData
+    Set WzQuickChatToggleMixedCheckButton_ = w.ext(DEPTH_WzQuickChatToggleMixedCheckButton)
 End Function
 
 Public Function WzStartHostingButton_(ByVal w As WIDGET) As WzStartHostingButton
@@ -743,6 +853,18 @@ Public Function W_FULLSCREENOVERLAY_CLICKFORM_(ByVal w As WIDGET) As W_FULLSCREE
     Set W_FULLSCREENOVERLAY_CLICKFORM_ = w.ext(DEPTH_W_FULLSCREENOVERLAY_CLICKFORM)
 End Function
 
+Public Function WzChatOptionsForm_(ByVal w As WIDGET) As WzChatOptionsForm
+    Set WzChatOptionsForm_ = w.ext(DEPTH_WzChatOptionsForm)
+End Function
+
+Public Function WzGlobalChatMuteColButton_(ByVal w As WIDGET) As WzGlobalChatMuteColButton
+    Set WzGlobalChatMuteColButton_ = w.ext(DEPTH_WzGlobalChatMuteColButton)
+End Function
+
+Public Function WzHostFreeChatPlayerMuteButton_(ByVal w As WIDGET) As WzHostFreeChatPlayerMuteButton
+    Set WzHostFreeChatPlayerMuteButton_ = w.ext(DEPTH_WzHostFreeChatPlayerMuteButton)
+End Function
+
 Public Function WzInGameChatBoxForm_(ByVal w As WIDGET) As WzInGameChatBoxForm
     Set WzInGameChatBoxForm_ = w.ext(DEPTH_WzInGameChatBoxForm)
 End Function
@@ -755,8 +877,20 @@ Public Function WzInGameOptionsScreen_CLICKFORM_(ByVal w As WIDGET) As WzInGameO
     Set WzInGameOptionsScreen_CLICKFORM_ = w.ext(DEPTH_WzInGameOptionsScreen_CLICKFORM)
 End Function
 
+Public Function WzLocalChatMuteColButton_(ByVal w As WIDGET) As WzLocalChatMuteColButton
+    Set WzLocalChatMuteColButton_ = w.ext(DEPTH_WzLocalChatMuteColButton)
+End Function
+
 Public Function WzMessageView_(ByVal w As WIDGET) As WzMessageView
     Set WzMessageView_ = w.ext(DEPTH_WzMessageView)
+End Function
+
+Public Function WzQuickChatForm_(ByVal w As WIDGET) As WzQuickChatForm
+    Set WzQuickChatForm_ = w.ext(DEPTH_WzQuickChatForm)
+End Function
+
+Public Function WzQuickChatSection_(ByVal w As WIDGET) As WzQuickChatSection
+    Set WzQuickChatSection_ = w.ext(DEPTH_WzQuickChatSection)
 End Function
 
 Public Function BuildObjectsForm_(ByVal w As WIDGET) As BuildObjectsForm
@@ -887,6 +1021,8 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
         Set w.ext(DEPTH_CampaignStartOptionsForm) = New CampaignStartOptionsForm
     Case K_ChatBoxPlayerNameWidget
         Set w.ext(DEPTH_ChatBoxPlayerNameWidget) = New ChatBoxPlayerNameWidget
+    Case K_ChooserOverlay
+        Set w.ext(DEPTH_ChooserOverlay) = New ChooserOverlay
     Case K_ClipRectWidget
         Set w.ext(DEPTH_ClipRectWidget) = New ClipRectWidget
     Case K_DropdownItemWrapper
@@ -981,10 +1117,18 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
         Set w.ext(DEPTH_WzOptionsChoiceWidget) = New WzOptionsChoiceWidget
     Case K_WzPlayerBoxTabs
         Set w.ext(DEPTH_WzPlayerBoxTabs) = New WzPlayerBoxTabs
+    Case K_WzPlayerMuteStatusLabel
+        Set w.ext(DEPTH_WzPlayerMuteStatusLabel) = New WzPlayerMuteStatusLabel
     Case K_WzPlayerRow
         Set w.ext(DEPTH_WzPlayerRow) = New WzPlayerRow
     Case K_WzPositionChooser
         Set w.ext(DEPTH_WzPositionChooser) = New WzPositionChooser
+    Case K_WzQuickChatPanel
+        Set w.ext(DEPTH_WzQuickChatPanel) = New WzQuickChatPanel
+    Case K_WzQuickChatSendToPlayersSelector
+        Set w.ext(DEPTH_WzQuickChatSendToPlayersSelector) = New QCSendToPlayersSelectorData
+    Case K_WzQuickChatSendToSelector
+        Set w.ext(DEPTH_WzQuickChatSendToSelector) = New WzQuickChatSendToSelector
     Case K_CampaignStartButton
         Set w.ext(DEPTH_CampaignStartButton) = New CampaignStartButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
@@ -1029,6 +1173,9 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
     Case K_MultipleChoiceButton
         Set w.ext(DEPTH_MultipleChoiceButton) = New MultipleChoiceButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_MusicManagerForm
+        Set w.ext(DEPTH_MusicManagerForm) = New MusicManagerForm
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
     Case K_OptionRow
         Set w.ext(DEPTH_OptionRow) = New OptionRow
     Case K_OptionsButton
@@ -1059,6 +1206,9 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
     Case K_TableRow
         Set w.ext(DEPTH_TableRow) = New TableRow
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_TrackDetailsForm
+        Set w.ext(DEPTH_TrackDetailsForm) = New TrackDetailsForm
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
     Case K_W_CLICKFORM
         Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
         Set w.ext(DEPTH_W_FORM) = New W_FORM
@@ -1068,6 +1218,12 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
     Case K_W_INTELLIGENCEOVERLAY_FORM
         Set w.ext(DEPTH_W_INTELLIGENCEOVERLAY_FORM) = New W_INTELLIGENCEOVERLAY_FORM
         Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_W_MusicListHeaderColImage
+        Set w.ext(DEPTH_W_MusicListHeaderColImage) = New W_MusicListHeaderColImage
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_W_MusicModeCheckboxButton
+        Set w.ext(DEPTH_W_MusicModeCheckboxButton) = New W_MusicModeCheckboxButton
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzAdvCheckbox
         Set w.ext(DEPTH_WzAdvCheckbox) = New WzAdvCheckbox
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
@@ -1076,6 +1232,12 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzCampaignOptionButton
         Set w.ext(DEPTH_WzCampaignOptionButton) = New WzCampaignOptionButton
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzChatMuteColButtonBase
+        Set w.ext(DEPTH_WzChatMuteColButtonBase) = New WzChatMuteColButtonBase
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzChatOptionsButton
+        Set w.ext(DEPTH_WzChatOptionsButton) = New WzChatOptionsButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzCheckboxButton
         Set w.ext(DEPTH_WzCheckboxButton) = New WzCheckboxButton
@@ -1103,17 +1265,32 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
     Case K_WzOptionsDropdownWidget
         Set w.ext(DEPTH_WzOptionsDropdownWidget) = New WzOptionsDropdownWidget
         Set w.ext(DEPTH_DropdownWidget) = New DropdownWidget
+    Case K_WzPanelTabButton
+        Set w.ext(DEPTH_WzPanelTabButton) = New WzPanelTabButton
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzPlayerBoxOptionsButton
         Set w.ext(DEPTH_WzPlayerBoxOptionsButton) = New WzPlayerBoxOptionsButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzPlayerBoxTabButton
         Set w.ext(DEPTH_WzPlayerBoxTabButton) = New WzPlayerBoxTabButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzPlayerChatMuteButtonBase
+        Set w.ext(DEPTH_WzPlayerChatMuteButtonBase) = New WzPlayerChatMuteButtonBase
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzPlayerIndexSwapPositionRow
         Set w.ext(DEPTH_WzPlayerIndexSwapPositionRow) = New WzPlayerIndexSwapPositionRow
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzPlayerSelectionChangePositionRow
         Set w.ext(DEPTH_WzPlayerSelectionChangePositionRow) = New WzPlayerSelChangePosRowData
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzQuickChatButton
+        Set w.ext(DEPTH_WzQuickChatButton) = New WzQuickChatButton
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzQuickChatPlayerButton
+        Set w.ext(DEPTH_WzQuickChatPlayerButton) = New WzQuickChatPlayerButton
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzQuickChatToggleMixedCheckButton
+        Set w.ext(DEPTH_WzQuickChatToggleMixedCheckButton) = New QCToggleMixedCheckButtonData
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzStartHostingButton
         Set w.ext(DEPTH_WzStartHostingButton) = New WzStartHostingButton
@@ -1171,6 +1348,18 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
         Set w.ext(DEPTH_W_FULLSCREENOVERLAY_CLICKFORM) = New W_FULLSCREENOVERLAY_CLICKFORM
         Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
         Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_WzChatOptionsForm
+        Set w.ext(DEPTH_WzChatOptionsForm) = New WzChatOptionsForm
+        Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_WzGlobalChatMuteColButton
+        Set w.ext(DEPTH_WzGlobalChatMuteColButton) = New WzGlobalChatMuteColButton
+        Set w.ext(DEPTH_WzChatMuteColButtonBase) = New WzChatMuteColButtonBase
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzHostFreeChatPlayerMuteButton
+        Set w.ext(DEPTH_WzHostFreeChatPlayerMuteButton) = New WzHostFreeChatPlayerMuteButton
+        Set w.ext(DEPTH_WzPlayerChatMuteButtonBase) = New WzPlayerChatMuteButtonBase
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzInGameChatBoxForm
         Set w.ext(DEPTH_WzInGameChatBoxForm) = New WzInGameChatBoxForm
         Set w.ext(DEPTH_IntFormAnimated) = New IntFormAnimated
@@ -1186,9 +1375,21 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
     Case K_WzInfoButton
         Set w.ext(DEPTH_WzFrontendImageButton) = New WzFrontendImageButton
         Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
+    Case K_WzLocalChatMuteColButton
+        Set w.ext(DEPTH_WzLocalChatMuteColButton) = New WzLocalChatMuteColButton
+        Set w.ext(DEPTH_WzChatMuteColButtonBase) = New WzChatMuteColButtonBase
+        Set w.ext(DEPTH_W_BUTTON) = New W_BUTTON
     Case K_WzMessageView
         Set w.ext(DEPTH_WzMessageView) = New WzMessageView
         Set w.ext(DEPTH_IntFormAnimated) = New IntFormAnimated
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_WzQuickChatForm
+        Set w.ext(DEPTH_WzQuickChatForm) = New WzQuickChatForm
+        Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_WzQuickChatSection
+        Set w.ext(DEPTH_WzQuickChatSection) = New WzQuickChatSection
+        Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
         Set w.ext(DEPTH_W_FORM) = New W_FORM
     Case K_BuildObjectsForm
         Set w.ext(DEPTH_BuildObjectsForm) = New BuildObjectsForm
@@ -1243,6 +1444,9 @@ Public Function WIDGET_alloc(ByVal kind As WIDGET_KIND) As WIDGET
         Set w.ext(DEPTH_WzFullscreenKeyBindingEditingOverlay) = New WzKeyBindingEditOverlayData
         Set w.ext(DEPTH_W_FULLSCREENOVERLAY_CLICKFORM) = New W_FULLSCREENOVERLAY_CLICKFORM
         Set w.ext(DEPTH_W_CLICKFORM) = New W_CLICKFORM
+        Set w.ext(DEPTH_W_FORM) = New W_FORM
+    Case K_WzQuickChatPanelTabs
+        Set w.ext(DEPTH_MultibuttonWidget) = New MultibuttonWidget
         Set w.ext(DEPTH_W_FORM) = New W_FORM
     Case K_BuildStatsForm
         Set w.ext(DEPTH_BuildStatsForm) = New BuildStatsForm
@@ -1368,19 +1572,21 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Select Case kind
     Case K_WIDGET
         Select Case w.kind
-        Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_isKindOf = True
-        Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_isKindOf = True
-        Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_isKindOf = True
-        Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_isKindOf = True
-        Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton: WIDGET_isKindOf = True
-        Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow: WIDGET_isKindOf = True
-        Case K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: WIDGET_isKindOf = True
-        Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl: WIDGET_isKindOf = True
-        Case K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: WIDGET_isKindOf = True
-        Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton: WIDGET_isKindOf = True
-        Case K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay: WIDGET_isKindOf = True
-        Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: WIDGET_isKindOf = True
-        Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
+        Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_isKindOf = True
+        Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_isKindOf = True
+        Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: WIDGET_isKindOf = True
+        Case K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm: WIDGET_isKindOf = True
+        Case K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector: WIDGET_isKindOf = True
+        Case K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_isKindOf = True
+        Case K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper: WIDGET_isKindOf = True
+        Case K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton: WIDGET_isKindOf = True
+        Case K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_isKindOf = True
+        Case K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar: WIDGET_isKindOf = True
+        Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: WIDGET_isKindOf = True
+        Case K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm: WIDGET_isKindOf = True
+        Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm: WIDGET_isKindOf = True
+        Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: WIDGET_isKindOf = True
+        Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
         End Select
     Case K_AlignmentWidget
         Select Case w.kind
@@ -1393,6 +1599,10 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_ChatBoxPlayerNameWidget
         Select Case w.kind
         Case K_ChatBoxPlayerNameWidget: WIDGET_isKindOf = True
+        End Select
+    Case K_ChooserOverlay
+        Select Case w.kind
+        Case K_ChooserOverlay: WIDGET_isKindOf = True
         End Select
     Case K_ClipRectWidget
         Select Case w.kind
@@ -1521,8 +1731,9 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_W_BUTTON
         Select Case w.kind
         Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: WIDGET_isKindOf = True
-        Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: WIDGET_isKindOf = True
-        Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: WIDGET_isKindOf = True
+        Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: WIDGET_isKindOf = True
+        Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: WIDGET_isKindOf = True
+        Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: WIDGET_isKindOf = True
         End Select
     Case K_W_EDITBOX
         Select Case w.kind
@@ -1530,11 +1741,12 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         End Select
     Case K_W_FORM
         Select Case w.kind
-        Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum: WIDGET_isKindOf = True
-        Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: WIDGET_isKindOf = True
-        Case K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: WIDGET_isKindOf = True
-        Case K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton: WIDGET_isKindOf = True
-        Case K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
+        Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_isKindOf = True
+        Case K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: WIDGET_isKindOf = True
+        Case K_WzChatOptionsForm, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton: WIDGET_isKindOf = True
+        Case K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: WIDGET_isKindOf = True
+        Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: WIDGET_isKindOf = True
+        Case K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
         End Select
     Case K_W_LABEL
         Select Case w.kind
@@ -1600,6 +1812,10 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_WzPlayerBoxTabs: WIDGET_isKindOf = True
         End Select
+    Case K_WzPlayerMuteStatusLabel
+        Select Case w.kind
+        Case K_WzPlayerMuteStatusLabel: WIDGET_isKindOf = True
+        End Select
     Case K_WzPlayerRow
         Select Case w.kind
         Case K_WzPlayerRow: WIDGET_isKindOf = True
@@ -1607,6 +1823,18 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_WzPositionChooser
         Select Case w.kind
         Case K_WzPositionChooser: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatPanel
+        Select Case w.kind
+        Case K_WzQuickChatPanel: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatSendToPlayersSelector
+        Select Case w.kind
+        Case K_WzQuickChatSendToPlayersSelector: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatSendToSelector
+        Select Case w.kind
+        Case K_WzQuickChatSendToSelector: WIDGET_isKindOf = True
         End Select
     Case K_CampaignStartButton
         Select Case w.kind
@@ -1663,11 +1891,15 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         End Select
     Case K_MultibuttonWidget
         Select Case w.kind
-        Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: WIDGET_isKindOf = True
+        Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_WzQuickChatPanelTabs: WIDGET_isKindOf = True
         End Select
     Case K_MultipleChoiceButton
         Select Case w.kind
         Case K_MultipleChoiceButton: WIDGET_isKindOf = True
+        End Select
+    Case K_MusicManagerForm
+        Select Case w.kind
+        Case K_MusicManagerForm: WIDGET_isKindOf = True
         End Select
     Case K_OptionRow
         Select Case w.kind
@@ -1713,11 +1945,15 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_TableRow: WIDGET_isKindOf = True
         End Select
+    Case K_TrackDetailsForm
+        Select Case w.kind
+        Case K_TrackDetailsForm: WIDGET_isKindOf = True
+        End Select
     Case K_W_CLICKFORM
         Select Case w.kind
-        Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: WIDGET_isKindOf = True
-        Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: WIDGET_isKindOf = True
-        Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
+        Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: WIDGET_isKindOf = True
+        Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: WIDGET_isKindOf = True
+        Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_isKindOf = True
         End Select
     Case K_W_INGAMEOPTIONS_BUTTON
         Select Case w.kind
@@ -1726,6 +1962,14 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_W_INTELLIGENCEOVERLAY_FORM
         Select Case w.kind
         Case K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_isKindOf = True
+        End Select
+    Case K_W_MusicListHeaderColImage
+        Select Case w.kind
+        Case K_W_MusicListHeaderColImage: WIDGET_isKindOf = True
+        End Select
+    Case K_W_MusicModeCheckboxButton
+        Select Case w.kind
+        Case K_W_MusicModeCheckboxButton: WIDGET_isKindOf = True
         End Select
     Case K_WzAdvCheckbox
         Select Case w.kind
@@ -1738,6 +1982,14 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_WzCampaignOptionButton
         Select Case w.kind
         Case K_WzCampaignOptionButton: WIDGET_isKindOf = True
+        End Select
+    Case K_WzChatMuteColButtonBase
+        Select Case w.kind
+        Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: WIDGET_isKindOf = True
+        End Select
+    Case K_WzChatOptionsButton
+        Select Case w.kind
+        Case K_WzChatOptionsButton: WIDGET_isKindOf = True
         End Select
     Case K_WzCheckboxButton
         Select Case w.kind
@@ -1775,6 +2027,10 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_WzOptionsDropdownWidget, K_OptionsDropdown: WIDGET_isKindOf = True
         End Select
+    Case K_WzPanelTabButton
+        Select Case w.kind
+        Case K_WzPanelTabButton: WIDGET_isKindOf = True
+        End Select
     Case K_WzPlayerBoxOptionsButton
         Select Case w.kind
         Case K_WzPlayerBoxOptionsButton: WIDGET_isKindOf = True
@@ -1783,6 +2039,10 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_WzPlayerBoxTabButton: WIDGET_isKindOf = True
         End Select
+    Case K_WzPlayerChatMuteButtonBase
+        Select Case w.kind
+        Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: WIDGET_isKindOf = True
+        End Select
     Case K_WzPlayerIndexSwapPositionRow
         Select Case w.kind
         Case K_WzPlayerIndexSwapPositionRow: WIDGET_isKindOf = True
@@ -1790,6 +2050,18 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_WzPlayerSelectionChangePositionRow
         Select Case w.kind
         Case K_WzPlayerSelectionChangePositionRow: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatButton
+        Select Case w.kind
+        Case K_WzQuickChatButton: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatPlayerButton
+        Select Case w.kind
+        Case K_WzQuickChatPlayerButton: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatToggleMixedCheckButton
+        Select Case w.kind
+        Case K_WzQuickChatToggleMixedCheckButton: WIDGET_isKindOf = True
         End Select
     Case K_WzStartHostingButton
         Select Case w.kind
@@ -1834,7 +2106,7 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         End Select
     Case K_MultichoiceWidget
         Select Case w.kind
-        Case K_MultichoiceWidget: WIDGET_isKindOf = True
+        Case K_MultichoiceWidget, K_WzQuickChatPanelTabs: WIDGET_isKindOf = True
         End Select
     Case K_ObjectsForm
         Select Case w.kind
@@ -1852,6 +2124,18 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzFullscreenKeyBindingEditingOverlay: WIDGET_isKindOf = True
         End Select
+    Case K_WzChatOptionsForm
+        Select Case w.kind
+        Case K_WzChatOptionsForm: WIDGET_isKindOf = True
+        End Select
+    Case K_WzGlobalChatMuteColButton
+        Select Case w.kind
+        Case K_WzGlobalChatMuteColButton: WIDGET_isKindOf = True
+        End Select
+    Case K_WzHostFreeChatPlayerMuteButton
+        Select Case w.kind
+        Case K_WzHostFreeChatPlayerMuteButton: WIDGET_isKindOf = True
+        End Select
     Case K_WzInGameChatBoxForm
         Select Case w.kind
         Case K_WzInGameChatBoxForm: WIDGET_isKindOf = True
@@ -1868,9 +2152,21 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
         Select Case w.kind
         Case K_WzInfoButton: WIDGET_isKindOf = True
         End Select
+    Case K_WzLocalChatMuteColButton
+        Select Case w.kind
+        Case K_WzLocalChatMuteColButton: WIDGET_isKindOf = True
+        End Select
     Case K_WzMessageView
         Select Case w.kind
         Case K_WzMessageView: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatForm
+        Select Case w.kind
+        Case K_WzQuickChatForm: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatSection
+        Select Case w.kind
+        Case K_WzQuickChatSection: WIDGET_isKindOf = True
         End Select
     Case K_BuildObjectsForm
         Select Case w.kind
@@ -1916,6 +2212,10 @@ Public Function WIDGET_isKindOf(ByVal w As WIDGET, ByVal kind As WIDGET_KIND) As
     Case K_WzFullscreenKeyBindingEditingOverlay
         Select Case w.kind
         Case K_WzFullscreenKeyBindingEditingOverlay: WIDGET_isKindOf = True
+        End Select
+    Case K_WzQuickChatPanelTabs
+        Select Case w.kind
+        Case K_WzQuickChatPanelTabs: WIDGET_isKindOf = True
         End Select
     Case K_BuildStatsForm
         Select Case w.kind
@@ -2002,6 +2302,7 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_AlignmentWidget: WIDGET_kindName = "AlignmentWidget"
     Case K_CampaignStartOptionsForm: WIDGET_kindName = "CampaignStartOptionsForm"
     Case K_ChatBoxPlayerNameWidget: WIDGET_kindName = "ChatBoxPlayerNameWidget"
+    Case K_ChooserOverlay: WIDGET_kindName = "ChooserOverlay"
     Case K_ClipRectWidget: WIDGET_kindName = "ClipRectWidget"
     Case K_DropdownItemWrapper: WIDGET_kindName = "DropdownItemWrapper"
     Case K_DropdownOverlay: WIDGET_kindName = "DropdownOverlay"
@@ -2052,8 +2353,12 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_WzMultiLobbyStatusBar: WIDGET_kindName = "WzMultiLobbyStatusBar"
     Case K_WzOptionsChoiceWidget: WIDGET_kindName = "WzOptionsChoiceWidget"
     Case K_WzPlayerBoxTabs: WIDGET_kindName = "WzPlayerBoxTabs"
+    Case K_WzPlayerMuteStatusLabel: WIDGET_kindName = "WzPlayerMuteStatusLabel"
     Case K_WzPlayerRow: WIDGET_kindName = "WzPlayerRow"
     Case K_WzPositionChooser: WIDGET_kindName = "WzPositionChooser"
+    Case K_WzQuickChatPanel: WIDGET_kindName = "WzQuickChatPanel"
+    Case K_WzQuickChatSendToPlayersSelector: WIDGET_kindName = "WzQuickChatSendToPlayersSelector"
+    Case K_WzQuickChatSendToSelector: WIDGET_kindName = "WzQuickChatSendToSelector"
     Case K_CampaignStartButton: WIDGET_kindName = "CampaignStartButton"
     Case K_ChatBoxButton: WIDGET_kindName = "ChatBoxButton"
     Case K_ClickableScrollableList: WIDGET_kindName = "ClickableScrollableList"
@@ -2069,6 +2374,7 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_LoopProductionLabel: WIDGET_kindName = "LoopProductionLabel"
     Case K_MultibuttonWidget: WIDGET_kindName = "MultibuttonWidget"
     Case K_MultipleChoiceButton: WIDGET_kindName = "MultipleChoiceButton"
+    Case K_MusicManagerForm: WIDGET_kindName = "MusicManagerForm"
     Case K_OptionRow: WIDGET_kindName = "OptionRow"
     Case K_OptionsButton: WIDGET_kindName = "OptionsButton"
     Case K_OptionsForm: WIDGET_kindName = "OptionsForm"
@@ -2080,12 +2386,17 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_ReadyBoxContainerWidget: WIDGET_kindName = "ReadyBoxContainerWidget"
     Case K_TableHeader: WIDGET_kindName = "TableHeader"
     Case K_TableRow: WIDGET_kindName = "TableRow"
+    Case K_TrackDetailsForm: WIDGET_kindName = "TrackDetailsForm"
     Case K_W_CLICKFORM: WIDGET_kindName = "W_CLICKFORM"
     Case K_W_INGAMEOPTIONS_BUTTON: WIDGET_kindName = "W_INGAMEOPTIONS_BUTTON"
     Case K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_kindName = "W_INTELLIGENCEOVERLAY_FORM"
+    Case K_W_MusicListHeaderColImage: WIDGET_kindName = "W_MusicListHeaderColImage"
+    Case K_W_MusicModeCheckboxButton: WIDGET_kindName = "W_MusicModeCheckboxButton"
     Case K_WzAdvCheckbox: WIDGET_kindName = "WzAdvCheckbox"
     Case K_WzCampaignModButton: WIDGET_kindName = "WzCampaignModButton"
     Case K_WzCampaignOptionButton: WIDGET_kindName = "WzCampaignOptionButton"
+    Case K_WzChatMuteColButtonBase: WIDGET_kindName = "WzChatMuteColButtonBase"
+    Case K_WzChatOptionsButton: WIDGET_kindName = "WzChatOptionsButton"
     Case K_WzCheckboxButton: WIDGET_kindName = "WzCheckboxButton"
     Case K_WzClickableOptionsChoiceWidget: WIDGET_kindName = "WzClickableOptionsChoiceWidget"
     Case K_WzClippableButton: WIDGET_kindName = "WzClippableButton"
@@ -2095,10 +2406,15 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_WzMultiButton: WIDGET_kindName = "WzMultiButton"
     Case K_WzMultiLobbyOptionsImpl: WIDGET_kindName = "WzMultiLobbyOptionsImpl"
     Case K_WzOptionsDropdownWidget: WIDGET_kindName = "WzOptionsDropdownWidget"
+    Case K_WzPanelTabButton: WIDGET_kindName = "WzPanelTabButton"
     Case K_WzPlayerBoxOptionsButton: WIDGET_kindName = "WzPlayerBoxOptionsButton"
     Case K_WzPlayerBoxTabButton: WIDGET_kindName = "WzPlayerBoxTabButton"
+    Case K_WzPlayerChatMuteButtonBase: WIDGET_kindName = "WzPlayerChatMuteButtonBase"
     Case K_WzPlayerIndexSwapPositionRow: WIDGET_kindName = "WzPlayerIndexSwapPositionRow"
     Case K_WzPlayerSelectionChangePositionRow: WIDGET_kindName = "WzPlayerSelectionChangePositionRow"
+    Case K_WzQuickChatButton: WIDGET_kindName = "WzQuickChatButton"
+    Case K_WzQuickChatPlayerButton: WIDGET_kindName = "WzQuickChatPlayerButton"
+    Case K_WzQuickChatToggleMixedCheckButton: WIDGET_kindName = "WzQuickChatToggleMixedCheckButton"
     Case K_WzStartHostingButton: WIDGET_kindName = "WzStartHostingButton"
     Case K_ChatBoxWidget: WIDGET_kindName = "ChatBoxWidget"
     Case K_DesignPowerBar: WIDGET_kindName = "DesignPowerBar"
@@ -2114,11 +2430,17 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_OptionsDropdown: WIDGET_kindName = "OptionsDropdown"
     Case K_StatsForm: WIDGET_kindName = "StatsForm"
     Case K_W_FULLSCREENOVERLAY_CLICKFORM: WIDGET_kindName = "W_FULLSCREENOVERLAY_CLICKFORM"
+    Case K_WzChatOptionsForm: WIDGET_kindName = "WzChatOptionsForm"
+    Case K_WzGlobalChatMuteColButton: WIDGET_kindName = "WzGlobalChatMuteColButton"
+    Case K_WzHostFreeChatPlayerMuteButton: WIDGET_kindName = "WzHostFreeChatPlayerMuteButton"
     Case K_WzInGameChatBoxForm: WIDGET_kindName = "WzInGameChatBoxForm"
     Case K_WzInGameChatScreen_CLICKFORM: WIDGET_kindName = "WzInGameChatScreen_CLICKFORM"
     Case K_WzInGameOptionsScreen_CLICKFORM: WIDGET_kindName = "WzInGameOptionsScreen_CLICKFORM"
     Case K_WzInfoButton: WIDGET_kindName = "WzInfoButton"
+    Case K_WzLocalChatMuteColButton: WIDGET_kindName = "WzLocalChatMuteColButton"
     Case K_WzMessageView: WIDGET_kindName = "WzMessageView"
+    Case K_WzQuickChatForm: WIDGET_kindName = "WzQuickChatForm"
+    Case K_WzQuickChatSection: WIDGET_kindName = "WzQuickChatSection"
     Case K_BuildObjectsForm: WIDGET_kindName = "BuildObjectsForm"
     Case K_CommanderObjectsForm: WIDGET_kindName = "CommanderObjectsForm"
     Case K_DynamicIntFancyButton: WIDGET_kindName = "DynamicIntFancyButton"
@@ -2130,6 +2452,7 @@ Public Function WIDGET_kindName(ByVal kind As WIDGET_KIND) As String
     Case K_ObjectStatsForm: WIDGET_kindName = "ObjectStatsForm"
     Case K_ResearchObjectsForm: WIDGET_kindName = "ResearchObjectsForm"
     Case K_WzFullscreenKeyBindingEditingOverlay: WIDGET_kindName = "WzFullscreenKeyBindingEditingOverlay"
+    Case K_WzQuickChatPanelTabs: WIDGET_kindName = "WzQuickChatPanelTabs"
     Case K_BuildStatsForm: WIDGET_kindName = "BuildStatsForm"
     Case K_GroupButton: WIDGET_kindName = "GroupButton"
     Case K_IntStatusButton: WIDGET_kindName = "IntStatusButton"
@@ -2267,7 +2590,7 @@ Public Sub vt_MultibuttonWidget_stateChanged(ByVal self As WIDGET)
     Select Case self.kind
     Case K_LobbyMultiOptionsChoiceWidget: LobbyMultiOptionsChoiceWidget_stateChanged self
     Case K_LobbyMultiOptionsSectionWidget: LobbyMultiOptionsSectionWidget_stateChanged self
-    Case K_MultibuttonWidget, K_MultichoiceWidget: MultibuttonWidget_stateChanged self
+    Case K_MultibuttonWidget, K_MultichoiceWidget, K_WzQuickChatPanelTabs: MultibuttonWidget_stateChanged self
     End Select
 End Sub
 
@@ -2412,25 +2735,29 @@ Public Function vt_WIDGET_capturesMouseDrag(ByVal self As WIDGET, ByVal key As W
     Case K_HorizontalButtonsWidget: vt_WIDGET_capturesMouseDrag = HorizontalButtonsWidget_capturesMouseDrag(self, key)
     Case K_RadarWidget: vt_WIDGET_capturesMouseDrag = RadarWidget_capturesMouseDrag(self, key)
     Case K_TableHeader: vt_WIDGET_capturesMouseDrag = TableHeader_capturesMouseDrag(self, key)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_LABEL: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzInfoButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
-    Case K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
-    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
-    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_WzLocalChatMuteColButton: vt_WIDGET_capturesMouseDrag = WIDGET_capturesMouseDrag(self, key)
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
+    Case K_ResearchOptionButton: vt_WIDGET_capturesMouseDrag = W_FORM_capturesMouseDrag(self, key)
     Case K_W_SLIDER: vt_WIDGET_capturesMouseDrag = W_SLIDER_capturesMouseDrag(self, key)
     End Select
 End Function
 
 Public Sub vt_WIDGET_clicked(ByVal self As WIDGET, psContext As W_CONTEXT, Optional ByVal key As WIDGET_KEY = WKEY_PRIMARY)
     Select Case self.kind
+    Case K_ChooserOverlay: ChooserOverlay_clicked self, psContext, key
     Case K_ClickableScrollableList: ClickableScrollableList_clicked self, psContext, key
     Case K_DropdownOverlay: DropdownOverlay_clicked self, psContext, key
     Case K_DropdownWidget, K_WzOptionsDropdownWidget, K_OptionsDropdown: DropdownWidget_clicked self, psContext, key
@@ -2440,17 +2767,19 @@ Public Sub vt_WIDGET_clicked(ByVal self As WIDGET, psContext As W_CONTEXT, Optio
     Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget: WIDGET_clicked self, psContext, key
     Case K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget: WIDGET_clicked self, psContext, key
     Case K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm: WIDGET_clicked self, psContext, key
-    Case K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_DesignStatsBar: WIDGET_clicked self, psContext, key
-    Case K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzMultiLobbyOptionsImpl, K_DesignPowerBar: WIDGET_clicked self, psContext, key
+    Case K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow: WIDGET_clicked self, psContext, key
+    Case K_WzQuickChatSendToPlayersSelector, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzMultiLobbyOptionsImpl, K_DesignPowerBar: WIDGET_clicked self, psContext, key
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: W_BUTTON_clicked self, psContext, key
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: W_BUTTON_clicked self, psContext, key
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_clicked self, psContext, key
-    Case K_W_CLICKFORM, K_IntFancyButton, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton: W_CLICKFORM_clicked self, psContext, key
-    Case K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_clicked self, psContext, key
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: W_BUTTON_clicked self, psContext, key
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton: W_BUTTON_clicked self, psContext, key
+    Case K_WzLocalChatMuteColButton: W_BUTTON_clicked self, psContext, key
+    Case K_W_CLICKFORM, K_IntFancyButton, K_WzChatOptionsForm, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_GroupButton, K_IntStatusButton: W_CLICKFORM_clicked self, psContext, key
+    Case K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: W_CLICKFORM_clicked self, psContext, key
+    Case K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_clicked self, psContext, key
     Case K_W_EDITBOX: W_EDITBOX_clicked self, psContext, key
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm: W_FORM_clicked self, psContext, key
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: W_FORM_clicked self, psContext, key
-    Case K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_clicked self, psContext, key
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TrackDetailsForm, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: W_FORM_clicked self, psContext, key
+    Case K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm: W_FORM_clicked self, psContext, key
+    Case K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_clicked self, psContext, key
     Case K_W_FULLSCREENOVERLAY_CLICKFORM: W_FULLSCREENOVERLAY_CLICKFORM_clicked self, psContext, key
     Case K_W_INTELLIGENCEOVERLAY_FORM: W_INTELLIGENCEOVERLAY_FORM_clicked self, psContext, key
     Case K_W_SLIDER: W_SLIDER_clicked self, psContext, key
@@ -2459,6 +2788,10 @@ Public Sub vt_WIDGET_clicked(ByVal self As WIDGET, psContext As W_CONTEXT, Optio
     Case K_WzInGameChatScreen_CLICKFORM: WzInGameChatScreen_CLICKFORM_clicked self, psContext, key
     Case K_WzInGameOptionsScreen_CLICKFORM: WzInGameOptionsScreen_CLICKFORM_clicked self, psContext, key
     Case K_WzPositionChooser: WzPositionChooser_clicked self, psContext, key
+    Case K_WzQuickChatPanel: WzQuickChatPanel_clicked self, psContext, key
+    Case K_WzQuickChatPlayerButton: WzQuickChatPlayerButton_clicked self, psContext, key
+    Case K_WzQuickChatSendToSelector: WzQuickChatSendToSelector_clicked self, psContext, key
+    Case K_WzQuickChatToggleMixedCheckButton: WzQuickChatToggleMixedCheckButton_clicked self, psContext, key
     End Select
 End Sub
 
@@ -2504,6 +2837,7 @@ Public Sub vt_WIDGET_display(ByVal self As WIDGET, ByVal xOffset As Long, ByVal 
     Case K_ManufactureStatsButton: ManufactureStatsButton_display self, xOffset, yOffset
     Case K_MenuItemWrapper: MenuItemWrapper_display self, xOffset, yOffset
     Case K_MultibuttonWidget, K_MultichoiceWidget: MultibuttonWidget_display self, xOffset, yOffset
+    Case K_MusicManagerForm: MusicManagerForm_display self, xOffset, yOffset
     Case K_ObjectsForm, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ResearchObjectsForm: ObjectsForm_display self, xOffset, yOffset
     Case K_OptionRow: OptionRow_display self, xOffset, yOffset
     Case K_OptionsBrowserForm: OptionsBrowserForm_display self, xOffset, yOffset
@@ -2530,8 +2864,9 @@ Public Sub vt_WIDGET_display(ByVal self As WIDGET, ByVal xOffset As Long, ByVal 
     Case K_TableHeader: TableHeader_display self, xOffset, yOffset
     Case K_TableRow: TableRow_display self, xOffset, yOffset
     Case K_TitleFormSideText: TitleFormSideText_display self, xOffset, yOffset
-    Case K_WIDGET, K_AlignmentWidget, K_ClipRectWidget, K_GridLayout, K_ListTabWidget, K_ListWidget, K_MarginWidget, K_OptionsRowWidgetBase, K_PopoverMenuWidget, K_ScrollBarWidget, K_ScrollableTableWidget, K_TabSelectionWidget: WIDGET_display self, xOffset, yOffset
-    Case K_TitleFormWrapper, K_WidgetInfoButtonWrapper, K_WzCampaignListSection, K_WzCampaignTweakOptionsSummaryWidget, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_IntListTabWidget, K_WzMultiLobbyOptionsImpl: WIDGET_display self, xOffset, yOffset
+    Case K_TrackDetailsForm: TrackDetailsForm_display self, xOffset, yOffset
+    Case K_WIDGET, K_AlignmentWidget, K_ChooserOverlay, K_ClipRectWidget, K_GridLayout, K_ListTabWidget, K_ListWidget, K_MarginWidget, K_OptionsRowWidgetBase, K_PopoverMenuWidget, K_ScrollBarWidget, K_ScrollableTableWidget: WIDGET_display self, xOffset, yOffset
+    Case K_TabSelectionWidget, K_TitleFormWrapper, K_WidgetInfoButtonWrapper, K_WzCampaignListSection, K_WzCampaignTweakOptionsSummaryWidget, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_IntListTabWidget, K_WzMultiLobbyOptionsImpl: WIDGET_display self, xOffset, yOffset
     Case K_WZOptionTitleLabel: WZOptionTitleLabel_display self, xOffset, yOffset
     Case K_W_BARGRAPH: W_BARGRAPH_display self, xOffset, yOffset
     Case K_W_BUTTON, K_MultipleChoiceButton: W_BUTTON_display self, xOffset, yOffset
@@ -2542,6 +2877,8 @@ Public Sub vt_WIDGET_display(ByVal self As WIDGET, ByVal xOffset As Long, ByVal 
     Case K_W_INGAMEOPTIONS_BUTTON: W_INGAMEOPTIONS_BUTTON_display self, xOffset, yOffset
     Case K_W_INTELLIGENCEOVERLAY_FORM: W_INTELLIGENCEOVERLAY_FORM_display self, xOffset, yOffset
     Case K_W_LABEL, K_FixedIdealWidthLabel: W_LABEL_display self, xOffset, yOffset
+    Case K_W_MusicListHeaderColImage: W_MusicListHeaderColImage_display self, xOffset, yOffset
+    Case K_W_MusicModeCheckboxButton: W_MusicModeCheckboxButton_display self, xOffset, yOffset
     Case K_W_SLIDER: W_SLIDER_display self, xOffset, yOffset
     Case K_WzAdvCheckbox: WzAdvCheckbox_display self, xOffset, yOffset
     Case K_WzCampaignHelpPanel: WzCampaignHelpPanel_display self, xOffset, yOffset
@@ -2551,6 +2888,9 @@ Public Sub vt_WIDGET_display(ByVal self As WIDGET, ByVal xOffset As Long, ByVal 
     Case K_WzCampaignSubInfoBox: WzCampaignSubInfoBox_display self, xOffset, yOffset
     Case K_WzCampaignTitleWidget: WzCampaignTitleWidget_display self, xOffset, yOffset
     Case K_WzCampaignTweakOptionsEditForm: WzCampaignTweakOptionsEditForm_display self, xOffset, yOffset
+    Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: WzChatMuteColButtonBase_display self, xOffset, yOffset
+    Case K_WzChatOptionsButton: WzChatOptionsButton_display self, xOffset, yOffset
+    Case K_WzChatOptionsForm: WzChatOptionsForm_display self, xOffset, yOffset
     Case K_WzCheckboxButton: WzCheckboxButton_display self, xOffset, yOffset
     Case K_WzClippableButton: WzClippableButton_display self, xOffset, yOffset
     Case K_WzFrontendImageButton, K_WzInfoButton: WzFrontendImageButton_display self, xOffset, yOffset
@@ -2564,10 +2904,21 @@ Public Sub vt_WIDGET_display(ByVal self As WIDGET, ByVal xOffset As Long, ByVal 
     Case K_WzMultiLobbyStatusBar: WzMultiLobbyStatusBar_display self, xOffset, yOffset
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: WzOptionsChoiceWidget_display self, xOffset, yOffset
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: WzOptionsDropdownWidget_display self, xOffset, yOffset
+    Case K_WzPanelTabButton: WzPanelTabButton_display self, xOffset, yOffset
     Case K_WzPlayerBoxOptionsButton: WzPlayerBoxOptionsButton_display self, xOffset, yOffset
     Case K_WzPlayerBoxTabButton: WzPlayerBoxTabButton_display self, xOffset, yOffset
+    Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: WzPlayerChatMuteButtonBase_display self, xOffset, yOffset
     Case K_WzPlayerIndexSwapPositionRow: WzPlayerIndexSwapPositionRow_display self, xOffset, yOffset
+    Case K_WzPlayerMuteStatusLabel: WzPlayerMuteStatusLabel_display self, xOffset, yOffset
     Case K_WzPlayerSelectionChangePositionRow: WzPlayerSelectionChangePositionRow_display self, xOffset, yOffset
+    Case K_WzQuickChatButton: WzQuickChatButton_display self, xOffset, yOffset
+    Case K_WzQuickChatForm: WzQuickChatForm_display self, xOffset, yOffset
+    Case K_WzQuickChatPanelTabs: WzQuickChatPanelTabs_display self, xOffset, yOffset
+    Case K_WzQuickChatPlayerButton: WzQuickChatPlayerButton_display self, xOffset, yOffset
+    Case K_WzQuickChatSection: WzQuickChatSection_display self, xOffset, yOffset
+    Case K_WzQuickChatSendToPlayersSelector: WzQuickChatSendToPlayersSelector_display self, xOffset, yOffset
+    Case K_WzQuickChatSendToSelector: WzQuickChatSendToSelector_display self, xOffset, yOffset
+    Case K_WzQuickChatToggleMixedCheckButton: WzQuickChatToggleMixedCheckButton_display self, xOffset, yOffset
     Case K_WzStartHostingButton: WzStartHostingButton_display self, xOffset, yOffset
     End Select
 End Sub
@@ -2582,21 +2933,24 @@ Public Sub vt_WIDGET_displayRecursive(ByVal self As WIDGET, context As WidgetGra
     Case K_ScrollableListWidget, K_ClickableScrollableList: ScrollableListWidget_displayRecursive self, context
     Case K_ScrollableTableWidget: ScrollableTableWidget_displayRecursive self, context
     Case K_TableRow: TableRow_displayRecursive self, context
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm: WIDGET_displayRecursive self, context
-    Case K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget: WIDGET_displayRecursive self, context
-    Case K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm: WIDGET_displayRecursive self, context
-    Case K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser: WIDGET_displayRecursive self, context
-    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_DesignPowerBar: WIDGET_displayRecursive self, context
-    Case K_OptionsDropdown: WIDGET_displayRecursive self, context
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_W_INGAMEOPTIONS_BUTTON, K_WzAdvCheckbox: W_BUTTON_displayRecursive self, context
-    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_displayRecursive self, context
-    Case K_WzInfoButton: W_BUTTON_displayRecursive self, context
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: W_FORM_displayRecursive self, context
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM: W_FORM_displayRecursive self, context
-    Case K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay: W_FORM_displayRecursive self, context
-    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: W_FORM_displayRecursive self, context
-    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_FORM_displayRecursive self, context
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget: WIDGET_displayRecursive self, context
+    Case K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: WIDGET_displayRecursive self, context
+    Case K_ScrollBarWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection: WIDGET_displayRecursive self, context
+    Case K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel: WIDGET_displayRecursive self, context
+    Case K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar: WIDGET_displayRecursive self, context
+    Case K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_DesignPowerBar, K_OptionsDropdown: WIDGET_displayRecursive self, context
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_displayRecursive self, context
+    Case K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton: W_BUTTON_displayRecursive self, context
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton: W_BUTTON_displayRecursive self, context
+    Case K_WzLocalChatMuteColButton: W_BUTTON_displayRecursive self, context
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: W_FORM_displayRecursive self, context
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: W_FORM_displayRecursive self, context
+    Case K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: W_FORM_displayRecursive self, context
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton: W_FORM_displayRecursive self, context
+    Case K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_FORM_displayRecursive self, context
     Case K_WzClippableButton: WzClippableButton_displayRecursive self, context
+    Case K_WzQuickChatPanel: WzQuickChatPanel_displayRecursive self, context
+    Case K_WzQuickChatSection: WzQuickChatSection_displayRecursive self, context
     End Select
 End Sub
 
@@ -2610,19 +2964,20 @@ Public Function vt_WIDGET_findMouseTargetRecursive(ByVal self As WIDGET, psConte
     Case K_OptionsForm, K_KeyOptionsForm: Set vt_WIDGET_findMouseTargetRecursive = OptionsForm_findMouseTargetRecursive(self, psContext, key, wasPressed)
     Case K_ScrollableListWidget, K_ClickableScrollableList: Set vt_WIDGET_findMouseTargetRecursive = ScrollableListWidget_findMouseTargetRecursive(self, psContext, key, wasPressed)
     Case K_TableRow: Set vt_WIDGET_findMouseTargetRecursive = TableRow_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_DropdownOverlay, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableTableWidget: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_W_INGAMEOPTIONS_BUTTON, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_WzInfoButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_DropdownOverlay, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_MarginWidget, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_W_INGAMEOPTIONS_BUTTON: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WzStartHostingButton, K_DesignPowerBar, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: Set vt_WIDGET_findMouseTargetRecursive = WIDGET_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatBoxForm: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
+    Case K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: Set vt_WIDGET_findMouseTargetRecursive = W_FORM_findMouseTargetRecursive(self, psContext, key, wasPressed)
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: Set vt_WIDGET_findMouseTargetRecursive = WzOptionsDropdownWidget_findMouseTargetRecursive(self, psContext, key, wasPressed)
     End Select
 End Function
@@ -2630,21 +2985,25 @@ End Function
 Public Sub vt_WIDGET_focusLost(ByVal self As WIDGET)
     Select Case self.kind
     Case K_ChatBoxWidget: ChatBoxWidget_focusLost self
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_focusLost self
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_focusLost self
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_focusLost self
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_focusLost self
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: WIDGET_focusLost self
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_focusLost self
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_focusLost self
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_focusLost self
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget: WIDGET_focusLost self
-    Case K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm: WIDGET_focusLost self
-    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton: WIDGET_focusLost self
-    Case K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: WIDGET_focusLost self
-    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_focusLost self
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_focusLost self
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_focusLost self
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: WIDGET_focusLost self
+    Case K_W_BUTTON, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_focusLost self
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton: WIDGET_focusLost self
+    Case K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel: WIDGET_focusLost self
+    Case K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget: WIDGET_focusLost self
+    Case K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase: WIDGET_focusLost self
+    Case K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: WIDGET_focusLost self
+    Case K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton: WIDGET_focusLost self
+    Case K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton: WIDGET_focusLost self
+    Case K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: WIDGET_focusLost self
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: WIDGET_focusLost self
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: WIDGET_focusLost self
+    Case K_ResearchOptionButton: WIDGET_focusLost self
     Case K_W_EDITBOX: W_EDITBOX_focusLost self
     Case K_WzInGameChatBoxForm: WzInGameChatBoxForm_focusLost self
+    Case K_WzQuickChatPanel: WzQuickChatPanel_focusLost self
+    Case K_WzQuickChatSection: WzQuickChatSection_focusLost self
     End Select
 End Sub
 
@@ -2666,7 +3025,8 @@ Public Sub vt_WIDGET_geometryChanged(ByVal self As WIDGET)
     Case K_LobbyHostOptionsForm: LobbyHostOptionsForm_geometryChanged self
     Case K_MarginWidget: MarginWidget_geometryChanged self
     Case K_MenuItemWrapper: MenuItemWrapper_geometryChanged self
-    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: MultibuttonWidget_geometryChanged self
+    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_WzQuickChatPanelTabs: MultibuttonWidget_geometryChanged self
+    Case K_MusicManagerForm: MusicManagerForm_geometryChanged self
     Case K_OptionRow: OptionRow_geometryChanged self
     Case K_OptionsBrowserForm: OptionsBrowserForm_geometryChanged self
     Case K_OptionsButton: OptionsButton_geometryChanged self
@@ -2686,13 +3046,15 @@ Public Sub vt_WIDGET_geometryChanged(ByVal self As WIDGET)
     Case K_TabSelectionWidget: TabSelectionWidget_geometryChanged self
     Case K_TableHeader: TableHeader_geometryChanged self
     Case K_TitleFormWrapper: TitleFormWrapper_geometryChanged self
-    Case K_WIDGET, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownOverlay, K_OptionsRowWidgetBase, K_ParagraphTextWidget, K_RadarWidget, K_TitleFormSideText, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_FORM: WIDGET_geometryChanged self
-    Case K_W_LABEL, K_W_SLIDER, K_WzMultiLobbyOptionsWidgetBase, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent: WIDGET_geometryChanged self
-    Case K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionsPaddingRow, K_PowerBar, K_ReadyBoxContainerWidget, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton: WIDGET_geometryChanged self
-    Case K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_DesignPowerBar, K_GroupsForum, K_IntFancyButton, K_ObjectsForm, K_StatsForm: WIDGET_geometryChanged self
-    Case K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInfoButton, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: WIDGET_geometryChanged self
-    Case K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton: WIDGET_geometryChanged self
-    Case K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_geometryChanged self
+    Case K_TrackDetailsForm: TrackDetailsForm_geometryChanged self
+    Case K_WIDGET, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownOverlay, K_OptionsRowWidgetBase, K_ParagraphTextWidget, K_RadarWidget, K_TitleFormSideText, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_geometryChanged self
+    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerMuteStatusLabel, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: WIDGET_geometryChanged self
+    Case K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionsPaddingRow, K_PowerBar, K_ReadyBoxContainerWidget, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: WIDGET_geometryChanged self
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton: WIDGET_geometryChanged self
+    Case K_WzPanelTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_DesignPowerBar, K_GroupsForum, K_IntFancyButton, K_ObjectsForm, K_StatsForm: WIDGET_geometryChanged self
+    Case K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: WIDGET_geometryChanged self
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton: WIDGET_geometryChanged self
+    Case K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_geometryChanged self
     Case K_W_EDITBOX: W_EDITBOX_geometryChanged self
     Case K_W_INTELLIGENCEOVERLAY_FORM: W_INTELLIGENCEOVERLAY_FORM_geometryChanged self
     Case K_WidgetInfoButtonWrapper: WidgetInfoButtonWrapper_geometryChanged self
@@ -2704,6 +3066,7 @@ Public Sub vt_WIDGET_geometryChanged(ByVal self As WIDGET)
     Case K_WzCampaignTitleWidget: WzCampaignTitleWidget_geometryChanged self
     Case K_WzCampaignTweakOptionsEditForm: WzCampaignTweakOptionsEditForm_geometryChanged self
     Case K_WzCampaignTweakOptionsSummaryWidget: WzCampaignTweakOptionsSummaryWidget_geometryChanged self
+    Case K_WzChatOptionsForm: WzChatOptionsForm_geometryChanged self
     Case K_WzHelpPopoverWidget: WzHelpPopoverWidget_geometryChanged self
     Case K_WzInGameChatBoxForm: WzInGameChatBoxForm_geometryChanged self
     Case K_WzInGameChatScreen_CLICKFORM: WzInGameChatScreen_CLICKFORM_geometryChanged self
@@ -2719,6 +3082,10 @@ Public Sub vt_WIDGET_geometryChanged(ByVal self As WIDGET)
     Case K_WzPlayerBoxTabs: WzPlayerBoxTabs_geometryChanged self
     Case K_WzPlayerRow: WzPlayerRow_geometryChanged self
     Case K_WzPositionChooser: WzPositionChooser_geometryChanged self
+    Case K_WzQuickChatForm: WzQuickChatForm_geometryChanged self
+    Case K_WzQuickChatPanel: WzQuickChatPanel_geometryChanged self
+    Case K_WzQuickChatSection: WzQuickChatSection_geometryChanged self
+    Case K_WzQuickChatSendToPlayersSelector: WzQuickChatSendToPlayersSelector_geometryChanged self
     Case K_WzStartHostingButton: WzStartHostingButton_geometryChanged self
     End Select
 End Sub
@@ -2726,21 +3093,23 @@ End Sub
 Public Function vt_WIDGET_getHelp(ByVal self As WIDGET) As WidgetHelp
     Select Case self.kind
     Case K_GroupsForum: Set vt_WIDGET_getHelp = GroupsForum_getHelp(self)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_EDITBOX, K_W_FORM: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
-    Case K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_EDITBOX: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_W_FORM, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_FixedIdealWidthLabel: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
+    Case K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: Set vt_WIDGET_getHelp = WIDGET_getHelp(self)
     Case K_W_BARGRAPH, K_DesignStatsBar, K_PowerBar, K_DesignPowerBar: Set vt_WIDGET_getHelp = W_BARGRAPH_getHelp(self)
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: Set vt_WIDGET_getHelp = W_BUTTON_getHelp(self)
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: Set vt_WIDGET_getHelp = W_CLICKFORM_getHelp(self)
     Case K_W_SLIDER: Set vt_WIDGET_getHelp = W_SLIDER_getHelp(self)
     End Select
 End Function
@@ -2749,59 +3118,64 @@ Public Function vt_WIDGET_getScrollSnapOffsets(ByVal self As WIDGET, offsets() A
     Select Case self.kind
     Case K_GridLayout: vt_WIDGET_getScrollSnapOffsets = GridLayout_getScrollSnapOffsets(self, offsets)
     Case K_Paragraph: vt_WIDGET_getScrollSnapOffsets = Paragraph_getScrollSnapOffsets(self, offsets)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsForm: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
-    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
+    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getScrollSnapOffsets = WIDGET_getScrollSnapOffsets(self, offsets)
     End Select
 End Function
 
 Public Function vt_WIDGET_getState(ByVal self As WIDGET) As Long
     Select Case self.kind
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm: vt_WIDGET_getState = WIDGET_getState(self)
-    Case K_ResearchStatsForm: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_ClickableScrollableList, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView: vt_WIDGET_getState = WIDGET_getState(self)
+    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: vt_WIDGET_getState = WIDGET_getState(self)
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_getState = W_BUTTON_getState(self)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: vt_WIDGET_getState = W_BUTTON_getState(self)
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: vt_WIDGET_getState = W_BUTTON_getState(self)
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: vt_WIDGET_getState = W_BUTTON_getState(self)
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: vt_WIDGET_getState = W_BUTTON_getState(self)
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: vt_WIDGET_getState = W_BUTTON_getState(self)
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getState = W_CLICKFORM_getState(self)
     End Select
 End Function
 
 Public Function vt_WIDGET_getString(ByVal self As WIDGET) As String
     Select Case self.kind
     Case K_TitleFormSideText: vt_WIDGET_getString = TitleFormSideText_getString(self)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormWrapper, K_W_BARGRAPH, K_W_FORM, K_W_SLIDER, K_WidgetInfoButtonWrapper: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_DesignStatsBar, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton: vt_WIDGET_getString = WIDGET_getString(self)
-    Case K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormWrapper, K_W_BARGRAPH, K_W_FORM, K_W_SLIDER: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_DesignStatsBar, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: vt_WIDGET_getString = WIDGET_getString(self)
+    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_getString = WIDGET_getString(self)
     Case K_WZOptionTitleLabel: vt_WIDGET_getString = WZOptionTitleLabel_getString(self)
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_getString = W_BUTTON_getString(self)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: vt_WIDGET_getString = W_BUTTON_getString(self)
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: vt_WIDGET_getString = W_BUTTON_getString(self)
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: vt_WIDGET_getString = W_BUTTON_getString(self)
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: vt_WIDGET_getString = W_BUTTON_getString(self)
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: vt_WIDGET_getString = W_BUTTON_getString(self)
     Case K_W_EDITBOX: vt_WIDGET_getString = W_EDITBOX_getString(self)
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: vt_WIDGET_getString = W_LABEL_getString(self)
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: vt_WIDGET_getString = WzOptionsChoiceWidget_getString(self)
@@ -2821,25 +3195,28 @@ Public Function vt_WIDGET_getTip(ByVal self As WIDGET) As String
     Case K_ResearchOptionButton: vt_WIDGET_getTip = ResearchOptionButton_getTip(self)
     Case K_StatsButton, K_BuildStatsButton, K_CommanderStatsButton, K_ManufactureStatsButton, K_ResearchStatsButton: vt_WIDGET_getTip = StatsButton_getTip(self)
     Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: vt_WIDGET_getTip = StatsFormButton_getTip(self)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_W_FORM, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerRow: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_WzPositionChooser, K_ClickableScrollableList, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm: vt_WIDGET_getTip = WIDGET_getTip(self)
-    Case K_ResearchStatsForm: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_W_FORM, K_WidgetInfoButtonWrapper: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_MultibuttonWidget, K_MusicManagerForm: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView: vt_WIDGET_getTip = WIDGET_getTip(self)
+    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: vt_WIDGET_getTip = WIDGET_getTip(self)
     Case K_WZOptionTitleLabel: vt_WIDGET_getTip = WZOptionTitleLabel_getTip(self)
     Case K_W_BARGRAPH, K_DesignStatsBar, K_DesignPowerBar: vt_WIDGET_getTip = W_BARGRAPH_getTip(self)
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: vt_WIDGET_getTip = W_BUTTON_getTip(self)
-    Case K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: vt_WIDGET_getTip = W_BUTTON_getTip(self)
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton: vt_WIDGET_getTip = W_CLICKFORM_getTip(self)
-    Case K_ObjectButton: vt_WIDGET_getTip = W_CLICKFORM_getTip(self)
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox: vt_WIDGET_getTip = W_BUTTON_getTip(self)
+    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton: vt_WIDGET_getTip = W_BUTTON_getTip(self)
+    Case K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: vt_WIDGET_getTip = W_BUTTON_getTip(self)
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: vt_WIDGET_getTip = W_CLICKFORM_getTip(self)
+    Case K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton: vt_WIDGET_getTip = W_CLICKFORM_getTip(self)
     Case K_W_EDITBOX: vt_WIDGET_getTip = W_EDITBOX_getTip(self)
     Case K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_getTip = W_INGAMEOPTIONS_BUTTON_getTip(self)
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: vt_WIDGET_getTip = W_LABEL_getTip(self)
     Case K_W_SLIDER: vt_WIDGET_getTip = W_SLIDER_getTip(self)
+    Case K_WzChatOptionsButton: vt_WIDGET_getTip = WzChatOptionsButton_getTip(self)
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: vt_WIDGET_getTip = WzOptionsChoiceWidget_getTip(self)
+    Case K_WzQuickChatButton: vt_WIDGET_getTip = WzQuickChatButton_getTip(self)
     End Select
 End Function
 
@@ -2848,26 +3225,29 @@ Public Sub vt_WIDGET_highlight(ByVal self As WIDGET, psContext As W_CONTEXT)
     Case K_ClickableScrollableList: ClickableScrollableList_highlight self, psContext
     Case K_OptionsKeyBindingWidget: OptionsKeyBindingWidget_highlight self, psContext
     Case K_RadarWidget: RadarWidget_highlight self, psContext
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_highlight self, psContext
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_highlight self, psContext
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_FORM, K_W_LABEL: WIDGET_highlight self, psContext
-    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: WIDGET_highlight self, psContext
-    Case K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_OptionRow, K_OptionsForm: WIDGET_highlight self, psContext
-    Case K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm: WIDGET_highlight self, psContext
-    Case K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm: WIDGET_highlight self, psContext
-    Case K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_highlight self, psContext
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_WzCampaignModButton: W_BUTTON_highlight self, psContext
-    Case K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_highlight self, psContext
-    Case K_WzInfoButton: W_BUTTON_highlight self, psContext
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: W_CLICKFORM_highlight self, psContext
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: W_CLICKFORM_highlight self, psContext
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_highlight self, psContext
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_highlight self, psContext
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_highlight self, psContext
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_FORM: WIDGET_highlight self, psContext
+    Case K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_highlight self, psContext
+    Case K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_highlight self, psContext
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm: WIDGET_highlight self, psContext
+    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm: WIDGET_highlight self, psContext
+    Case K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_highlight self, psContext
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_highlight self, psContext
+    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: W_BUTTON_highlight self, psContext
+    Case K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_highlight self, psContext
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: W_CLICKFORM_highlight self, psContext
+    Case K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: W_CLICKFORM_highlight self, psContext
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_highlight self, psContext
     Case K_W_EDITBOX: W_EDITBOX_highlight self, psContext
+    Case K_W_MusicModeCheckboxButton: W_MusicModeCheckboxButton_highlight self, psContext
     Case K_W_SLIDER: W_SLIDER_highlight self, psContext
     Case K_WzAdvCheckbox: WzAdvCheckbox_highlight self, psContext
     Case K_WzClickableOptionsChoiceWidget: WzClickableOptionsChoiceWidget_highlight self, psContext
     Case K_WzOptionsChoiceWidget: WzOptionsChoiceWidget_highlight self, psContext
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: WzOptionsDropdownWidget_highlight self, psContext
+    Case K_WzQuickChatSection: WzQuickChatSection_highlight self, psContext
+    Case K_WzQuickChatSendToSelector: WzQuickChatSendToSelector_highlight self, psContext
     End Select
 End Sub
 
@@ -2878,27 +3258,31 @@ Public Sub vt_WIDGET_highlightLost(ByVal self As WIDGET)
     Case K_OptionsKeyBindingWidget: OptionsKeyBindingWidget_highlightLost self
     Case K_Paragraph: Paragraph_highlightLost self
     Case K_RadarWidget: RadarWidget_highlightLost self
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: WIDGET_highlightLost self
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_highlightLost self
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection: WIDGET_highlightLost self
-    Case K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser: WIDGET_highlightLost self
-    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzMultiLobbyOptionsImpl, K_DesignPowerBar: WIDGET_highlightLost self
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_WzCampaignModButton: W_BUTTON_highlightLost self
-    Case K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_highlightLost self
-    Case K_WzInfoButton: W_BUTTON_highlightLost self
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_GroupButton, K_IntStatusButton: W_CLICKFORM_highlightLost self
-    Case K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: W_CLICKFORM_highlightLost self
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_highlightLost self
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_highlightLost self
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_highlightLost self
+    Case K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel: WIDGET_highlightLost self
+    Case K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel: WIDGET_highlightLost self
+    Case K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar: WIDGET_highlightLost self
+    Case K_WzMultiLobbyOptionsImpl, K_DesignPowerBar: WIDGET_highlightLost self
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_highlightLost self
+    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: W_BUTTON_highlightLost self
+    Case K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_highlightLost self
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: W_CLICKFORM_highlightLost self
+    Case K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: W_CLICKFORM_highlightLost self
+    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_highlightLost self
     Case K_W_EDITBOX: W_EDITBOX_highlightLost self
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: W_FORM_highlightLost self
-    Case K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm: W_FORM_highlightLost self
-    Case K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_highlightLost self
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: W_FORM_highlightLost self
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm: W_FORM_highlightLost self
+    Case K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_highlightLost self
+    Case K_W_MusicModeCheckboxButton: W_MusicModeCheckboxButton_highlightLost self
     Case K_W_SLIDER: W_SLIDER_highlightLost self
     Case K_WzAdvCheckbox: WzAdvCheckbox_highlightLost self
     Case K_WzClickableOptionsChoiceWidget: WzClickableOptionsChoiceWidget_highlightLost self
     Case K_WzFullscreenKeyBindingEditingOverlay: WzFullscreenKeyBindingEditingOverlay_highlightLost self
     Case K_WzOptionsChoiceWidget: WzOptionsChoiceWidget_highlightLost self
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: WzOptionsDropdownWidget_highlightLost self
+    Case K_WzQuickChatSection: WzQuickChatSection_highlightLost self
+    Case K_WzQuickChatSendToSelector: WzQuickChatSendToSelector_highlightLost self
     End Select
 End Sub
 
@@ -2906,19 +3290,22 @@ Public Function vt_WIDGET_hitTest(ByVal self As WIDGET, ByVal x As Long, ByVal y
     Select Case self.kind
     Case K_RadarWidget: vt_WIDGET_hitTest = RadarWidget_hitTest(self, x, y)
     Case K_TableRow: vt_WIDGET_hitTest = TableRow_hitTest(self, x, y)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_W_INGAMEOPTIONS_BUTTON, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzInfoButton: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
-    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
-    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
-    Case K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
-    Case K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_WzInfoButton, K_WzLocalChatMuteColButton: vt_WIDGET_hitTest = WIDGET_hitTest(self, x, y)
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_WzChatOptionsForm, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
+    Case K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_hitTest = W_FORM_hitTest(self, x, y)
     End Select
 End Function
 
@@ -2938,7 +3325,8 @@ Public Function vt_WIDGET_idealHeight(ByVal self As WIDGET) As Long
     Case K_LobbyMultiOptionsSectionWidget: vt_WIDGET_idealHeight = LobbyMultiOptionsSectionWidget_idealHeight(self)
     Case K_MarginWidget: vt_WIDGET_idealHeight = MarginWidget_idealHeight(self)
     Case K_MenuItemWrapper: vt_WIDGET_idealHeight = MenuItemWrapper_idealHeight(self)
-    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_MultichoiceWidget: vt_WIDGET_idealHeight = MultibuttonWidget_idealHeight(self)
+    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_MultichoiceWidget, K_WzQuickChatPanelTabs: vt_WIDGET_idealHeight = MultibuttonWidget_idealHeight(self)
+    Case K_MusicManagerForm: vt_WIDGET_idealHeight = MusicManagerForm_idealHeight(self)
     Case K_OptionRow: vt_WIDGET_idealHeight = OptionRow_idealHeight(self)
     Case K_OptionsBrowserForm: vt_WIDGET_idealHeight = OptionsBrowserForm_idealHeight(self)
     Case K_OptionsButton: vt_WIDGET_idealHeight = OptionsButton_idealHeight(self)
@@ -2956,14 +3344,16 @@ Public Function vt_WIDGET_idealHeight(ByVal self As WIDGET) As Long
     Case K_ScrollableTableWidget: vt_WIDGET_idealHeight = ScrollableTableWidget_idealHeight(self)
     Case K_TitleFormSideText: vt_WIDGET_idealHeight = TitleFormSideText_idealHeight(self)
     Case K_TitleFormWrapper: vt_WIDGET_idealHeight = TitleFormWrapper_idealHeight(self)
-    Case K_WIDGET, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownOverlay, K_ListTabWidget, K_ListWidget, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_RadarWidget, K_ScrollBarWidget: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_TabSelectionWidget, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_SLIDER, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerBoxTabs: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_MultipleChoiceButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzCampaignModButton, K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_IntFancyButton, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
-    Case K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_WIDGET, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownOverlay, K_ListTabWidget, K_ListWidget, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_RadarWidget: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_ScrollBarWidget, K_TabSelectionWidget, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_SLIDER, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzMultiLobbyOptionsWidgetBase: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_LoopProductionButton, K_MultipleChoiceButton, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_WzCampaignModButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_IntFancyButton, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzLocalChatMuteColButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
+    Case K_ResearchOptionButton: vt_WIDGET_idealHeight = WIDGET_idealHeight(self)
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: vt_WIDGET_idealHeight = W_LABEL_idealHeight(self)
     Case K_WidgetInfoButtonWrapper: vt_WIDGET_idealHeight = WidgetInfoButtonWrapper_idealHeight(self)
     Case K_WzAdvCheckbox: vt_WIDGET_idealHeight = WzAdvCheckbox_idealHeight(self)
@@ -2972,6 +3362,7 @@ Public Function vt_WIDGET_idealHeight(ByVal self As WIDGET) As Long
     Case K_WzCampaignOptionButton: vt_WIDGET_idealHeight = WzCampaignOptionButton_idealHeight(self)
     Case K_WzCampaignTweakOptionsEditForm: vt_WIDGET_idealHeight = WzCampaignTweakOptionsEditForm_idealHeight(self)
     Case K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_idealHeight = WzCampaignTweakOptionsSummaryWidget_idealHeight(self)
+    Case K_WzChatOptionsForm: vt_WIDGET_idealHeight = WzChatOptionsForm_idealHeight(self)
     Case K_WzClippableButton: vt_WIDGET_idealHeight = WzClippableButton_idealHeight(self)
     Case K_WzFrontendImageButton, K_WzInfoButton: vt_WIDGET_idealHeight = WzFrontendImageButton_idealHeight(self)
     Case K_WzHelpPopoverWidget: vt_WIDGET_idealHeight = WzHelpPopoverWidget_idealHeight(self)
@@ -2980,6 +3371,11 @@ Public Function vt_WIDGET_idealHeight(ByVal self As WIDGET) As Long
     Case K_WzMultiLobbyStatusBar: vt_WIDGET_idealHeight = WzMultiLobbyStatusBar_idealHeight(self)
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: vt_WIDGET_idealHeight = WzOptionsChoiceWidget_idealHeight(self)
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: vt_WIDGET_idealHeight = WzOptionsDropdownWidget_idealHeight(self)
+    Case K_WzQuickChatForm: vt_WIDGET_idealHeight = WzQuickChatForm_idealHeight(self)
+    Case K_WzQuickChatPanel: vt_WIDGET_idealHeight = WzQuickChatPanel_idealHeight(self)
+    Case K_WzQuickChatSection: vt_WIDGET_idealHeight = WzQuickChatSection_idealHeight(self)
+    Case K_WzQuickChatSendToPlayersSelector: vt_WIDGET_idealHeight = WzQuickChatSendToPlayersSelector_idealHeight(self)
+    Case K_WzQuickChatSendToSelector: vt_WIDGET_idealHeight = WzQuickChatSendToSelector_idealHeight(self)
     End Select
 End Function
 
@@ -3000,7 +3396,8 @@ Public Function vt_WIDGET_idealWidth(ByVal self As WIDGET) As Long
     Case K_LobbyMultiOptionsSectionWidget: vt_WIDGET_idealWidth = LobbyMultiOptionsSectionWidget_idealWidth(self)
     Case K_MarginWidget: vt_WIDGET_idealWidth = MarginWidget_idealWidth(self)
     Case K_MenuItemWrapper: vt_WIDGET_idealWidth = MenuItemWrapper_idealWidth(self)
-    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_MultichoiceWidget: vt_WIDGET_idealWidth = MultibuttonWidget_idealWidth(self)
+    Case K_MultibuttonWidget, K_LobbyMultiOptionsChoiceWidget, K_MultichoiceWidget, K_WzQuickChatPanelTabs: vt_WIDGET_idealWidth = MultibuttonWidget_idealWidth(self)
+    Case K_MusicManagerForm: vt_WIDGET_idealWidth = MusicManagerForm_idealWidth(self)
     Case K_OptionRow: vt_WIDGET_idealWidth = OptionRow_idealWidth(self)
     Case K_OptionsBrowserForm: vt_WIDGET_idealWidth = OptionsBrowserForm_idealWidth(self)
     Case K_OptionsButton: vt_WIDGET_idealWidth = OptionsButton_idealWidth(self)
@@ -3017,20 +3414,23 @@ Public Function vt_WIDGET_idealWidth(ByVal self As WIDGET) As Long
     Case K_ScrollableListWidget, K_ClickableScrollableList: vt_WIDGET_idealWidth = ScrollableListWidget_idealWidth(self)
     Case K_TitleFormSideText: vt_WIDGET_idealWidth = TitleFormSideText_idealWidth(self)
     Case K_TitleFormWrapper: vt_WIDGET_idealWidth = TitleFormWrapper_idealWidth(self)
-    Case K_WIDGET, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownOverlay, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_RadarWidget: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_ScrollBarWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_SLIDER, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar, K_IntFormAnimated: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_MultipleChoiceButton, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzCampaignModButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_IntFancyButton, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_WIDGET, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownOverlay, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_SLIDER, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzMultiLobbyOptionsWidgetBase, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_DesignStatsBar: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_MultipleChoiceButton, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicModeCheckboxButton, K_WzCampaignModButton, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_IntFancyButton, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
+    Case K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_idealWidth = WIDGET_idealWidth(self)
     Case K_WZOptionTitleLabel: vt_WIDGET_idealWidth = WZOptionTitleLabel_idealWidth(self)
     Case K_W_LABEL, K_LoopProductionLabel: vt_WIDGET_idealWidth = W_LABEL_idealWidth(self)
+    Case K_W_MusicListHeaderColImage: vt_WIDGET_idealWidth = W_MusicListHeaderColImage_idealWidth(self)
     Case K_WidgetInfoButtonWrapper: vt_WIDGET_idealWidth = WidgetInfoButtonWrapper_idealWidth(self)
     Case K_WzAdvCheckbox: vt_WIDGET_idealWidth = WzAdvCheckbox_idealWidth(self)
     Case K_WzCampaignOptionButton: vt_WIDGET_idealWidth = WzCampaignOptionButton_idealWidth(self)
+    Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: vt_WIDGET_idealWidth = WzChatMuteColButtonBase_idealWidth(self)
+    Case K_WzChatOptionsForm: vt_WIDGET_idealWidth = WzChatOptionsForm_idealWidth(self)
     Case K_WzClippableButton: vt_WIDGET_idealWidth = WzClippableButton_idealWidth(self)
     Case K_WzFrontendImageButton, K_WzInfoButton: vt_WIDGET_idealWidth = WzFrontendImageButton_idealWidth(self)
     Case K_WzHelpPopoverWidget: vt_WIDGET_idealWidth = WzHelpPopoverWidget_idealWidth(self)
@@ -3039,6 +3439,12 @@ Public Function vt_WIDGET_idealWidth(ByVal self As WIDGET) As Long
     Case K_WzMultiLobbyStatusBar: vt_WIDGET_idealWidth = WzMultiLobbyStatusBar_idealWidth(self)
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: vt_WIDGET_idealWidth = WzOptionsChoiceWidget_idealWidth(self)
     Case K_WzOptionsDropdownWidget, K_OptionsDropdown: vt_WIDGET_idealWidth = WzOptionsDropdownWidget_idealWidth(self)
+    Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: vt_WIDGET_idealWidth = WzPlayerChatMuteButtonBase_idealWidth(self)
+    Case K_WzPlayerMuteStatusLabel: vt_WIDGET_idealWidth = WzPlayerMuteStatusLabel_idealWidth(self)
+    Case K_WzQuickChatPanel: vt_WIDGET_idealWidth = WzQuickChatPanel_idealWidth(self)
+    Case K_WzQuickChatSection: vt_WIDGET_idealWidth = WzQuickChatSection_idealWidth(self)
+    Case K_WzQuickChatSendToPlayersSelector: vt_WIDGET_idealWidth = WzQuickChatSendToPlayersSelector_idealWidth(self)
+    Case K_WzQuickChatSendToSelector: vt_WIDGET_idealWidth = WzQuickChatSendToSelector_idealWidth(self)
     End Select
 End Function
 
@@ -3047,19 +3453,22 @@ Public Sub vt_WIDGET_mouseDragged(ByVal self As WIDGET, ByVal key As WIDGET_KEY,
     Case K_HorizontalButtonsWidget: HorizontalButtonsWidget_mouseDragged self, key, start, current
     Case K_RadarWidget: RadarWidget_mouseDragged self, key, start, current
     Case K_TableHeader: TableHeader_mouseDragged self, key, start, current
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: WIDGET_mouseDragged self, key, start, current
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_mouseDragged self, key, start, current
-    Case K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_LABEL: WIDGET_mouseDragged self, key, start, current
-    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: WIDGET_mouseDragged self, key, start, current
-    Case K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton: WIDGET_mouseDragged self, key, start, current
-    Case K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: WIDGET_mouseDragged self, key, start, current
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_mouseDragged self, key, start, current
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzInfoButton: WIDGET_mouseDragged self, key, start, current
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: W_FORM_mouseDragged self, key, start, current
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM: W_FORM_mouseDragged self, key, start, current
-    Case K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay: W_FORM_mouseDragged self, key, start, current
-    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: W_FORM_mouseDragged self, key, start, current
-    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_FORM_mouseDragged self, key, start, current
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_mouseDragged self, key, start, current
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_mouseDragged self, key, start, current
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_mouseDragged self, key, start, current
+    Case K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_mouseDragged self, key, start, current
+    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList: WIDGET_mouseDragged self, key, start, current
+    Case K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget: WIDGET_mouseDragged self, key, start, current
+    Case K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton: WIDGET_mouseDragged self, key, start, current
+    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton: WIDGET_mouseDragged self, key, start, current
+    Case K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton: WIDGET_mouseDragged self, key, start, current
+    Case K_WzLocalChatMuteColButton: WIDGET_mouseDragged self, key, start, current
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: W_FORM_mouseDragged self, key, start, current
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: W_FORM_mouseDragged self, key, start, current
+    Case K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: W_FORM_mouseDragged self, key, start, current
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: W_FORM_mouseDragged self, key, start, current
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: W_FORM_mouseDragged self, key, start, current
+    Case K_ResearchOptionButton: W_FORM_mouseDragged self, key, start, current
     Case K_W_SLIDER: W_SLIDER_mouseDragged self, key, start, current
     End Select
 End Sub
@@ -3068,19 +3477,21 @@ Public Sub vt_WIDGET_ovc_addEndingCapturedEditingHandler(ByVal self As WIDGET, B
     Select Case self.kind
     Case K_OptionsDropdown: OptionsDropdown_ovc_addEndingCapturedEditingHandler self, handler
     Case K_OptionsKeyBindingsEdit: OptionsKeyBindingsEdit_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
-    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
+    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_addEndingCapturedEditingHandler self, handler
     End Select
 End Sub
 
@@ -3091,19 +3502,21 @@ Public Sub vt_WIDGET_ovc_addOnChangeHandler(ByVal self As WIDGET, ByVal handler 
     Case K_OptionsKeyBindingsEdit: OptionsKeyBindingsEdit_ovc_addOnChangeHandler self, handler
     Case K_OptionsSlider: OptionsSlider_ovc_addOnChangeHandler self, handler
     Case K_PlayerColorOptionsSelector: PlayerColorOptionsSelector_ovc_addOnChangeHandler self, handler
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: WIDGET_ovc_addOnChangeHandler self, handler
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: WIDGET_ovc_addOnChangeHandler self, handler
+    Case K_ResearchOptionButton: WIDGET_ovc_addOnChangeHandler self, handler
     End Select
 End Sub
 
@@ -3111,57 +3524,63 @@ Public Sub vt_WIDGET_ovc_addStartingCapturedEditingHandler(ByVal self As WIDGET,
     Select Case self.kind
     Case K_OptionsDropdown: OptionsDropdown_ovc_addStartingCapturedEditingHandler self, handler
     Case K_OptionsKeyBindingsEdit: OptionsKeyBindingsEdit_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
-    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
+    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_addStartingCapturedEditingHandler self, handler
     End Select
 End Sub
 
 Public Function vt_WIDGET_ovc_getHelpDescriptionForCurrentValue(ByVal self As WIDGET, result As OptionChoiceHelpDescription) As Boolean
     Select Case self.kind
     Case K_OptionsDropdown: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = OptionsDropdown_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_ovc_getHelpDescriptionForCurrentValue = WIDGET_ovc_getHelpDescriptionForCurrentValue(self, result)
     End Select
 End Function
 
 Public Function vt_WIDGET_ovc_getHelpDescriptions(ByVal self As WIDGET, result() As OptionChoiceHelpDescription, count As Long) As Boolean
     Select Case self.kind
     Case K_OptionsDropdown: vt_WIDGET_ovc_getHelpDescriptions = OptionsDropdown_ovc_getHelpDescriptions(self, result, count)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_ovc_getHelpDescriptions = WIDGET_ovc_getHelpDescriptions(self, result, count)
     End Select
 End Function
 
@@ -3172,19 +3591,21 @@ Public Sub vt_WIDGET_ovc_informAvailable(ByVal self As WIDGET, ByVal isAvailable
     Case K_OptionsKeyBindingsEdit: OptionsKeyBindingsEdit_ovc_informAvailable self, isAvailable
     Case K_OptionsSlider: OptionsSlider_ovc_informAvailable self, isAvailable
     Case K_PlayerColorOptionsSelector: PlayerColorOptionsSelector_ovc_informAvailable self, isAvailable
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: WIDGET_ovc_informAvailable self, isAvailable
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: WIDGET_ovc_informAvailable self, isAvailable
+    Case K_ResearchOptionButton: WIDGET_ovc_informAvailable self, isAvailable
     End Select
 End Sub
 
@@ -3195,19 +3616,21 @@ Public Function vt_WIDGET_ovc_is(ByVal self As WIDGET) As Boolean
     Case K_OptionsKeyBindingsEdit: vt_WIDGET_ovc_is = OptionsKeyBindingsEdit_ovc_is(self)
     Case K_OptionsSlider: vt_WIDGET_ovc_is = OptionsSlider_ovc_is(self)
     Case K_PlayerColorOptionsSelector: vt_WIDGET_ovc_is = PlayerColorOptionsSelector_ovc_is(self)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
+    Case K_ResearchOptionButton: vt_WIDGET_ovc_is = WIDGET_ovc_is(self)
     End Select
 End Function
 
@@ -3218,57 +3641,63 @@ Public Sub vt_WIDGET_ovc_update(ByVal self As WIDGET, Optional ByVal force As Bo
     Case K_OptionsKeyBindingsEdit: OptionsKeyBindingsEdit_ovc_update self, force
     Case K_OptionsSlider: OptionsSlider_ovc_update self, force
     Case K_PlayerColorOptionsSelector: PlayerColorOptionsSelector_ovc_update self, force
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_ovc_update self, force
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: WIDGET_ovc_update self, force
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL: WIDGET_ovc_update self, force
-    Case K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_ovc_update self, force
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: WIDGET_ovc_update self, force
-    Case K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow: WIDGET_ovc_update self, force
-    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_ovc_update self, force
-    Case K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: WIDGET_ovc_update self, force
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: WIDGET_ovc_update self, force
-    Case K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton: WIDGET_ovc_update self, force
-    Case K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton: WIDGET_ovc_update self, force
-    Case K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton: WIDGET_ovc_update self, force
-    Case K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_ovc_update self, force
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_ovc_update self, force
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsRowWidgetBase, K_Paragraph, K_ParagraphTextWidget, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_ovc_update self, force
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX, K_W_FORM: WIDGET_ovc_update self, force
+    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_ovc_update self, force
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton: WIDGET_ovc_update self, force
+    Case K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget: WIDGET_ovc_update self, force
+    Case K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow: WIDGET_ovc_update self, force
+    Case K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton: WIDGET_ovc_update self, force
+    Case K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase: WIDGET_ovc_update self, force
+    Case K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: WIDGET_ovc_update self, force
+    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: WIDGET_ovc_update self, force
+    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: WIDGET_ovc_update self, force
+    Case K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm: WIDGET_ovc_update self, force
+    Case K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton: WIDGET_ovc_update self, force
+    Case K_ResearchOptionButton: WIDGET_ovc_update self, force
     End Select
 End Sub
 
 Public Function vt_WIDGET_parentRelativeXOffset(ByVal self As WIDGET, ByVal coord As Long) As Long
     Select Case self.kind
     Case K_ClipRectWidget: vt_WIDGET_parentRelativeXOffset = ClipRectWidget_parentRelativeXOffset(self, coord)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_parentRelativeXOffset = WIDGET_parentRelativeXOffset(self, coord)
     End Select
 End Function
 
 Public Function vt_WIDGET_parentRelativeYOffset(ByVal self As WIDGET, ByVal coord As Long) As Long
     Select Case self.kind
     Case K_ClipRectWidget: vt_WIDGET_parentRelativeYOffset = ClipRectWidget_parentRelativeYOffset(self, coord)
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_WIDGET_parentRelativeYOffset = WIDGET_parentRelativeYOffset(self, coord)
     End Select
 End Function
 
@@ -3283,23 +3712,27 @@ Public Sub vt_WIDGET_released(ByVal self As WIDGET, psContext As W_CONTEXT, Opti
     Case K_Paragraph: Paragraph_released self, psContext, key
     Case K_RadarWidget: RadarWidget_released self, psContext, key
     Case K_TableHeader: TableHeader_released self, psContext, key
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: WIDGET_released self, psContext, key
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_released self, psContext, key
-    Case K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel: WIDGET_released self, psContext, key
-    Case K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs: WIDGET_released self, psContext, key
-    Case K_WzPlayerRow, K_WzPositionChooser, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_released self, psContext, key
-    Case K_DesignPowerBar, K_OptionsDropdown: WIDGET_released self, psContext, key
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_WzCampaignModButton: W_BUTTON_released self, psContext, key
-    Case K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_released self, psContext, key
-    Case K_WzInfoButton: W_BUTTON_released self, psContext, key
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_IntStatusButton: W_CLICKFORM_released self, psContext, key
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper: W_FORM_released self, psContext, key
-    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm: W_FORM_released self, psContext, key
-    Case K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_released self, psContext, key
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_released self, psContext, key
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_released self, psContext, key
+    Case K_PopoverWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX, K_W_LABEL, K_WidgetInfoButtonWrapper: WIDGET_released self, psContext, key
+    Case K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget: WIDGET_released self, psContext, key
+    Case K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntListTabWidget, K_LoopProductionLabel, K_OptionRow: WIDGET_released self, psContext, key
+    Case K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_DesignPowerBar, K_OptionsDropdown: WIDGET_released self, psContext, key
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_released self, psContext, key
+    Case K_W_MusicModeCheckboxButton, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton: W_BUTTON_released self, psContext, key
+    Case K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_released self, psContext, key
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_IntStatusButton: W_CLICKFORM_released self, psContext, key
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum: W_FORM_released self, psContext, key
+    Case K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm: W_FORM_released self, psContext, key
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_released self, psContext, key
     Case K_W_SLIDER: W_SLIDER_released self, psContext, key
     Case K_WzAdvCheckbox: WzAdvCheckbox_released self, psContext, key
+    Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: WzChatMuteColButtonBase_released self, psContext, key
     Case K_WzClickableOptionsChoiceWidget: WzClickableOptionsChoiceWidget_released self, psContext, key
     Case K_WzFullscreenKeyBindingEditingOverlay: WzFullscreenKeyBindingEditingOverlay_released self, psContext, key
+    Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: WzPlayerChatMuteButtonBase_released self, psContext, key
+    Case K_WzQuickChatForm: WzQuickChatForm_released self, psContext, key
+    Case K_WzQuickChatSection: WzQuickChatSection_released self, psContext, key
     End Select
 End Sub
 
@@ -3314,30 +3747,40 @@ Public Sub vt_WIDGET_run(ByVal self As WIDGET, psContext As W_CONTEXT)
     Case K_ParagraphTextWidget: ParagraphTextWidget_run self, psContext
     Case K_ScrollableListWidget, K_ClickableScrollableList: ScrollableListWidget_run self, psContext
     Case K_TableHeader: TableHeader_run self, psContext
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget: WIDGET_run self, psContext
-    Case K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget: WIDGET_run self, psContext
-    Case K_ScrollBarWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget: WIDGET_run self, psContext
-    Case K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerRow, K_IntListTabWidget, K_OptionRow, K_OptionsPaddingRow, K_OptionsSectionRow, K_WzMultiLobbyOptionsImpl: WIDGET_run self, psContext
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: WIDGET_run self, psContext
+    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget: WIDGET_run self, psContext
+    Case K_RadarWidget, K_ScrollBarWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox: WIDGET_run self, psContext
+    Case K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerRow, K_WzQuickChatSendToPlayersSelector, K_IntListTabWidget, K_OptionRow, K_OptionsPaddingRow: WIDGET_run self, psContext
+    Case K_OptionsSectionRow, K_WzMultiLobbyOptionsImpl: WIDGET_run self, psContext
     Case K_W_BARGRAPH, K_DesignStatsBar, K_PowerBar, K_DesignPowerBar: W_BARGRAPH_run self, psContext
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_WzAdvCheckbox: W_BUTTON_run self, psContext
-    Case K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_run self, psContext
-    Case K_WzInfoButton: W_BUTTON_run self, psContext
-    Case K_W_CLICKFORM, K_IntFancyButton, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton: W_CLICKFORM_run self, psContext
-    Case K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_run self, psContext
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_run self, psContext
+    Case K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton: W_BUTTON_run self, psContext
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_run self, psContext
+    Case K_W_CLICKFORM, K_IntFancyButton, K_WzQuickChatForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton: W_CLICKFORM_run self, psContext
+    Case K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_run self, psContext
     Case K_W_EDITBOX: W_EDITBOX_run self, psContext
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: W_FORM_run self, psContext
-    Case K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_run self, psContext
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TrackDetailsForm, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget: W_FORM_run self, psContext
+    Case K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs: W_FORM_run self, psContext
+    Case K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: W_FORM_run self, psContext
     Case K_W_FULLSCREENOVERLAY_CLICKFORM: W_FULLSCREENOVERLAY_CLICKFORM_run self, psContext
     Case K_W_INTELLIGENCEOVERLAY_FORM: W_INTELLIGENCEOVERLAY_FORM_run self, psContext
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: W_LABEL_run self, psContext
     Case K_W_SLIDER: W_SLIDER_run self, psContext
+    Case K_WzChatOptionsForm: WzChatOptionsForm_run self, psContext
     Case K_WzClippableButton: WzClippableButton_run self, psContext
     Case K_WzFullscreenKeyBindingEditingOverlay: WzFullscreenKeyBindingEditingOverlay_run self, psContext
+    Case K_WzGlobalChatMuteColButton: WzGlobalChatMuteColButton_run self, psContext
+    Case K_WzHostFreeChatPlayerMuteButton: WzHostFreeChatPlayerMuteButton_run self, psContext
     Case K_WzInGameChatScreen_CLICKFORM: WzInGameChatScreen_CLICKFORM_run self, psContext
     Case K_WzInGameOptionsScreen_CLICKFORM: WzInGameOptionsScreen_CLICKFORM_run self, psContext
+    Case K_WzLocalChatMuteColButton: WzLocalChatMuteColButton_run self, psContext
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: WzOptionsChoiceWidget_run self, psContext
     Case K_WzPlayerBoxTabs: WzPlayerBoxTabs_run self, psContext
+    Case K_WzPlayerMuteStatusLabel: WzPlayerMuteStatusLabel_run self, psContext
     Case K_WzPositionChooser: WzPositionChooser_run self, psContext
+    Case K_WzQuickChatPanel: WzQuickChatPanel_run self, psContext
+    Case K_WzQuickChatSection: WzQuickChatSection_run self, psContext
+    Case K_WzQuickChatSendToSelector: WzQuickChatSendToSelector_run self, psContext
     End Select
 End Sub
 
@@ -3345,19 +3788,21 @@ Public Sub vt_WIDGET_runRecursive(ByVal self As WIDGET, psContext As W_CONTEXT)
     Select Case self.kind
     Case K_ClipRectWidget: ClipRectWidget_runRecursive self, psContext
     Case K_KeyOptionsForm: KeyOptionsForm_runRecursive self, psContext
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar, K_ListTabWidget: WIDGET_runRecursive self, psContext
-    Case K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_runRecursive self, psContext
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_runRecursive self, psContext
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_runRecursive self, psContext
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: WIDGET_runRecursive self, psContext
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_runRecursive self, psContext
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_runRecursive self, psContext
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_runRecursive self, psContext
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget: WIDGET_runRecursive self, psContext
-    Case K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView, K_BuildObjectsForm: WIDGET_runRecursive self, psContext
-    Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton: WIDGET_runRecursive self, psContext
-    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: WIDGET_runRecursive self, psContext
-    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_runRecursive self, psContext
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_runRecursive self, psContext
+    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_runRecursive self, psContext
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_runRecursive self, psContext
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_runRecursive self, psContext
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: WIDGET_runRecursive self, psContext
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: WIDGET_runRecursive self, psContext
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: WIDGET_runRecursive self, psContext
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_runRecursive self, psContext
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: WIDGET_runRecursive self, psContext
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: WIDGET_runRecursive self, psContext
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzGlobalChatMuteColButton: WIDGET_runRecursive self, psContext
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton: WIDGET_runRecursive self, psContext
+    Case K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton: WIDGET_runRecursive self, psContext
+    Case K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: WIDGET_runRecursive self, psContext
+    Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_runRecursive self, psContext
     End Select
 End Sub
 
@@ -3365,99 +3810,108 @@ Public Sub vt_WIDGET_screenSizeDidChange(ByVal self As WIDGET, ByVal oldWidth As
     Select Case self.kind
     Case K_OptionsForm, K_KeyOptionsForm: OptionsForm_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
     Case K_TitleFormWrapper: TitleFormWrapper_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_W_INGAMEOPTIONS_BUTTON, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzInfoButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_W_EDITBOX, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_PowerBar, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_DesignPowerBar, K_OptionsDropdown, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WzLocalChatMuteColButton: WIDGET_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_W_FORM, K_IntFormAnimated, K_IntFormTransparent, K_MultibuttonWidget, K_MusicManagerForm, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_ChatBoxWidget: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatBoxForm: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
+    Case K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_FORM_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
     Case K_WzOptionsChoiceWidget, K_WzClickableOptionsChoiceWidget: WzOptionsChoiceWidget_screenSizeDidChange self, oldWidth, oldHeight, newWidth, newHeight
     End Select
 End Sub
 
 Public Sub vt_WIDGET_setFlash(ByVal self As WIDGET, ByVal enable As Boolean)
     Select Case self.kind
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setFlash self, enable
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setFlash self, enable
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_EDITBOX: WIDGET_setFlash self, enable
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_setFlash self, enable
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent: WIDGET_setFlash self, enable
-    Case K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_setFlash self, enable
-    Case K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget: WIDGET_setFlash self, enable
-    Case K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm: WIDGET_setFlash self, enable
-    Case K_ResearchStatsForm: WIDGET_setFlash self, enable
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setFlash self, enable
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setFlash self, enable
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: WIDGET_setFlash self, enable
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_setFlash self, enable
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: WIDGET_setFlash self, enable
+    Case K_ClickableScrollableList, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow: WIDGET_setFlash self, enable
+    Case K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar: WIDGET_setFlash self, enable
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView: WIDGET_setFlash self, enable
+    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setFlash self, enable
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: W_BUTTON_setFlash self, enable
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: W_BUTTON_setFlash self, enable
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_setFlash self, enable
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: W_CLICKFORM_setFlash self, enable
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: W_CLICKFORM_setFlash self, enable
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setFlash self, enable
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: W_BUTTON_setFlash self, enable
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: W_BUTTON_setFlash self, enable
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_setFlash self, enable
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: W_CLICKFORM_setFlash self, enable
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: W_CLICKFORM_setFlash self, enable
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setFlash self, enable
     End Select
 End Sub
 
 Public Sub vt_WIDGET_setGeometryFromScreenRect(ByVal self As WIDGET, r As WzRect)
     Select Case self.kind
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setGeometryFromScreenRect self, r
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setGeometryFromScreenRect self, r
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_setGeometryFromScreenRect self, r
-    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_setGeometryFromScreenRect self, r
-    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton: WIDGET_setGeometryFromScreenRect self, r
-    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow: WIDGET_setGeometryFromScreenRect self, r
-    Case K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON: WIDGET_setGeometryFromScreenRect self, r
-    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl: WIDGET_setGeometryFromScreenRect self, r
-    Case K_WzOptionsDropdownWidget, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper: WIDGET_setGeometryFromScreenRect self, r
-    Case K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton: WIDGET_setGeometryFromScreenRect self, r
-    Case K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay: WIDGET_setGeometryFromScreenRect self, r
-    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: WIDGET_setGeometryFromScreenRect self, r
-    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setGeometryFromScreenRect self, r
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setGeometryFromScreenRect self, r
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: WIDGET_setGeometryFromScreenRect self, r
+    Case K_W_BUTTON, K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WzQuickChatSendToSelector, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_setGeometryFromScreenRect self, r
+    Case K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper: WIDGET_setGeometryFromScreenRect self, r
+    Case K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar: WIDGET_setGeometryFromScreenRect self, r
+    Case K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM: WIDGET_setGeometryFromScreenRect self, r
+    Case K_WzChatOptionsForm, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm: WIDGET_setGeometryFromScreenRect self, r
+    Case K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm: WIDGET_setGeometryFromScreenRect self, r
+    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: WIDGET_setGeometryFromScreenRect self, r
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_setGeometryFromScreenRect self, r
     End Select
 End Sub
 
 Public Sub vt_WIDGET_setHelp(ByVal self As WIDGET, ByVal help As WidgetHelp)
     Select Case self.kind
     Case K_GroupsForum: GroupsForum_setHelp self, help
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setHelp self, help
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setHelp self, help
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_EDITBOX, K_W_FORM: WIDGET_setHelp self, help
-    Case K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase: WIDGET_setHelp self, help
-    Case K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget: WIDGET_setHelp self, help
-    Case K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget: WIDGET_setHelp self, help
-    Case K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm: WIDGET_setHelp self, help
-    Case K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setHelp self, help
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setHelp self, help
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setHelp self, help
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_EDITBOX: WIDGET_setHelp self, help
+    Case K_W_FORM, K_W_LABEL, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_setHelp self, help
+    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_FixedIdealWidthLabel: WIDGET_setHelp self, help
+    Case K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget: WIDGET_setHelp self, help
+    Case K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget: WIDGET_setHelp self, help
+    Case K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs: WIDGET_setHelp self, help
+    Case K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setHelp self, help
     Case K_W_BARGRAPH, K_DesignStatsBar, K_PowerBar, K_DesignPowerBar: W_BARGRAPH_setHelp self, help
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: W_BUTTON_setHelp self, help
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: W_BUTTON_setHelp self, help
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_setHelp self, help
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: W_CLICKFORM_setHelp self, help
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: W_CLICKFORM_setHelp self, help
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setHelp self, help
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: W_BUTTON_setHelp self, help
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: W_BUTTON_setHelp self, help
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_setHelp self, help
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: W_CLICKFORM_setHelp self, help
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: W_CLICKFORM_setHelp self, help
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setHelp self, help
     Case K_W_SLIDER: W_SLIDER_setHelp self, help
     End Select
 End Sub
 
 Public Sub vt_WIDGET_setState(ByVal self As WIDGET, ByVal state As Long)
     Select Case self.kind
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setState self, state
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setState self, state
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_FORM: WIDGET_setState self, state
-    Case K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover: WIDGET_setState self, state
-    Case K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_setState self, state
-    Case K_LoopProductionLabel, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget: WIDGET_setState self, state
-    Case K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm: WIDGET_setState self, state
-    Case K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setState self, state
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setState self, state
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setState self, state
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH: WIDGET_setState self, state
+    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_setState self, state
+    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList: WIDGET_setState self, state
+    Case K_DesignStatsBar, K_FixedIdealWidthLabel, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionLabel, K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow: WIDGET_setState self, state
+    Case K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: WIDGET_setState self, state
+    Case K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm: WIDGET_setState self, state
+    Case K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setState self, state
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: W_BUTTON_setState self, state
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: W_BUTTON_setState self, state
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_setState self, state
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: W_CLICKFORM_setState self, state
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: W_CLICKFORM_setState self, state
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setState self, state
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: W_BUTTON_setState self, state
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: W_BUTTON_setState self, state
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_setState self, state
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: W_CLICKFORM_setState self, state
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: W_CLICKFORM_setState self, state
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setState self, state
     Case K_W_EDITBOX: W_EDITBOX_setState self, state
     End Select
 End Sub
@@ -3466,19 +3920,21 @@ Public Sub vt_WIDGET_setString(ByVal self As WIDGET, ByVal string_ As String)
     Select Case self.kind
     Case K_OptionsButton: OptionsButton_setString self, string_
     Case K_TitleFormSideText: TitleFormSideText_setString self, string_
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setString self, string_
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setString self, string_
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormWrapper, K_W_BARGRAPH, K_W_FORM, K_W_SLIDER, K_WidgetInfoButtonWrapper: WIDGET_setString self, string_
-    Case K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzPlayerBoxTabs: WIDGET_setString self, string_
-    Case K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_DesignStatsBar, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow: WIDGET_setString self, string_
-    Case K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_W_CLICKFORM, K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm: WIDGET_setString self, string_
-    Case K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM: WIDGET_setString self, string_
-    Case K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm: WIDGET_setString self, string_
-    Case K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton: WIDGET_setString self, string_
-    Case K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_setString self, string_
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setString self, string_
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setString self, string_
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormWrapper, K_W_BARGRAPH, K_W_FORM, K_W_SLIDER: WIDGET_setString self, string_
+    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: WIDGET_setString self, string_
+    Case K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_DesignStatsBar, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_setString self, string_
+    Case K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_CLICKFORM: WIDGET_setString self, string_
+    Case K_W_INTELLIGENCEOVERLAY_FORM, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget: WIDGET_setString self, string_
+    Case K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection: WIDGET_setString self, string_
+    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs: WIDGET_setString self, string_
+    Case K_BuildStatsForm, K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton: WIDGET_setString self, string_
+    Case K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_setString self, string_
     Case K_WZOptionTitleLabel: WZOptionTitleLabel_setString self, string_
-    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_WzCampaignModButton: W_BUTTON_setString self, string_
-    Case K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton: W_BUTTON_setString self, string_
+    Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON, K_W_MusicListHeaderColImage: W_BUTTON_setString self, string_
+    Case K_W_MusicModeCheckboxButton, K_WzCampaignModButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase: W_BUTTON_setString self, string_
+    Case K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzLocalChatMuteColButton: W_BUTTON_setString self, string_
     Case K_W_EDITBOX: W_EDITBOX_setString self, string_
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: W_LABEL_setString self, string_
     Case K_WzAdvCheckbox: WzAdvCheckbox_setString self, string_
@@ -3491,21 +3947,22 @@ End Sub
 
 Public Sub vt_WIDGET_setTip(ByVal self As WIDGET, ByVal string_ As String)
     Select Case self.kind
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_setTip self, string_
-    Case K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_setTip self, string_
-    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_FORM, K_WidgetInfoButtonWrapper: WIDGET_setTip self, string_
-    Case K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget: WIDGET_setTip self, string_
-    Case K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_ClickableScrollableList, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_MultibuttonWidget, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow: WIDGET_setTip self, string_
-    Case K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm: WIDGET_setTip self, string_
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm: WIDGET_setTip self, string_
-    Case K_ResearchObjectsForm, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setTip self, string_
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_setTip self, string_
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_ListWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget: WIDGET_setTip self, string_
+    Case K_PlayerColorOptionsSelector, K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_FORM: WIDGET_setTip self, string_
+    Case K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar: WIDGET_setTip self, string_
+    Case K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector, K_ClickableScrollableList, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget: WIDGET_setTip self, string_
+    Case K_MultibuttonWidget, K_MusicManagerForm, K_OptionRow, K_OptionsForm, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_ReadyBoxContainerWidget, K_TableHeader, K_TrackDetailsForm, K_W_INTELLIGENCEOVERLAY_FORM, K_WzClickableOptionsChoiceWidget: WIDGET_setTip self, string_
+    Case K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_ChatBoxWidget, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown: WIDGET_setTip self, string_
+    Case K_StatsForm, K_WzInGameChatBoxForm, K_WzMessageView, K_BuildObjectsForm, K_CommanderObjectsForm, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_ManufactureStatsForm, K_ResearchStatsForm: WIDGET_setTip self, string_
     Case K_W_BARGRAPH, K_DesignStatsBar, K_PowerBar, K_DesignPowerBar: W_BARGRAPH_setTip self, string_
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: W_BUTTON_setTip self, string_
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: W_BUTTON_setTip self, string_
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: W_BUTTON_setTip self, string_
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton: W_CLICKFORM_setTip self, string_
-    Case K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton: W_CLICKFORM_setTip self, string_
-    Case K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setTip self, string_
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: W_BUTTON_setTip self, string_
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: W_BUTTON_setTip self, string_
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: W_BUTTON_setTip self, string_
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton: W_CLICKFORM_setTip self, string_
+    Case K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_GroupButton, K_IntStatusButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: W_CLICKFORM_setTip self, string_
+    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: W_CLICKFORM_setTip self, string_
     Case K_W_EDITBOX: W_EDITBOX_setTip self, string_
     Case K_W_LABEL, K_FixedIdealWidthLabel, K_LoopProductionLabel: W_LABEL_setTip self, string_
     Case K_W_SLIDER: W_SLIDER_setTip self, string_
@@ -3515,27 +3972,30 @@ End Sub
 Public Sub vt_WIDGET_widgetLost(ByVal self As WIDGET, ByVal w As WIDGET)
     Select Case self.kind
     Case K_ListWidget: ListWidget_widgetLost self, w
-    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm, K_InGameOptionsTitleBar: WIDGET_widgetLost self, w
-    Case K_ListTabWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector, K_PopoverMenuWidget: WIDGET_widgetLost self, w
-    Case K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON, K_W_EDITBOX: WIDGET_widgetLost self, w
-    Case K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget, K_WzHelpPopoverWidget: WIDGET_widgetLost self, w
-    Case K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerRow, K_WzPositionChooser, K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar: WIDGET_widgetLost self, w
-    Case K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton, K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_OptionRow, K_OptionsButton: WIDGET_widgetLost self, w
-    Case K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar, K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM: WIDGET_widgetLost self, w
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget: WIDGET_widgetLost self, w
-    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum, K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm: WIDGET_widgetLost self, w
-    Case K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzMessageView: WIDGET_widgetLost self, w
-    Case K_BuildObjectsForm, K_CommanderObjectsForm, K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_BuildStatsForm: WIDGET_widgetLost self, w
-    Case K_GroupButton, K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton: WIDGET_widgetLost self, w
-    Case K_ResearchObjectButton, K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_widgetLost self, w
+    Case K_WIDGET, K_AlignmentWidget, K_CampaignStartOptionsForm, K_ChatBoxPlayerNameWidget, K_ChooserOverlay, K_ClipRectWidget, K_DropdownItemWrapper, K_DropdownOverlay, K_DropdownWidget, K_GridLayout, K_HorizontalButtonsWidget, K_HostingAdvancedOptionsForm: WIDGET_widgetLost self, w
+    Case K_InGameOptionsTitleBar, K_ListTabWidget, K_LobbyHostOptionsForm, K_MarginWidget, K_MenuItemWrapper, K_OptionsBrowserForm, K_OptionsKeyBindingsEdit, K_OptionsRowWidgetBase, K_OptionsSlider, K_Paragraph, K_ParagraphTextWidget, K_PlayerColorOptionsSelector: WIDGET_widgetLost self, w
+    Case K_PopoverMenuWidget, K_PopoverWidget, K_RadarWidget, K_ScrollBarWidget, K_ScrollableListWidget, K_ScrollableTableWidget, K_TabSelectionWidget, K_TitleFormSideText, K_TitleFormWrapper, K_WZOptionTitleLabel, K_W_BARGRAPH, K_W_BUTTON: WIDGET_widgetLost self, w
+    Case K_W_EDITBOX, K_W_FORM, K_W_LABEL, K_W_SLIDER, K_WidgetInfoButtonWrapper, K_WzCampaignHelpPanel, K_WzCampaignListSection, K_WzCampaignSelectorForm, K_WzCampaignSubInfoBox, K_WzCampaignTitleWidget, K_WzCampaignTweakOptionsEditForm, K_WzCampaignTweakOptionsSummaryWidget: WIDGET_widgetLost self, w
+    Case K_WzHelpPopoverWidget, K_WzLobbyPasswordOptionPopover, K_WzMultiLobbyOptionsWidgetBase, K_WzMultiLobbyStatusBar, K_WzOptionsChoiceWidget, K_WzPlayerBoxTabs, K_WzPlayerMuteStatusLabel, K_WzPlayerRow, K_WzPositionChooser, K_WzQuickChatPanel, K_WzQuickChatSendToPlayersSelector, K_WzQuickChatSendToSelector: WIDGET_widgetLost self, w
+    Case K_CampaignStartButton, K_ChatBoxButton, K_ClickableScrollableList, K_DeliveryPointButton, K_DesignStatsBar, K_FixedIdealWidthLabel, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_IntFormAnimated, K_IntFormTransparent, K_IntListTabWidget, K_LoopProductionButton: WIDGET_widgetLost self, w
+    Case K_LoopProductionLabel, K_MultibuttonWidget, K_MultipleChoiceButton, K_MusicManagerForm, K_OptionRow, K_OptionsButton, K_OptionsForm, K_OptionsKeyBindingWidget, K_OptionsPaddingRow, K_OptionsSectionRow, K_OptionsValueChangerWidgetWrapper, K_PowerBar: WIDGET_widgetLost self, w
+    Case K_ReadyBoxContainerWidget, K_TableHeader, K_TableRow, K_TrackDetailsForm, K_W_CLICKFORM, K_W_INGAMEOPTIONS_BUTTON, K_W_INTELLIGENCEOVERLAY_FORM, K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton: WIDGET_widgetLost self, w
+    Case K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClickableOptionsChoiceWidget, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzMultiLobbyOptionsImpl, K_WzOptionsDropdownWidget, K_WzPanelTabButton: WIDGET_widgetLost self, w
+    Case K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_ChatBoxWidget, K_DesignPowerBar, K_GroupsForum: WIDGET_widgetLost self, w
+    Case K_InGameOptionsBaseForm, K_IntFancyButton, K_IntFormAnimatedWrapper, K_KeyOptionsForm, K_LobbyMultiOptionsChoiceWidget, K_LobbyMultiOptionsSectionWidget, K_MultichoiceWidget, K_ObjectsForm, K_OptionsDropdown, K_StatsForm, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm: WIDGET_widgetLost self, w
+    Case K_WzGlobalChatMuteColButton, K_WzHostFreeChatPlayerMuteButton, K_WzInGameChatBoxForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzInfoButton, K_WzLocalChatMuteColButton, K_WzMessageView, K_WzQuickChatForm, K_WzQuickChatSection, K_BuildObjectsForm, K_CommanderObjectsForm: WIDGET_widgetLost self, w
+    Case K_DynamicIntFancyButton, K_IntMessageButton, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_ManufactureObjectsForm, K_ObjectStatsForm, K_ResearchObjectsForm, K_WzFullscreenKeyBindingEditingOverlay, K_WzQuickChatPanelTabs, K_BuildStatsForm, K_GroupButton: WIDGET_widgetLost self, w
+    Case K_IntStatusButton, K_ManufactureStatsForm, K_ObjectButton, K_ResearchStatsForm, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton: WIDGET_widgetLost self, w
+    Case K_ResearchStatsButton, K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: WIDGET_widgetLost self, w
     End Select
 End Sub
 
 Public Function vt_W_BUTTON_clickHeld(ByVal self As WIDGET, psContext As W_CONTEXT, ByVal key As WIDGET_KEY) As Boolean
     Select Case self.kind
     Case K_W_BUTTON, K_CampaignStartButton, K_ChatBoxButton, K_DeliveryPointButton, K_HorizontalScrollButton, K_InGameOptionsTitleBarButton, K_LoopProductionButton, K_MultipleChoiceButton, K_OptionsButton, K_OptionsKeyBindingWidget, K_TableRow, K_W_INGAMEOPTIONS_BUTTON: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
-    Case K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton, K_WzMultiButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerIndexSwapPositionRow: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
-    Case K_WzPlayerSelectionChangePositionRow, K_WzStartHostingButton, K_WzInfoButton: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
+    Case K_W_MusicListHeaderColImage, K_W_MusicModeCheckboxButton, K_WzAdvCheckbox, K_WzCampaignModButton, K_WzCampaignOptionButton, K_WzChatMuteColButtonBase, K_WzChatOptionsButton, K_WzCheckboxButton, K_WzClippableButton, K_WzFrontendImageButton, K_WzInGameChatBoxButton, K_WzLobbyMultiOptionButton: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
+    Case K_WzMultiButton, K_WzPanelTabButton, K_WzPlayerBoxOptionsButton, K_WzPlayerBoxTabButton, K_WzPlayerChatMuteButtonBase, K_WzPlayerIndexSwapPositionRow, K_WzPlayerSelectionChangePositionRow, K_WzQuickChatButton, K_WzQuickChatPlayerButton, K_WzQuickChatToggleMixedCheckButton, K_WzStartHostingButton, K_WzGlobalChatMuteColButton: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
+    Case K_WzHostFreeChatPlayerMuteButton, K_WzInfoButton, K_WzLocalChatMuteColButton: vt_W_BUTTON_clickHeld = W_BUTTON_clickHeld(self, psContext, key)
     End Select
 End Function
 
@@ -3544,14 +4004,76 @@ Public Function vt_W_CLICKFORM_clickHeld(ByVal self As WIDGET, psContext As W_CO
     Case K_DynamicIntFancyButton, K_GroupButton, K_ObjectButton, K_StatsButton, K_BuildObjectButton, K_BuildStatsButton, K_CommanderObjectButton, K_CommanderStatsButton, K_ManufactureObjectButton, K_ManufactureStatsButton, K_ResearchObjectButton, K_ResearchStatsButton: vt_W_CLICKFORM_clickHeld = DynamicIntFancyButton_clickHeld(self, psContext, key)
     Case K_StatsFormButton, K_BuildOptionButton, K_ManufactureOptionButton, K_ResearchOptionButton: vt_W_CLICKFORM_clickHeld = DynamicIntFancyButton_clickHeld(self, psContext, key)
     Case K_IntMessageButton: vt_W_CLICKFORM_clickHeld = IntMessageButton_clickHeld(self, psContext, key)
-    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay, K_IntStatusButton: vt_W_CLICKFORM_clickHeld = W_CLICKFORM_clickHeld(self, psContext, key)
+    Case K_W_CLICKFORM, K_IntFancyButton, K_W_FULLSCREENOVERLAY_CLICKFORM, K_WzChatOptionsForm, K_WzInGameChatScreen_CLICKFORM, K_WzInGameOptionsScreen_CLICKFORM, K_WzQuickChatForm, K_WzQuickChatSection, K_IntObjectButton, K_IntStatsButton, K_IntTransportButton, K_WzFullscreenKeyBindingEditingOverlay: vt_W_CLICKFORM_clickHeld = W_CLICKFORM_clickHeld(self, psContext, key)
+    Case K_IntStatusButton: vt_W_CLICKFORM_clickHeld = W_CLICKFORM_clickHeld(self, psContext, key)
     End Select
 End Function
+
+Public Sub vt_WzChatMuteColButtonBase_clickPrimary(ByVal self As WIDGET)
+    Select Case self.kind
+    Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: WzChatMuteColButtonBase_clickPrimary self
+    End Select
+End Sub
+
+Public Function vt_WzChatMuteColButtonBase_clickSecondary(ByVal self As WIDGET, ByVal synthesizedFromHold As Boolean) As Boolean
+    Select Case self.kind
+    Case K_WzChatMuteColButtonBase, K_WzGlobalChatMuteColButton, K_WzLocalChatMuteColButton: vt_WzChatMuteColButtonBase_clickSecondary = WzChatMuteColButtonBase_clickSecondary(self, synthesizedFromHold)
+    End Select
+End Function
+
+Public Function vt_WzChatMuteColButtonBase_getMuteStatus(ByVal self As WIDGET) As Boolean
+    Select Case self.kind
+    Case K_WzChatMuteColButtonBase: vt_WzChatMuteColButtonBase_getMuteStatus = WzChatMuteColButtonBase_getMuteStatus(self)
+    Case K_WzGlobalChatMuteColButton: vt_WzChatMuteColButtonBase_getMuteStatus = WzGlobalChatMuteColButton_getMuteStatus(self)
+    Case K_WzLocalChatMuteColButton: vt_WzChatMuteColButtonBase_getMuteStatus = WzLocalChatMuteColButton_getMuteStatus(self)
+    End Select
+End Function
+
+Public Sub vt_WzChatMuteColButtonBase_setMuteStatus(ByVal self As WIDGET, ByVal muted As Boolean)
+    Select Case self.kind
+    Case K_WzChatMuteColButtonBase: WzChatMuteColButtonBase_setMuteStatus self, muted
+    Case K_WzGlobalChatMuteColButton: WzGlobalChatMuteColButton_setMuteStatus self, muted
+    Case K_WzLocalChatMuteColButton: WzLocalChatMuteColButton_setMuteStatus self, muted
+    End Select
+End Sub
 
 Public Sub vt_WzMultiLobbyOptionsWidgetBase_refreshData(ByVal self As WIDGET)
     Select Case self.kind
     Case K_WzMultiLobbyOptionsImpl: WzMultiLobbyOptionsImpl_refreshData self
     Case K_WzMultiLobbyOptionsWidgetBase: WzMultiLobbyOptionsWidgetBase_refreshData self
+    End Select
+End Sub
+
+Public Sub vt_WzPlayerChatMuteButtonBase_clickPrimary(ByVal self As WIDGET)
+    Select Case self.kind
+    Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: WzPlayerChatMuteButtonBase_clickPrimary self
+    End Select
+End Sub
+
+Public Function vt_WzPlayerChatMuteButtonBase_clickSecondary(ByVal self As WIDGET, ByVal synthesizedFromHold As Boolean) As Boolean
+    Select Case self.kind
+    Case K_WzPlayerChatMuteButtonBase, K_WzHostFreeChatPlayerMuteButton: vt_WzPlayerChatMuteButtonBase_clickSecondary = WzPlayerChatMuteButtonBase_clickSecondary(self, synthesizedFromHold)
+    End Select
+End Function
+
+Public Function vt_WzPlayerChatMuteButtonBase_getMuteStatus(ByVal self As WIDGET) As Boolean
+    Select Case self.kind
+    Case K_WzHostFreeChatPlayerMuteButton: vt_WzPlayerChatMuteButtonBase_getMuteStatus = WzHostFreeChatPlayerMuteButton_getMuteStatus(self)
+    Case K_WzPlayerChatMuteButtonBase: vt_WzPlayerChatMuteButtonBase_getMuteStatus = WzPlayerChatMuteButtonBase_getMuteStatus(self)
+    End Select
+End Function
+
+Public Sub vt_WzPlayerChatMuteButtonBase_setMuteStatus(ByVal self As WIDGET, ByVal muted As Boolean)
+    Select Case self.kind
+    Case K_WzHostFreeChatPlayerMuteButton: WzHostFreeChatPlayerMuteButton_setMuteStatus self, muted
+    Case K_WzPlayerChatMuteButtonBase: WzPlayerChatMuteButtonBase_setMuteStatus self, muted
+    End Select
+End Sub
+
+Public Sub vt_WzPlayerChatMuteButtonBase_updateData(ByVal self As WIDGET)
+    Select Case self.kind
+    Case K_WzHostFreeChatPlayerMuteButton: WzHostFreeChatPlayerMuteButton_updateData self
+    Case K_WzPlayerChatMuteButtonBase: WzPlayerChatMuteButtonBase_updateData self
     End Select
 End Sub
 
@@ -3586,10 +4108,18 @@ Public Sub WIDGET_destructAll(ByVal self As WIDGET)
         WzPlayerBoxTabs_destruct self
     Case K_WzPositionChooser
         WzPositionChooser_destruct self
+    Case K_WzQuickChatSendToSelector
+        WzQuickChatSendToSelector_destruct self
+    Case K_MusicManagerForm
+        MusicManagerForm_destruct self
     Case K_OptionsForm
         OptionsForm_destruct self
+    Case K_TrackDetailsForm
+        TrackDetailsForm_destruct self
     Case K_W_INTELLIGENCEOVERLAY_FORM
         W_INTELLIGENCEOVERLAY_FORM_destruct self
+    Case K_W_MusicListHeaderColImage
+        W_MusicListHeaderColImage_destruct self
     Case K_WzMultiLobbyOptionsImpl
         WzMultiLobbyOptionsImpl_destruct self
     Case K_WzOptionsDropdownWidget
@@ -3603,8 +4133,14 @@ Public Sub WIDGET_destructAll(ByVal self As WIDGET)
         OptionsForm_destruct self
     Case K_OptionsDropdown
         DropdownWidget_destruct self
+    Case K_WzChatOptionsForm
+        WzChatOptionsForm_destruct self
     Case K_WzInGameChatBoxForm
         WzInGameChatBoxForm_destruct self
+    Case K_WzQuickChatForm
+        WzQuickChatForm_destruct self
+    Case K_WzQuickChatSection
+        WzQuickChatSection_destruct self
     End Select
 End Sub
 
@@ -3633,6 +4169,8 @@ Public Function WzFunc_dispatch(ByVal f As WzFunc, args() As Variant) As Variant
         WzFunc_dispatch_set WzFunc_dispatch, campaign_title_c_fn(f, args)
     Case FN_challenge_displayLoadBanner, FN_challenge_displayLoadSlot, FN_challengeForm_calcLayout, FN_newDisplayLoadSlotData, FN_deleteDisplayLoadSlotData
         WzFunc_dispatch_set WzFunc_dispatch, challenge_c_fn(f, args)
+    Case FN_chatOpt_updateButton_onClick, FN_chatOpt_updateButton_task, FN_chatOpt_enableAll_onClick, FN_chatOpt_disableAll_onClick
+        WzFunc_dispatch_set WzFunc_dispatch, chatoptions_c_fn(f, args)
     Case FN_chatBox_onReturn, FN_chatBox_onReturnTask, FN_chatBox_onEscape, FN_chatBox_onEscapeTask, FN_chatBox_onEditingStopped, FN_chatBox_onEditingStoppedTask, FN_chatOptionsButton_onClick, FN_chatOptionsButton_task, FN_chatOptionsOverlay_clicked, FN_chatOptions_onSettingsChange
         WzFunc_dispatch_set WzFunc_dispatch, chatscreen_c_fn(f, args)
     Case FN_chatOptionsForm_calcLayout, FN_chatClickForm_calcLayout, FN_chatClickForm_onTab, FN_chatClickForm_onTabTask, FN_chatConsoleBox_calcLayout, FN_chatQuickChat_onSent, FN_chatQuickChat_onSentTask, FN_chatQuickChatForm_calcLayout, FN_chatScreen_clicked
@@ -3767,6 +4305,10 @@ Public Function WzFunc_dispatch(ByVal f As WzFunc, args() As Variant) As Variant
         WzFunc_dispatch_set WzFunc_dispatch, multilobbyoptions_c_fn(f, args)
     Case FN_displayRequestOption, FN_displayNumPlayersBut, FN_requestForm_calcLayout, FN_searchBox_onEditingStopped, FN_initPUserData_DisplayNumPlayersButCache, FN_multimenu_intDisplayImageHilight
         WzFunc_dispatch_set WzFunc_dispatch, multimenu_c_fn(f, args)
+    Case FN_musicModeCheckbox_onClick, FN_musicManager_trackRowClick, FN_musicManager_setTrackMode
+        WzFunc_dispatch_set WzFunc_dispatch, musicmanager_c_fn(f, args)
+    Case FN_musicManagerTitleUI_baseFormCalcLayout, FN_musicManagerTitleUI_quitClick, FN_musicManagerTitleUI_quitTask, FN_musicManagerTitleUI_formCalcLayout
+        WzFunc_dispatch_set WzFunc_dispatch, musicmanagertitleui_c_fn(f, args)
     Case FN_closeInterface_task, FN_closeInterfaceNoAnim_task, FN_findAnySelectedObject, FN_findHighlightedObject, FN_scheduleDisplayStatsForm_task, FN_ObjectsForm_calcLayout, FN_ObjectsForm_closeCalcLayout, FN_ObjectsForm_closeClicked, FN_ObjectsForm_closeTask, FN_ObjectsForm_tabListCalcLayout
         WzFunc_dispatch_set WzFunc_dispatch, objects_stats_c_fn(f, args)
     Case FN_StatsForm_calcLayout, FN_StatsForm_closeClicked, FN_StatsForm_closeTask
@@ -3781,6 +4323,10 @@ Public Function WzFunc_dispatch(ByVal f As WzFunc, args() As Variant) As Variant
         WzFunc_dispatch_set WzFunc_dispatch, optionstitleui_c_fn(f, args)
     Case FN_PopoverWidget_openTask, FN_PopoverWidget_displayChildDropShadows, FN_PopoverWidget_onClicked, FN_PopoverWidget_noHitTest, FN_PopoverWidget_calcLayout, FN_PopoverWidget_closeTask
         WzFunc_dispatch_set WzFunc_dispatch, popover_c_fn(f, args)
+    Case FN_qcSection_messagesList_calcLayout, FN_qcSection_chatOption_onClick, FN_qcSendTo_clicked_task, FN_qcSendTo_openChooser_task, FN_qcSendTo_closeChooser_task, FN_qcChooserOverlay_calcLayout, FN_qcChooserOverlay_onClicked, FN_qcPlayersSel_humanTeammates_onClick, FN_qcPlayersSel_humanTeammates_calcLayout, FN_qcPlayersSel_aiTeammates_onClick
+        WzFunc_dispatch_set WzFunc_dispatch, quickchat_c_fn(f, args)
+    Case FN_qcPlayersSel_aiTeammates_calcLayout, FN_qcPlayersSel_player_onClick, FN_qcPlayersSel_playersList_calcLayout, FN_qcPanel_tabPress_task, FN_qcForm_panelSwitcher_onChoose, FN_qcForm_panelSwitcher_task, FN_qcForm_panelSwitcher_calcLayout
+        WzFunc_dispatch_set WzFunc_dispatch, quickchat_c_fn(f, args)
     Case FN_AllyResearchsIcons_displayAllyIcon, FN_ResearchOptionButton_removeStats
         WzFunc_dispatch_set WzFunc_dispatch, research_ui_c_fn(f, args)
     Case FN_displayScrollBar

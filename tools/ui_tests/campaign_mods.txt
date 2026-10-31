@@ -1,0 +1,29 @@
+# the campaign mods (cluster K): Single Player, New Campaign; the selector lists the alternate campaigns of
+# data/mods/campaign (Fractured Kingdom, Reclamation: each .wz mounted at WZTempProcessCamMod and its
+# mod-info.json read through the ported PhysFS and modinfo.cpp) and the balance mods (Classic, Pumpkin: the
+# original campaign's Balance dropdown); the log says "Found 4 campaign mods" (LOG_INFO). Reclamation is
+# selected (its banner, universe and start options) and started: rebuildSearchPath mounts
+# mods/campaign/reclamation.wz and its level L1 loads from it.
+# Layout at 1024x768 (titleui/campaign.cpp; the selector form is 180 wide from x 223): Original Campaign
+# y 203-232, the "Additional Campaigns" list from y 277, a button 30 high each, sorted by name: Fractured
+# Kingdom y 277-306, Reclamation y 307-336; Start Game at (607, 575). "widgets" puts the widget tree with
+# its geometry in the log (ui_test.py prints it) to check these.
+wait 90
+click 512 365
+wait 60
+click 512 365
+wait 120
+widgets
+shot selector_mods
+log Reclamation
+click 313 322
+wait 90
+shot reclamation
+log Start Game
+click 607 575
+wait 300
+shot reclamation_start1
+wait 600
+shot reclamation_start2
+wait 5
+quit

@@ -11,10 +11,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-' src/modinfo.h: class WzCampaignModInfo : public WZModInfo (WZModInfo's fields first). modinfo.cpp is not
-' ported: loadCampaignModInfoFromFile is a stand-in that loads none, and getModCompatibility here a stand-in
-' (OK). A WzJsonLocalizedString is its getLocalizedString(); optional<std::string> is has<name> and <name>;
-' the std::unordered_set<DIFFICULTY_LEVEL> is difficultyLevels ("d<level>" -> level).
+' src/modinfo.h: class WzCampaignModInfo : public WZModInfo (WZModInfo's fields first; WZModInfo has no other
+' subclass in the game, so the two are one class). modinfo_c (modinfo.cpp) fills it: loadCampaignModInfoFromFile;
+' getModCompatibility is modinfo.cpp's WZModInfo::getModCompatibility. A WzJsonLocalizedString is its
+' getLocalizedString() (see modinfo_c); optional<std::string> is has<name> and <name>; the
+' std::unordered_set<DIFFICULTY_LEVEL> is difficultyLevels ("d<level>" -> level); the std::vectors of
+' WzCampaignTweakOption are Collections of WzCampaignTweakOption objects.
 Option Explicit
 
 Public name_ As String                     ' std::string name
@@ -49,9 +51,11 @@ Private Sub Class_Initialize()
     universe = WzCampaignUniverse_WZ2100Extended
 End Sub
 
-' WzModCompatibilityResult WZModInfo::getModCompatibility() const (modinfo.cpp: not ported; a stand-in)
+' WzModCompatibilityResult WZModInfo::getModCompatibility() const (modinfo.cpp)
 Public Function getModCompatibility() As WzModCompatibilityResult
-    getModCompatibility = WzModCompatibilityResult_OK
+    Dim self As WzCampaignModInfo
+    Set self = Me
+    getModCompatibility = isWZModVersionCompatible(self)
 End Function
 
 ' difficultyLevels.count(lvl) > 0

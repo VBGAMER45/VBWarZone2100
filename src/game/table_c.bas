@@ -11,8 +11,11 @@ Attribute VB_Name = "table_c"
 ' getRows returns the rows' Collection. optional<T> fields are has_<name> and
 ' <name>; an optional<size_t> return is a Boolean (has_value) and a ByRef value.
 ' A Vector2i padding is glm_h's Vector2i. TableHeader::parentTable (a weak_ptr)
-' is the table's serial (widgweak_vb). size_t arithmetic is Long (the same while
-' the table is wide enough for its padding, as the callers make it); std::sort of
+' is the table's serial (widgweak_vb). size_t arithmetic is Long: + and - wrap as a
+' 32-bit size_t does (no overflow checks); relayoutColumns and its helpers compare and
+' divide unsigned (ULT, udiv32), as a table narrower than its padding (no geometry yet:
+' setMinimumColumnWidths before the first layout) gets a wrapped, huge
+' maxColumnWidthAvailable and widths, as in 4.7.0's 32-bit build; std::sort of
 ' a few column indexes is a stable insertion sort (MSVC's for short ranges).
 ' (VB) widget class TableRow : W_BUTTON
 ' (VB) virtual TableRow.resizeColumns
@@ -735,7 +738,7 @@ Private Function ScrollableTableWidget_getShrinkableColumnIndexes(ByVal self As 
             GoTo continue_
         End If
         If MIN_(currentColumnWidthsCount, d.minColumnWidthsCount) > i Then
-            If currentColumnWidths(i) <= d.minColumnWidth(i) Then
+            If Not ULT(d.minColumnWidth(i), currentColumnWidths(i)) Then ' currentColumnWidths[i] <= minColumnWidths[i] (size_t)
                 GoTo continue_
             End If
         End If
@@ -778,7 +781,7 @@ End Sub
 Private Function ScrollableTableWidget_maxColumnWidthReduction(ByVal d As ScrollableTableWidget, proposedColumnWidths() As Long, ByVal colIdx As Long) As Long
     ScrollableTableWidget_maxColumnWidthReduction = proposedColumnWidths(colIdx)
     If d.minColumnWidthsCount > colIdx Then
-        If proposedColumnWidths(colIdx) > d.minColumnWidth(colIdx) Then
+        If ULT(d.minColumnWidth(colIdx), proposedColumnWidths(colIdx)) Then
             ScrollableTableWidget_maxColumnWidthReduction = proposedColumnWidths(colIdx) - d.minColumnWidth(colIdx)
         Else
             ScrollableTableWidget_maxColumnWidthReduction = 0
@@ -802,7 +805,7 @@ Private Function ScrollableTableWidget_shrinkColumnWidths(ByVal self As WIDGET, 
         tmp = shrinkableColumnIndexes(i)
         j = i - 1
         Do While j >= 0
-            If Not (ScrollableTableWidget_maxColumnWidthReduction(d, proposedColumnWidths, tmp) < ScrollableTableWidget_maxColumnWidthReduction(d, proposedColumnWidths, shrinkableColumnIndexes(j))) Then Exit Do
+            If Not ULT(ScrollableTableWidget_maxColumnWidthReduction(d, proposedColumnWidths, tmp), ScrollableTableWidget_maxColumnWidthReduction(d, proposedColumnWidths, shrinkableColumnIndexes(j))) Then Exit Do
             shrinkableColumnIndexes(j + 1) = shrinkableColumnIndexes(j)
             j = j - 1
         Loop
@@ -813,12 +816,12 @@ Private Function ScrollableTableWidget_shrinkColumnWidths(ByVal self As WIDGET, 
         colIdx = shrinkableColumnIndexes(i)
         remainingExtraWidth = extraWidth - currentTotalColumnWidthReduction
         If i < shrinkableCount - 1 Then
-            widthReductionAmount = remainingExtraWidth \ (shrinkableCount - i)
+            widthReductionAmount = udiv32(remainingExtraWidth, (shrinkableCount - i))
         Else
             widthReductionAmount = remainingExtraWidth
         End If
         maxColumnWidthReduction = ScrollableTableWidget_maxColumnWidthReduction(d, proposedColumnWidths, colIdx)
-        widthReductionAmount = MIN_(widthReductionAmount, maxColumnWidthReduction)
+        If ULT(maxColumnWidthReduction, widthReductionAmount) Then widthReductionAmount = maxColumnWidthReduction ' std::min (size_t)
         proposedColumnWidths(colIdx) = proposedColumnWidths(colIdx) - widthReductionAmount
         currentTotalColumnWidthReduction = currentTotalColumnWidthReduction + widthReductionAmount
     Next
@@ -830,6 +833,11 @@ Private Function sumOf(values() As Long, ByVal n As Long) As Long
     For i = 0 To n - 1
         sumOf = sumOf + values(i)
     Next
+End Function
+
+' (VB) a / b of two size_t (32-bit), b > 0
+Private Function udiv32(ByVal a As Long, ByVal b As Long) As Long
+    udiv32 = FromU32(Fix(U32(a) / U32(b)))
 End Function
 
 Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, proposedIn() As Long, ByVal proposedCount As Long, priorityIndexes() As Long, ByVal priorityCount As Long) As Boolean
@@ -850,7 +858,7 @@ Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, pro
     ' respect any minimum column widths (first pass)
     increasedCount = 0
     For i = 0 To MIN_(proposedCount, d.minColumnWidthsCount) - 1
-        If proposedColumnWidths(i) < d.minColumnWidth(i) Then
+        If ULT(proposedColumnWidths(i), d.minColumnWidth(i)) Then
             proposedColumnWidths(i) = d.minColumnWidth(i)
             ReDim Preserve colIndexesIncreasedToMinimumSize(0 To increasedCount)
             colIndexesIncreasedToMinimumSize(increasedCount) = i
@@ -860,7 +868,7 @@ Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, pro
 
     maxColumnWidthAvailable = ScrollableTableWidget_getMaxColumnTotalWidth(self, proposedCount)
     totalColWidth = sumOf(proposedColumnWidths, proposedCount)
-    If totalColWidth > maxColumnWidthAvailable Then
+    If ULT(maxColumnWidthAvailable, totalColWidth) Then
         ' need to shrink all shrinkable columns to fit
         extraWidth = totalColWidth - maxColumnWidthAvailable
         allShrinkableCount = ScrollableTableWidget_getShrinkableColumnIndexes(self, proposedColumnWidths, proposedCount, allShrinkableColumnIndexes)
@@ -890,12 +898,12 @@ Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, pro
             Exit Function
         End If
         currentTotalColumnWidthReduction = ScrollableTableWidget_shrinkColumnWidths(self, proposedColumnWidths, shrinkableColumnIndexes, shrinkableCount, extraWidth)
-        If currentTotalColumnWidthReduction < extraWidth Then
+        If ULT(currentTotalColumnWidthReduction, extraWidth) Then
             If Not ignoringPriorityIndexes And priorityCount > 0 Then
                 ' One more thing we can do - try to shrink the priority column indexes
                 currentTotalColumnWidthReduction = currentTotalColumnWidthReduction + ScrollableTableWidget_shrinkColumnWidths(self, proposedColumnWidths, priorityIndexes, priorityCount, (extraWidth - currentTotalColumnWidthReduction))
             End If
-            If currentTotalColumnWidthReduction < extraWidth Then
+            If ULT(currentTotalColumnWidthReduction, extraWidth) Then
                 ' Unable to shrink other columns - reject this proposed set of column widths
                 ScrollableTableWidget_relayoutColumns = False
                 Exit Function
@@ -904,7 +912,7 @@ Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, pro
         If Not (currentTotalColumnWidthReduction = extraWidth) Then ASSERT_FAILURE "currentTotalColumnWidthReduction == extraWidth", "lib/widget/table.cpp:742", "relayoutColumns", "Logic error"
         totalColWidth = sumOf(proposedColumnWidths, proposedCount)
     End If
-    If totalColWidth < maxColumnWidthAvailable Then
+    If ULT(totalColWidth, maxColumnWidthAvailable) Then
         ' expand any "expand to fill" columns to proportionally take up the extra space
         extraWidth = maxColumnWidthAvailable - totalColWidth
         expandCount = ScrollableTableWidget_getExpandToFillColumnIndexes(self, expandToFillColumnIndexes)
@@ -912,7 +920,7 @@ Private Function ScrollableTableWidget_relayoutColumns(ByVal self As WIDGET, pro
         For i = 0 To expandCount - 1
             colIdx = expandToFillColumnIndexes(i)
             If i < expandCount - 1 Then
-                widthIncreaseAmount = extraWidth \ expandCount
+                widthIncreaseAmount = udiv32(extraWidth, expandCount)
             Else
                 widthIncreaseAmount = extraWidth - currentTotalColumnWidthIncrease
             End If

@@ -1,0 +1,27 @@
+# video display: screenshots of CAM_2A's opening video (cam2/c002.ogg) every 150 frames, for
+# tools/video_display_test.py (run with --game=CAM_2A and a config that sets FMVmode and scanlines)
+wait 150
+shot v00
+wait 150
+shot v01
+wait 150
+shot v02
+wait 150
+shot v03
+wait 150
+shot v04
+wait 150
+shot v05
+wait 150
+shot v06
+wait 150
+shot v07
+wait 150
+shot v08
+wait 150
+shot v09
+wait 150
+shot v10
+wait 150
+shot v11
+quit

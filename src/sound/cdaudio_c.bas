@@ -4,9 +4,9 @@ Attribute VB_Name = "cdaudio_c"
 ' holds the track). A std::shared_ptr<const WZ_TRACK> is a WZ_TRACK (Nothing = nullptr); the event sinks
 ' are ICDAudioEventSink objects (NOTIFY_MUSIC_EVENT and NOTIFY_MUSIC_EVENT_TRACK are notifyMusicEvent).
 ' The enums SONG_CONTEXT and MusicGameMode are SoundApi's; to_string(MusicGameMode) is
-' MusicGameMode_to_string. The globals' initialisers run on the first call (InitGlobals). No music ships
-' with the game data, and Opus (music/menu.opus, the albums' tracks) has no decoder here: sound_PlayStream
-' fails as for a missing file.
+' MusicGameMode_to_string. The globals' initialisers run on the first call (InitGlobals). The music
+' (music/menu.opus, the albums' tracks: tools/setup_data.py puts the official build's in data/music) is Opus,
+' decoded by WZOpusDecoder (opusfile + libopus).
 Option Explicit
 
 ' (VB) the events of NOTIFY_MUSIC_EVENT and NOTIFY_MUSIC_EVENT_TRACK

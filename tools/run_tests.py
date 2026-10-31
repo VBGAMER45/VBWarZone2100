@@ -1,13 +1,14 @@
 """
 run_tests.py - checks the port's code against the C++ it was ported from.
 
-  python -I tools\\run_tests.py [--keep] [--stats | --replays | --sound]
+  python -I tools\\run_tests.py [--keep] [--stats | --replays | --sound | --media]
 
 (--stats: only the statsref tests; --replays: only the official replays,
 tools/replay_test.py on each replay with reference sync logs in
 ref/official: Warzone.exe plays it headless and its sync log must equal the
-official 4.7.0 build's, tick by tick; --sound: only the sound tests (below).
-A full run ends with them.)
+official 4.7.0 build's, tick by tick; --sound: only the sound tests (below);
+--media: only cluster K's tests (the .wz archives, Opus, Theora, the videos'
+audio: media_tests). A full run ends with them.)
 
 Needs bin/ from tools\\build.py, and g++ (Strawberry Perl's) for the
 reference tool. Builds bin/WzTests.exe (src/tests, a VB-only test program
@@ -1273,10 +1274,34 @@ def doubles_file(path):
     return len(values)
 
 
+MEDIA_TESTS = ("zip_test", "celt_test", "silk_test", "opus_test", "theora_test", "video_audio_test")
+# where they are: tools/, or beside their test exe's sources (silk_test.py in src/silktests)
+MEDIA_TEST_DIRS = (os.path.join(ROOT, "tools"), os.path.join(ROOT, "src", "silktests"))
+
+
+def media_tests(keep):
+    """Cluster K's tests, each tools/<name>.py's run(keep) when the file exists: the .wz archives read through
+    WzFramework's PhysFS against Python's zipfile (zip_test), the Opus decoder (opusfile + libopus) against
+    ffmpeg's libopus (opus_test), the Theora decoder against ffmpeg and the official libtheoradec
+    (theora_test), the videos' Vorbis audio through the packet API against ffmpeg (video_audio_test)."""
+    import importlib
+    passed = True
+    for name in MEDIA_TESTS:
+        for folder in MEDIA_TEST_DIRS:
+            if os.path.exists(os.path.join(folder, name + ".py")):
+                if folder not in sys.path:
+                    sys.path.append(folder)
+                passed = importlib.import_module(name).run(keep) and passed
+                break
+    return passed
+
+
 def main(argv):
     keep = "--keep" in argv
     if "--sound" in argv:
         return 0 if sound_tests(keep) else 1
+    if "--media" in argv:
+        return 0 if media_tests(keep) else 1
     for name in ("WzFramework", "WzMap"):
         if not os.path.exists(build.dll_path(name)):
             print("bin/%s.dll is missing: run tools\\build.py first" % name)
@@ -1401,7 +1426,8 @@ def main(argv):
     stats_ok = stats_tests(keep)
     replays_ok = replay_tests(keep)
     sound_ok = sound_tests(keep)
-    return 1 if failed or not stats_ok or not replays_ok or not sound_ok else 0
+    media_ok = media_tests(keep)
+    return 1 if failed or not stats_ok or not replays_ok or not sound_ok or not media_ok else 0
 
 
 def replay_tests(keep):

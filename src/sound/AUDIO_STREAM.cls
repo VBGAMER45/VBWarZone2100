@@ -17,7 +17,7 @@ Attribute VB_Exposed = True
 Option Explicit
 
 Public source As Long                   ' ALuint = -1: OpenAL name of the sound source
-Public decoder As Object                ' WZDecoder * = nullptr: a WZVorbisDecoder (Nothing = nullptr)
+Public decoder As Object                ' WZDecoder * = nullptr: a WZDecoder (WZVorbisDecoder or WZOpusDecoder; Nothing = nullptr)
 Public fileHandle As Long               ' PHYSFS_file * = nullptr (0)
 Public volume As Single                 ' = 0.f
 Public queuedStop As Boolean            ' = false: when sound_StopStream has been called on the stream
