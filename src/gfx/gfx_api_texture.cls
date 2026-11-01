@@ -12,8 +12,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 ' gfx_api.h: gfx_api::texture (a 2D texture; gl_texture and null_texture
-' implement it, and gfx_api_abstract_texture). The image is an iV_Image (the
-' port has no iV_CompressedImage: see CONVENTIONS, "The renderer"). Methods
+' implement it, and gfx_api_abstract_texture). upload takes an iV_BaseImage (an
+' iV_Image or an iV_CompressedImage), uploadSub an iV_Image, as in C++. Methods
 ' have no underscores (Implements refuses them): upload_sub is uploadSub,
 ' get_dimensions is getDimensions. The texture is freed when its last
 ' reference goes (C++'s delete).
@@ -33,7 +33,7 @@ Public Function backendInternalValue() As Long
 End Function
 
 ' gfx_api::texture
-Public Function upload(ByVal mip_level As Long, ByVal image As iV_Image) As Boolean
+Public Function upload(ByVal mip_level As Long, ByVal image As iV_BaseImage) As Boolean
 End Function
 
 Public Function uploadSub(ByVal mip_level As Long, ByVal offset_x As Long, ByVal offset_y As Long, ByVal image As iV_Image) As Boolean

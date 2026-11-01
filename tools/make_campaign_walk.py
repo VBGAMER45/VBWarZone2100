@@ -40,27 +40,31 @@ lines = [
 if camp in START_AT:
     lines += ["click 565 441", "wait 60", "click %d %d" % START_AT[camp], "wait 60", "shot selector"]
 # Each level: waitlevel <name> (the level loaded and running, no video), then quiet 360 (6 s without a full-screen
-# video: its briefing videos start a few seconds in, one after another); the cheat is typed once the first runs
+# video: its briefing videos start a few seconds in, one after another); the cheat is typed once the first runs.
+# The Game Guide's pop-ups (campaign scripts add topics at many moments: cam1a's HQ topic, structures built,
+# artifacts, unit experience) pause the game and swallow input: closeguide (nothing when none is open) after each
+# quiet and before typing, embarking or clicking
+CG = ["closeguide", "wait 30"]
 lines += ["click 607 575"]
 for i, lev in enumerate(LEVELS[:n]):
     tag = "%02d_%s" % (i, lev.replace("-", "_"))
-    lines += ["waitlevel " + lev, "quiet 360"]
+    lines += ["waitlevel " + lev, "quiet 360"] + CG
     if i == 0:
         lines += ["key 13", "wait 10", "text cheat on", "key 13", "wait 30"]
     if lev in PLAY_WAIT:
-        lines += ["wait %d" % PLAY_WAIT[lev], "quiet 120"]
+        lines += ["wait %d" % PLAY_WAIT[lev], "quiet 120"] + CG
     lines += ["shot " + tag, "log level %s" % lev]
     if lev.endswith("S"):
         if lev == "SUB_1_1S":
             lines += ["key 13", "wait 10", "text let me win", "key 13"]
         # (SUB_1_1S's briefing video plays when the cheat's transporter arrives: quiet again before boarding, and
         # before the launch, which a video would swallow)
-        lines += ["wait 300", "quiet 360", "embark", "wait %d" % BOARD_WAIT.get(lev, 600), "quiet 120",
+        lines += ["wait 300", "quiet 360"] + CG + ["embark", "wait %d" % BOARD_WAIT.get(lev, 600), "quiet 120"] + CG + [
                   "shot %s_boarded" % tag, "click %d %d" % LAUNCH, "wait 1200"]
     else:
         # (the win can start a video before the result screen: CAM_2C's cheat destroys the air base, which plays
         # MB2_C_MSG2; quiet again before Continue Game, which a video would swallow)
-        lines += ["key 13", "wait 10", "text let me win", "key 13", "wait 300", "quiet 180",
+        lines += CG + ["key 13", "wait 10", "text let me win", "key 13", "wait 300", "quiet 180"] + CG + [
                   "shot %s_result" % tag, "click 511 556", "wait 900"]
 lines += ["quiet 360", "shot %02d_end" % n, "log done", "wait 5", "quit"]
 name = "campaign_walk.txt" if camp == 1 else "campaign%d_walk.txt" % camp

@@ -51,26 +51,26 @@ Public Function backend_internal_value() As Long
     backend_internal_value = 0
 End Function
 
-Private Function upload_internal(ByVal layer As Long, ByVal mip_level As Long, ByVal offset_x As Long, ByVal offset_y As Long, ByVal image As iV_Image) As Boolean
+Private Function upload_internal(ByVal layer As Long, ByVal mip_level As Long, ByVal offset_x As Long, ByVal offset_y As Long, ByVal image As iV_BaseImage) As Boolean
     Dim width As Long, height As Long
     If Not (image.data() <> 0) Then ASSERT_FAILURE "image.data() != nullptr", "lib/ivis_opengl/gfx_api_gl.cpp:686", "upload_internal", "Attempt to upload image without data": upload_internal = False: Exit Function
-    If Not (image.pixel_format_() = internal_format) Then ASSERT_FAILURE "image.pixel_format() == internal_format", "lib/ivis_opengl/gfx_api_gl.cpp:687", "upload_internal", "Uploading image to texture with different format": upload_internal = False: Exit Function
+    If Not (image.pixelFormat() = internal_format) Then ASSERT_FAILURE "image.pixel_format() == internal_format", "lib/ivis_opengl/gfx_api_gl.cpp:687", "upload_internal", "Uploading image to texture with different format": upload_internal = False: Exit Function
     If Not (mip_level < mip_count) Then ASSERT_FAILURE "mip_level < mip_count", "lib/ivis_opengl/gfx_api_gl.cpp:688", "upload_internal", "mip_level (%zu) >= mip_count (%zu)", mip_level, mip_count: upload_internal = False: Exit Function
     width = image.width()
     height = image.height()
     If Not (width > 0 And height > 0) Then ASSERT_FAILURE "width > 0 && height > 0", "lib/ivis_opengl/gfx_api_gl.cpp:691", "upload_internal", "Attempt to upload texture with width or height of 0 (width: %zu, height: %zu)", width, height
     bind
-    If Not (gfx_api_format_memory_size(image.pixel_format_(), width, height) = image.data_size()) Then ASSERT_FAILURE "gfx_api::format_memory_size(image.pixel_format(), width, height) == image.data_size()", "lib/ivis_opengl/gfx_api_gl.cpp:701", "upload_internal", "data_size (%zu) does not match expected format_memory_size(%s, %zu, %zu)=%zu", image.data_size(), gfx_api_format_to_str(image.pixel_format_()), width, height, gfx_api_format_memory_size(image.pixel_format_(), width, height)
+    If Not (gfx_api_format_memory_size(image.pixelFormat(), width, height) = image.dataSize()) Then ASSERT_FAILURE "gfx_api::format_memory_size(image.pixel_format(), width, height) == image.data_size()", "lib/ivis_opengl/gfx_api_gl.cpp:701", "upload_internal", "data_size (%zu) does not match expected format_memory_size(%s, %zu, %zu)=%zu", image.dataSize(), gfx_api_format_to_str(image.pixelFormat()), width, height, gfx_api_format_memory_size(image.pixelFormat(), width, height)
 
     ' Copy to an internal buffer for upload on flush
     If Not (offset_x = 0 And offset_y = 0) Then ASSERT_FAILURE "offset_x == 0 && offset_y == 0", "lib/ivis_opengl/gfx_api_gl.cpp:704", "upload_internal", "Trying to upload compressed sub texture": upload_internal = False: Exit Function
-    pInternalBuffer.copy_data_to_buffer mip_level, layer, image.data(), image.data_size()
+    pInternalBuffer.copy_data_to_buffer mip_level, layer, image.data(), image.dataSize()
 
     unbind
     upload_internal = True
 End Function
 
-Public Function upload_layer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_Image) As Boolean
+Public Function upload_layer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_BaseImage) As Boolean
     upload_layer = upload_internal(layer, mip_level, 0, 0, image)
 End Function
 
@@ -119,7 +119,7 @@ Private Function gfx_api_texture_array_backendInternalValue() As Long
     gfx_api_texture_array_backendInternalValue = backend_internal_value()
 End Function
 
-Private Function gfx_api_texture_array_uploadLayer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_Image) As Boolean
+Private Function gfx_api_texture_array_uploadLayer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_BaseImage) As Boolean
     gfx_api_texture_array_uploadLayer = upload_layer(layer, mip_level, image)
 End Function
 

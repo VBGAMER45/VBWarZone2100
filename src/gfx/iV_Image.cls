@@ -12,8 +12,8 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 ' lib/ivis_opengl/pieimage.cpp, lib/ivis_opengl/pietypes.h: iV_Image, an
-' uncompressed image (iV_BaseImage's only implementation in the port: there is
-' no iV_CompressedImage, see CONVENTIONS, "The renderer"). The pixels are a Byte
+' uncompressed image (it implements iV_BaseImage, as iV_CompressedImage does: the
+' interface's methods forward to this class's own). The pixels are a Byte
 ' array; bmp() / bmp_w() / data() give its address (0 if none) for uploads and
 ' CopyMemory. C++'s move (iV_Image&&) is moveFrom; a function taking iV_Image&&
 ' takes the object, and the caller drops it. The destructor is Class_Terminate.
@@ -25,6 +25,8 @@ Attribute VB_Exposed = True
 ' iV_Image_pixel_format_for_channels; pixel_format() is pixel_format_ (the
 ' enum's name).
 Option Explicit
+
+Implements iV_BaseImage
 
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (dest As Any, src As Any, ByVal n As Long)
 Private Declare Function RtlCompareMemory Lib "ntdll" (ByVal Source1 As Long, ByVal Source2 As Long, ByVal Length As Long) As Long
@@ -652,6 +654,43 @@ Friend Sub swapMembers(buf() As Byte, hasBuf As Boolean, w As Long, h As Long, c
     t = m_channels: m_channels = c: c = t
     tOrder = m_colorOrder: m_colorOrder = order: order = tOrder
 End Sub
+
+' (VB) the buffer bmp_w() points at, lent as an array (swapped with buf; swap again to give it back): the KTX2
+' transcoder writes the pixels into it (gfx_api_image_basis_priv_c)
+Friend Sub swapBmpBuffer(buf() As Byte)
+    ByteArraySwap m_bmp, buf
+End Sub
+
+'--------------------------------------------------------------------------
+' iV_BaseImage
+
+Private Function iV_BaseImage_width() As Long
+    iV_BaseImage_width = m_width
+End Function
+
+Private Function iV_BaseImage_height() As Long
+    iV_BaseImage_height = m_height
+End Function
+
+Private Function iV_BaseImage_pixelFormat() As pixel_format
+    iV_BaseImage_pixelFormat = pixel_format_()
+End Function
+
+Private Function iV_BaseImage_data() As Long
+    iV_BaseImage_data = data()
+End Function
+
+Private Function iV_BaseImage_dataSize() As Long
+    iV_BaseImage_dataSize = data_size()
+End Function
+
+Private Function iV_BaseImage_bufferRowLength() As Long
+    iV_BaseImage_bufferRowLength = bufferRowLength()
+End Function
+
+Private Function iV_BaseImage_bufferImageHeight() As Long
+    iV_BaseImage_bufferImageHeight = bufferImageHeight()
+End Function
 
 ' (VB) the number of elements of a 1-D Long array (0 if it has none)
 Private Function LongArraySize(a() As Long) As Long

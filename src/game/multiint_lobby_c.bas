@@ -7,8 +7,10 @@ Attribute VB_Name = "multiint_lobby_c"
 ' intDisplayFeBox, ...), WzMultiButton and its makers (addMultiBut,
 ' makeMultiBut, updateMultiBut), the position choosers (the row factories,
 ' WzPlayerSelectionChangePositionRow, WzPlayerIndexSwapPositionRow,
-' WzPositionChooser), the randomize and map settings helpers, the kicks,
-' the ready checks and the room messages. The game state and the start path
+' WzPositionChooser), the randomize and map settings helpers, the kicks
+' (displayKickReasonPopup), the ready checks, the room messages and the lobby
+' commands' host operations (WzHostLobbyOperationsInterface: cmdInterface_<method>,
+' multilobbycommands_c's). The game state and the start path
 ' are multiint_c's; the screen's methods WzMultiplayerOptionsTitleUI.cls's.
 ' The lambdas are WzFuncs run by multiint_lobby_c_fn (FN_ ids 5000-5999); a
 ' lambda's std::weak_ptr<WzMultiplayerOptionsTitleUI> is the screen's address,
@@ -290,6 +292,15 @@ Public Const FN_chatBox_chatOptionsForm_calcLayout As Long = 5062 ' [psWeakChatB
 Public Const FN_chatBox_menuButton_onClick As Long = 5063   ' createOptionsButton: [weakChatBoxWidget, onClickFunc](W_BUTTON& button)
 Public Const FN_chatBox_copyText As Long = 5064             ' [weakChatBoxWidget, textToCopy](W_BUTTON& button)
 Public Const FN_chatBox_mutePlayer As Long = 5065           ' [sender, currentlyMuted](W_BUTTON& button)
+' (cluster S, fork S4: the notifications of recvPlayerSlotTypeRequestAndPop and displayLobbyDisabledNotification)
+Public Const FN_slotTypeRequest_accept As Long = 18640      ' [desiredIsSpectator](const WZ_Notification&)
+Public Const FN_slotTypeRequest_dismissed As Long = 18641   ' [](const WZ_Notification&, WZ_Notification_Dismissal_Reason reason)
+Public Const FN_slotTypeRequest_ignored As Long = 18642     ' [](const WZ_Notification&)
+Public Const FN_slotSwapRequest_accept As Long = 18643      ' [playerIndex, weakTitleUI](const WZ_Notification&)
+Public Const FN_slotSwapRequest_task As Long = 18644        ' widgScheduleTask([weakTitleUI, playerIndex] {...})
+Public Const FN_slotSwapRequest_dismissed As Long = 18645   ' [playerIndex](const WZ_Notification&, WZ_Notification_Dismissal_Reason reason)
+Public Const FN_lobbyDisabled_moreInformation As Long = 18646 ' displayLobbyDisabledNotification: [infoLink](const WZ_Notification&)
+Public Const FN_lobbyDisabled_openURL As Long = 18647       ' wzAsyncExecOnMainThread([infoLink]{...})
 
 ' openPlayerSlotSwapChooser's calcLayouts (FN_playerSlotSwapChooser_calcLayout's cap(0))
 Private Const SWAPLAYOUT_AIFORM As Long = 0
@@ -1148,7 +1159,9 @@ End Function
 Public Function recvPlayerSlotTypeRequestAndPop(ByVal titleUI As WzMultiplayerOptionsTitleUI, ByVal queue As Long) As Boolean
     Dim playerIndex As Long, desiredIsSpectator As Boolean, r As MessageReader, playerName As String, text As String
     Dim pPlayerName As String, msg As String, result As SpectatorToPlayerMoveResult, notificationTag As String
-    Dim has_swapChooserUp As Boolean, swapChooserUp As Long
+    Dim has_swapChooserUp As Boolean, swapChooserUp As Long, notification As WZ_Notification, contentTitle As String
+    Dim contentText As String, proceedButtonText As String, notificationId As String, notificationIdentifierPrefix As String
+    Dim notificationIdentifier As String, weakTitleUI As Long
     ' A player is requesting a slot type change
     ' ex. player -> spectator
 
@@ -1215,9 +1228,35 @@ Public Function recvPlayerSlotTypeRequestAndPop(ByVal titleUI As WzMultiplayerOp
         End If
 
         If Not hasNotificationsWithTag(SLOTTYPE_REQUEST_TAG) Then
-            ' (the WZ_Notification "Do you want to spectate?" / "Do you want to play?" with its action
-            ' SendPlayerSlotTypeRequest(selectedPlayer, desiredIsSpectator) and its dismissal / ignore answers:
-            ' notifications.cpp, cluster J)
+            notification.duration = 0
+            If desiredIsSpectator Then
+                contentTitle = "Do you want to spectate?"
+                contentText = "The host of this game wants to know if you're willing to spectate?"
+                contentText = contentText & vbLf
+                contentText = contentText & "You are currently a Player."
+                proceedButtonText = "Yes, I will spectate!"
+                notificationId = "spectate"
+            Else
+                contentTitle = "Do you want to play?"
+                contentText = "The host of this game wants to know if you'd like to play?"
+                contentText = contentText & vbLf
+                contentText = contentText & "You are currently a Spectator."
+                proceedButtonText = "Yes, I want to play!"
+                notificationId = "play"
+            End If
+            notification.contentTitle = contentTitle
+            notification.contentText = contentText
+            notification.action_title = proceedButtonText  ' WZ_Notification_Action(proceedButtonText, [desiredIsSpectator](const WZ_Notification&) {...})
+            Set notification.action_onAction = WzFunc_new(FN_slotTypeRequest_accept, desiredIsSpectator)
+            Set notification.onDismissed = WzFunc_new(FN_slotTypeRequest_dismissed)
+            notificationIdentifierPrefix = SLOTTYPE_NOTIFICATION_ID_PREFIX
+            notificationIdentifier = notificationIdentifierPrefix & notificationId
+            notification.displayOptions_identifier = notificationIdentifier    ' WZ_Notification_Display_Options::makeIgnorable(notificationIdentifier, 2)
+            notification.displayOptions_numTimesSeenBeforeDoNotShowAgainOption = 2
+            Set notification.onIgnored = WzFunc_new(FN_slotTypeRequest_ignored)
+            notification.tag = SLOTTYPE_REQUEST_TAG
+
+            addNotification notification, 0             ' WZ_Notification_Trigger::Immediate()
         End If
 
         recvPlayerSlotTypeRequestAndPop = True
@@ -1279,9 +1318,23 @@ Public Function recvPlayerSlotTypeRequestAndPop(ByVal titleUI As WzMultiplayerOp
                 If has_swapChooserUp And swapChooserUp = playerIndex Then
                     ' no nagging permitted - the host already has the player slot swap chooser up for this player!
                 Else
-                    ' (the WZ_Notification "Spectator would like to become a Player", whose action schedules
-                    ' titleUI->openPlayerSlotSwapChooser(playerIndex) and whose dismissal answers "no" with a no-op
-                    ' SendPlayerSlotTypeRequest: notifications.cpp, cluster J)
+                    notification.duration = 0
+                    contentTitle = "Spectator would like to become a Player"
+                    contentText = va("Spectator ""%s"" would like to become a player.", getPlayerName(playerIndex)) ' NOTE: Do not pass true as second parameter, as this only gets shown on the host
+                    contentText = contentText & vbLf
+                    contentText = contentText & "However, there are currently no open Player slots."
+                    contentText = contentText & vbLf & vbLf
+                    contentText = contentText & "Would you like to swap this Spectator with a Player?"
+                    proceedButtonText = "Yes, select Player slot"
+                    notification.contentTitle = contentTitle
+                    notification.contentText = contentText
+                    weakTitleUI = ObjPtr(titleUI)   ' std::weak_ptr<WzMultiplayerOptionsTitleUI> weakTitleUI (titleUI_lock)
+                    notification.action_title = proceedButtonText  ' WZ_Notification_Action(proceedButtonText, [playerIndex, weakTitleUI](const WZ_Notification&) {...})
+                    Set notification.action_onAction = WzFunc_new(FN_slotSwapRequest_accept, playerIndex, weakTitleUI)
+                    Set notification.onDismissed = WzFunc_new(FN_slotSwapRequest_dismissed, playerIndex)
+                    notification.tag = notificationTag
+
+                    addNotification notification, 0     ' WZ_Notification_Trigger::Immediate()
                     ' "handled" - now up to the host to decide what happens, so return true below
                 End If
             End If
@@ -1296,10 +1349,12 @@ Public Function recvPlayerSlotTypeRequestAndPop(ByVal titleUI As WzMultiplayerOp
     recvPlayerSlotTypeRequestAndPop = True
 End Function
 
-' (VB) client-only (the host never receives it): its checks; the swap itself (the player references, NET_InitPlayer,
-' the stats and mute swaps, the simulated re-join) is the joining's, cluster J
+' (VB) client-only (the host never receives it)
 Public Function recvSwapPlayerIndexes(ByVal queue As Long, ByVal parent As WzTitleUI) As SwapPlayerIndexesResult
-    Dim playerIndexA As Long, playerIndexB As Long, r As MessageReader
+    Dim playerIndexA As Long, playerIndexB As Long, r As MessageReader, wasSpectator(0 To 1) As Boolean
+    Dim playerIndexes(0 To 1) As Long, i As Long, playerIndex As Long, t As Boolean, oldPlayerIndex As Long
+    Dim newPlayerIndex As Long, selectedPlayerWasSpectator As Boolean, w As MessageWriter, playerStats As PLAYERSTATS_
+    Dim blindLobbyMessage As String, fromStr As String, toStr As String
     ' A special message that can be triggered by the host to queue-up a player index swap (for example, converting a player to a spectator-only slot - really should only be used for converting between player and spectator slots in the lobby)
     ' For the player being moved, this simulates a lot of the effects of a join, followed by a (quiet / virtual) "leave" of the old slot
     ' For other players, this provides a message and a (quiet / virtual) "leave" of the old slot
@@ -1342,8 +1397,112 @@ Public Function recvSwapPlayerIndexes(ByVal queue As Long, ByVal parent As WzTit
         Exit Function
     End If
 
-    ' (the swap: cluster J)
-    recvSwapPlayerIndexes = SwapPlayerIndexesResult_FAILURE
+    ' Backup some data
+    wasSpectator(0) = NetPlay_players_isSpectator(playerIndexA)
+    wasSpectator(1) = NetPlay_players_isSpectator(playerIndexB)
+
+    ' 1.) Simulate the old slots "leaving" (quietly)
+    ' From handling of NET_PLAYER_DROPPED (to cleanup old player indexes - wait for new player info from host)
+    playerIndexes(0) = playerIndexA
+    playerIndexes(1) = playerIndexB
+    For i = 0 To 1
+        playerIndex = playerIndexes(i)
+        ' From MultiPlayerLeave()
+        '  From clearPlayer() - this is needed to disconnect PlayerReferences so, for example, old chat messages are still associated with the proper player
+        NetPlay_playerReferences(playerIndex).disconnect
+        NetPlay_playerReferences_reset playerIndex
+
+'       NetPlay.players[playerIndex].difficulty = AIDifficulty::DISABLED;
+        '
+        NET_InitPlayer playerIndex, False
+        NETsetPlayerConnectionStatus CONNECTIONSTATUS_PLAYER_DROPPED, playerIndex ' needed??
+        If playerIndex < MAX_PLAYERS Then
+            resetLobbyChangePlayerVote playerIndex
+        End If
+    Next
+    t = ingame.hostChatPermissions(playerIndexA)    ' std::swap
+    ingame.hostChatPermissions(playerIndexA) = ingame.hostChatPermissions(playerIndexB)
+    ingame.hostChatPermissions(playerIndexB) = t
+    t = ingame.muteChat(playerIndexA)               ' std::swap
+    ingame.muteChat(playerIndexA) = ingame.muteChat(playerIndexB)
+    ingame.muteChat(playerIndexB) = t
+    playerSpamMuteNotifyIndexSwap playerIndexA, playerIndexB
+    multiSyncPlayerSwap playerIndexA, playerIndexB
+    multiOptionPrefValuesSwap playerIndexA, playerIndexB
+
+    If playerIndexA = selectedPlayer Or playerIndexB = selectedPlayer Then
+        oldPlayerIndex = selectedPlayer
+        If playerIndexA = selectedPlayer Then newPlayerIndex = playerIndexB Else newPlayerIndex = playerIndexA
+        If playerIndexA = selectedPlayer Then selectedPlayerWasSpectator = wasSpectator(0) Else selectedPlayerWasSpectator = wasSpectator(1)
+
+        ' Send an acknowledgement that we received and are processing the player index swap for us
+        Set w = NETbeginEncode(NETnetQueue(NetPlay_hostPlayer), NET_PLAYER_SWAP_INDEX_ACK)
+        NETuint32_t w, oldPlayerIndex
+        NETuint32_t w, newPlayerIndex
+        NETend w
+
+        ' 1.) Basically what happens in NETjoinGame after receiving NET_ACCEPTED
+
+        selectedPlayer = newPlayerIndex
+        realSelectedPlayer = selectedPlayer
+        debug_ 3405, LOG_NET, "recvSwapPlayerIndexes", "NET_PLAYER_SWAP_INDEX received for me. Switching from player %u to player %u", oldPlayerIndex, newPlayerIndex
+
+        ' Must be called *after* we swap the selectedPlayer / realSelectedPlayer
+        swapPlayerMultiStatsLocal playerIndexA, playerIndexB
+
+        NetPlay_players_allocated(selectedPlayer) = True
+        setPlayerName selectedPlayer, sPlayer
+        NetPlay_players_heartbeat(selectedPlayer) = True
+
+        ' Ensure name is set properly (and re-send to host)
+        NETchangePlayerName selectedPlayer, sPlayer         ' update since we're simulating re-joining
+
+        ' 2.) Basically what happens in joinGameInternalConnect after successful NETjoinGame
+
+        ' Move my stats to the new player slot, and then broadcast
+        loadMultiStats sPlayer, playerStats
+        setMultiStats selectedPlayer, playerStats, False
+        setMultiStats selectedPlayer, playerStats, True
+
+        If selectedPlayer < MAX_PLAYERS And war_getMPcolour() >= 0 Then
+            SendColourRequest selectedPlayer, war_getMPcolour()
+        End If
+
+        If selectedPlayerWasSpectator <> NetPlay_players_isSpectator(selectedPlayer) Then
+            ' Spectator status of player slot changed
+            If selectedPlayerWasSpectator Then fromStr = "true" Else fromStr = "false"
+            If NetPlay_players_isSpectator(selectedPlayer) Then toStr = "true" Else toStr = "false"
+            debug_ 3433, LOG_NET, "recvSwapPlayerIndexes", "Spectator status changed! From %s to %s", fromStr, toStr
+            If Not NetPlay_players_isSpectator(selectedPlayer) Then
+                If Not bRequestedSelfMoveToPlayers Then
+                    ' Host moved us from spectators to players, but we never asked for the move
+                    debug_ 3439, LOG_NET, "recvSwapPlayerIndexes", "The host tried to move us to Players, but we never gave permission."
+                    recvSwapPlayerIndexes = SwapPlayerIndexesResult_ERROR_HOST_MADE_US_PLAYER_WITHOUT_PERMISSION
+                    Exit Function
+                Else
+                    ' We did indeed give permission for the move, so reset the flag
+                    bRequestedSelfMoveToPlayers = False
+                End If
+            End If
+        End If
+
+        If (game.blindMode <> BLIND_MODE_NONE) And (selectedPlayer < MAX_PLAYERS) Then
+            blindLobbyMessage = "BLIND LOBBY NOTICE:"
+            blindLobbyMessage = blindLobbyMessage & vbLf & "- "
+            blindLobbyMessage = blindLobbyMessage & va("You have been assigned the codename: ""%s""", getPlayerGenericName(selectedPlayer))
+            displayRoomNotifyMessage blindLobbyMessage
+        End If
+    Else
+        swapPlayerMultiStatsLocal playerIndexA, playerIndexB
+
+        ' TODO: display a textual description of the move
+        ' just wait for the new player info to be broadcast by the host
+    End If
+
+    ActivityManager_updateMultiplayGameData        ' ActivityManager::instance().updateMultiplayGameData(game, ingame, NETGameIsLocked())
+    netPlayersUpdated = True ' update the player box.
+
+    recvSwapPlayerIndexes = SwapPlayerIndexesResult_SUCCESS
 End Function
 
 ' host kicks a player from a game.
@@ -1371,6 +1530,16 @@ Public Sub kickPlayer(ByVal player_id As Long, ByVal reason As String, ByVal typ
     End If
 
     NETplayerKicked player_id
+End Sub
+
+Public Sub displayKickReasonPopup(ByVal reason As String)
+    Dim notification As WZ_Notification
+    notification.duration = GAME_TICKS_PER_SEC * 10
+    notification.contentTitle = "Kicked from game"
+    notification.contentText = reason
+    notification.tag = KICK_REASON_TAG
+
+    addNotification notification, GAME_TICKS_PER_SEC * 1    ' WZ_Notification_Trigger(GAME_TICKS_PER_SEC * 1)
 End Sub
 
 Public Function buildMessage(ByVal sender As Long, ByVal text As String) As RoomMessage
@@ -2269,8 +2438,208 @@ Public Sub multiClearHostRequestMoveToPlayer(ByVal playerIdx As Long)
     bHostRequestedMoveToPlayers(playerIdx) = False
 End Sub
 
-' (class WzHostLobbyOperationsInterface : public HostLobbyOperationsInterface, the lobby slash commands' host
-' operations, and its cmdInterface: the lobby commands, cluster J)
+' class WzHostLobbyOperationsInterface : public HostLobbyOperationsInterface (the lobby slash commands' host
+' operations) and its static instance cmdInterface: cmdInterface.<method>(...) is cmdInterface_<method>(...)
+' (multilobbycommands_c's processChatLobbySlashCommands calls them)
+
+Public Function cmdInterface_changeTeam(ByVal player As Long, ByVal team As Long, ByVal responsibleIdx As Long) As Boolean
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5645", "changeTeam", "Host only routine detected for client!": Exit Function
+    If Not ULT(player, MAX_PLAYERS) Then ASSERT_FAILURE "player < MAX_PLAYERS", "src/multiint.cpp:5646", "changeTeam", "Invalid player: %u", player: Exit Function
+    If Not ULT(team And &HFF&, MAX_PLAYERS) Then ASSERT_FAILURE "team < MAX_PLAYERS", "src/multiint.cpp:5647", "changeTeam", "Invalid team: %u", team And &HFF&: Exit Function
+    If locked.teams Then
+        debug_ 5650, LOG_INFO, "changeTeam", "Unable to change team - teams are locked"
+        Exit Function
+    End If
+    If NetPlay_players_team(player) = (team And &HFF&) Then
+        ' no-op - nothing to do
+        cmdInterface_changeTeam = True
+        Exit Function
+    End If
+    changeTeam player, team And &HFF&, responsibleIdx
+    resetReadyStatus False, isBlindSimpleLobby(game.blindMode)
+    cmdInterface_changeTeam = True
+End Function
+
+Public Function cmdInterface_changePosition(ByVal player As Long, ByVal position As Long, ByVal responsibleIdx As Long) As Boolean
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5664", "changePosition", "Host only routine detected for client!": Exit Function
+    If Not ULT(player, MAX_PLAYERS) Then ASSERT_FAILURE "player < MAX_PLAYERS", "src/multiint.cpp:5665", "changePosition", "Invalid player: %u", player: Exit Function
+    If Not ((position And &HFF&) < game.maxPlayers) Then ASSERT_FAILURE "position < game.maxPlayers", "src/multiint.cpp:5666", "changePosition", "Invalid position: %u", position And &HFF&: Exit Function
+    If locked.position Then
+        debug_ 5669, LOG_INFO, "changePosition", "Unable to change position - positions are locked"
+        Exit Function
+    End If
+    If NetPlay_players_position(player) = (position And &HFF&) Then
+        ' no-op request - nothing to do
+        cmdInterface_changePosition = True
+        Exit Function
+    End If
+    If Not changePosition(player, position And &HFF&, responsibleIdx) Then
+        Exit Function
+    End If
+    wz_command_interface_output_room_status_json True
+    cmdInterface_changePosition = True
+End Function
+
+Public Function cmdInterface_changeBase(ByVal baseValue As Long) As Boolean
+    baseValue = baseValue And &HFF&                 ' uint8_t
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5686", "changeBase", "Host only routine detected for client!": Exit Function
+    If Not (baseValue = CAMP_CLEAN Or baseValue = CAMP_BASE Or baseValue = CAMP_WALLS) Then ASSERT_FAILURE "baseValue == CAMP_CLEAN || baseValue == CAMP_BASE || baseValue == CAMP_WALLS", "src/multiint.cpp:5687", "changeBase", "Invalid baseValue: %u", baseValue: Exit Function
+    If locked.bases Then
+        debug_ 5690, LOG_INFO, "changeBase", "Unable to change bases to %u - bases are locked", baseValue
+        Exit Function
+    End If
+    game.base = baseValue
+    resetReadyStatus False
+    sendOptions
+    refreshMultiplayerOptionsTitleUIIfActive 'refresh to see the proper tech level in the map name
+    NETsetLobbyConfigFlagsFields game.alliance, game.techLevel, game.power, game.base
+    cmdInterface_changeBase = True
+End Function
+
+Public Function cmdInterface_changeAlliances(ByVal allianceValue As Long) As Boolean
+    allianceValue = allianceValue And &HFF&         ' uint8_t
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5702", "changeAlliances", "Host only routine detected for client!": Exit Function
+    If Not (allianceValue = NO_ALLIANCES Or allianceValue = ALLIANCES_ Or allianceValue = ALLIANCES_UNSHARED Or allianceValue = ALLIANCES_TEAMS) Then ASSERT_FAILURE "allianceValue == NO_ALLIANCES || allianceValue == ALLIANCES || allianceValue == ALLIANCES_UNSHARED || allianceValue == ALLIANCES_TEAMS", "src/multiint.cpp:5703", "changeAlliances", "Invalid allianceValue: %u", allianceValue: Exit Function
+    If locked.alliances Then
+        debug_ 5706, LOG_INFO, "changeAlliances", "Unable to change alliances to %u - alliances are locked", allianceValue
+        Exit Function
+    End If
+    game.alliance = allianceValue
+    resetReadyStatus False
+    netPlayersUpdated = True
+    sendOptions
+    refreshMultiplayerOptionsTitleUIIfActive 'refresh to see the proper tech level in the map name
+    NETsetLobbyConfigFlagsFields game.alliance, game.techLevel, game.power, game.base
+    cmdInterface_changeAlliances = True
+End Function
+
+Public Function cmdInterface_changeScavengers(ByVal scavsValue As Long) As Boolean
+    scavsValue = scavsValue And &HFF&               ' uint8_t
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5719", "changeScavengers", "Host only routine detected for client!": Exit Function
+    If Not (scavsValue = NO_SCAVENGERS Or scavsValue = SCAVENGERS Or scavsValue = ULTIMATE_SCAVENGERS) Then ASSERT_FAILURE "scavsValue == NO_SCAVENGERS || scavsValue == SCAVENGERS || scavsValue == ULTIMATE_SCAVENGERS", "src/multiint.cpp:5720", "changeScavengers", "Invalid scavsValue: %u", scavsValue: Exit Function
+    If locked.scavengers Then
+        debug_ 5723, LOG_INFO, "changeScavengers", "Unable to change scavengers to %u - scavengers are locked", scavsValue
+        Exit Function
+    End If
+    game.scavengers = scavsValue
+    resetReadyStatus False
+    netPlayersUpdated = True
+    sendOptions
+    refreshMultiplayerOptionsTitleUIIfActive 'refresh to see the proper tech level in the map name
+    cmdInterface_changeScavengers = True
+End Function
+
+Public Function cmdInterface_kickPlayer(ByVal player As Long, ByVal reason As String, ByVal ban As Boolean, ByVal requester As Long) As Boolean
+    Dim slotType As String
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5735", "kickPlayer", "Host only routine detected for client!": Exit Function
+    If Not (player <> NetPlay_hostPlayer) Then ASSERT_FAILURE "player != NetPlay.hostPlayer", "src/multiint.cpp:5736", "kickPlayer", "Unable to kick the host": Exit Function
+    If Not ULT(player, MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < MAX_CONNECTED_PLAYERS", "src/multiint.cpp:5737", "kickPlayer", "Invalid player id: %u", player: Exit Function
+    If Not NetPlay_players_allocated(player) Then
+        debug_ 5740, LOG_INFO, "kickPlayer", "Unable to kick player: %u - not a connected human player", player
+        Exit Function
+    End If
+    If NetPlay_players_isSpectator(player) Then slotType = "spectator" Else slotType = "player"
+    sendRoomSystemMessage "Kicking " & slotType & ": " & getPlayerName(player, True)
+    kickPlayer player, reason, ERROR_KICKED, ban
+    resetReadyStatus False, shouldSkipReadyResetOnPlayerJoinLeaveEvent()
+    cmdInterface_kickPlayer = True
+End Function
+
+Public Function cmdInterface_changeHostChatPermissions(ByVal player As Long, ByVal freeChatEnabled As Boolean) As Boolean
+    Dim playerNameStr As String, msg As String, identity As EcKey, key() As Byte, n As Long, playerPublicKeyB64 As String
+    Dim playerIdentityHash As String, playerVerifiedStatus As String, playerName As String, nameBytes() As Byte
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5751", "changeHostChatPermissions", "Host only routine detected for client!": Exit Function
+    If Not (player <> NetPlay_hostPlayer) Then ASSERT_FAILURE "player != NetPlay.hostPlayer", "src/multiint.cpp:5752", "changeHostChatPermissions", "Unable to mute the host": Exit Function
+    If Not ULT(player, MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < MAX_CONNECTED_PLAYERS", "src/multiint.cpp:5753", "changeHostChatPermissions", "Invalid player id: %u", player: Exit Function
+    If Not NetPlay_players_allocated(player) Then
+        debug_ 5756, LOG_INFO, "changeHostChatPermissions", "Unable to mute / unmute player: %u - not a connected human player", player
+        Exit Function
+    End If
+    If ingame.hostChatPermissions(player) = freeChatEnabled Then
+        ' no change - nothing to do
+        cmdInterface_changeHostChatPermissions = True
+        Exit Function
+    End If
+    ingame.hostChatPermissions(player) = freeChatEnabled
+    sendHostConfig
+
+    ' other clients will automatically display a notice of the change, but display one locally for the host as well
+    playerNameStr = getPlayerName(player)          ' (getPlayerName never returns nullptr here)
+    If freeChatEnabled Then
+        msg = va("Host: Free chat enabled for: %s", playerNameStr)
+    Else
+        msg = va("Host: Free chat muted for: %s", playerNameStr)
+    End If
+    displayRoomSystemMessage msg
+
+    If wz_command_interface_enabled() Then
+        identity = getOutputPlayerIdentity(player)
+        n = EcKey_toBytes(identity, EcKey_Public, key)
+        playerPublicKeyB64 = base64Encode(key, n)
+        playerIdentityHash = EcKey_publicHashString(identity)
+        If ingame.VerifiedIdentity(player) Then playerVerifiedStatus = "V" Else playerVerifiedStatus = "?"
+        playerName = getPlayerName(player)
+        n = utf8_encode(playerName, nameBytes)
+        wz_command_interface_output "WZEVENT: hostChatPermissions=%s: %u %u %s %s %s %s %s" & vbLf, IIf(freeChatEnabled, "Y", "N"), player, gameTime, _
+            playerPublicKeyB64, playerIdentityHash, playerVerifiedStatus, base64Encode(nameBytes, n), NetPlay_players_IPtextAddress(player)
+    End If
+
+    cmdInterface_changeHostChatPermissions = True
+End Function
+
+Public Function cmdInterface_movePlayerToSpectators(ByVal player As Long) As Boolean
+    Dim playerNameStr As String, msg As String
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5796", "movePlayerToSpectators", "Host only routine detected for client!": Exit Function
+    If Not (player <> NetPlay_hostPlayer) Then ASSERT_FAILURE "player != NetPlay.hostPlayer", "src/multiint.cpp:5797", "movePlayerToSpectators", "Unable to move the host": Exit Function
+    If Not ULT(player, MAX_PLAYER_SLOTS) Then ASSERT_FAILURE "player < MAX_PLAYER_SLOTS", "src/multiint.cpp:5798", "movePlayerToSpectators", "Invalid player id: %u", player: Exit Function
+    If Not isHumanPlayer(player) Then
+        debug_ 5801, LOG_INFO, "movePlayerToSpectators", "Unable to move player: %u - not a connected human player", player
+        Exit Function
+    End If
+    playerNameStr = getPlayerName(player, True)
+    If Not NETmovePlayerToSpectatorOnlySlot(player, True) Then
+        ' failure is already logged by NETmovePlayerToSpectatorOnlySlot
+        Exit Function
+    End If
+    msg = va("Moving %s to Spectators!", playerNameStr)
+    sendRoomSystemMessage msg
+    resetReadyStatus True       'reset and send notification to all clients
+    cmdInterface_movePlayerToSpectators = True
+End Function
+
+Public Function cmdInterface_requestMoveSpectatorToPlayers(ByVal player As Long) As Boolean
+    Dim playerNameStr As String, msg As String
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5818", "requestMoveSpectatorToPlayers", "Host only routine detected for client!": Exit Function
+    If Not (player <> NetPlay_hostPlayer) Then ASSERT_FAILURE "player != NetPlay.hostPlayer", "src/multiint.cpp:5819", "requestMoveSpectatorToPlayers", "Unable to move the host": Exit Function
+    If Not ULT(player, MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < MAX_CONNECTED_PLAYERS", "src/multiint.cpp:5820", "requestMoveSpectatorToPlayers", "Invalid player id: %u", player: Exit Function
+    If Not isHumanPlayer(player) Then
+        debug_ 5823, LOG_INFO, "requestMoveSpectatorToPlayers", "Unable to move player: %u - not a connected human player", player
+        Exit Function
+    End If
+
+    If Not NetPlay_players_isSpectator(player) Then
+        debug_ 5829, LOG_INFO, "requestMoveSpectatorToPlayers", "Unable to move to players: %u (not a spectator)", player
+        Exit Function
+    End If
+
+    playerNameStr = getPlayerName(player, True)
+    ' Ask the spectator if they are okay with a move from spectator -> player?
+    SendPlayerSlotTypeRequest player, False
+
+    msg = va("Asking %s to move to Players...", playerNameStr)
+    sendRoomSystemMessage msg
+    cmdInterface_requestMoveSpectatorToPlayers = True
+End Function
+
+Public Sub cmdInterface_quitGame(ByVal exitCode As Long)
+    Dim psStrongMultiOptionsTitleUI As WzMultiplayerOptionsTitleUI
+    If Not NetPlay_isHost Then ASSERT_FAILURE "false", "src/multiint.cpp:5844", "quitGame", "Host only routine detected for client!": Exit Sub
+    Set psStrongMultiOptionsTitleUI = titleUI_lock(currentMultiOptionsTitleUI)
+    If Not psStrongMultiOptionsTitleUI Is Nothing Then
+        stopJoining psStrongMultiOptionsTitleUI.getParentTitleUI(), ERROR_NOERROR
+    End If
+    wzQuit exitCode
+End Sub
 
 Public Function getBoundedMinAutostartPlayerCount() As Long
     Dim minAutoStartPlayerCount As Long, numAIPlayers As Long, maxPlayerSlots As Long, j As Long
@@ -2975,6 +3344,34 @@ Public Function multiint_lobby_c_fn(ByVal f As WzFunc, args() As Variant) As Var
         Set psWidget = args(0)
         psWidget.setGeometry MULTIOP_OPTIONSX, MULTIOP_OPTIONSY, MULTIOP_OPTIONSW, MULTIOP_OPTIONSH
 
+    Case FN_slotTypeRequest_accept                   ' [desiredIsSpectator](const WZ_Notification&)
+        SendPlayerSlotTypeRequest selectedPlayer, f.cap(0)
+    Case FN_slotTypeRequest_dismissed                ' [](const WZ_Notification&, WZ_Notification_Dismissal_Reason reason)
+        If args(1) <> WZ_Notification_Dismissal_Reason_USER_DISMISSED Then Exit Function
+        ' Notify the host that the answer is "no" by sending a no-op PlayerSlotTypeRequest
+        SendPlayerSlotTypeRequest selectedPlayer, NetPlay_players_isSpectator(selectedPlayer)
+    Case FN_slotTypeRequest_ignored                  ' [](const WZ_Notification&)
+        ' Notify the host that the answer is "no" by sending a no-op PlayerSlotTypeRequest
+        SendPlayerSlotTypeRequest selectedPlayer, NetPlay_players_isSpectator(selectedPlayer)
+    Case FN_slotSwapRequest_accept                   ' [playerIndex, weakTitleUI](const WZ_Notification&)
+        Set strongTitleUI = titleUI_lock(f.cap(1))
+        If Not (Not strongTitleUI Is Nothing) Then ASSERT_FAILURE "strongTitleUI != nullptr", "src/multiint.cpp:3277", "recvPlayerSlotTypeRequestAndPop", "Expected Title UI is gone": Exit Function
+        widgScheduleTask WzFunc_new(FN_slotSwapRequest_task, f.cap(1), f.cap(0))
+    Case FN_slotSwapRequest_task                     ' [weakTitleUI, playerIndex]
+        Set strongTitleUI = titleUI_lock(f.cap(0))
+        If Not (Not strongTitleUI Is Nothing) Then ASSERT_FAILURE "strongTitleUI != nullptr", "src/multiint.cpp:3280", "recvPlayerSlotTypeRequestAndPop", "Expected Title UI is gone": Exit Function
+        strongTitleUI.openPlayerSlotSwapChooser f.cap(1)
+    Case FN_slotSwapRequest_dismissed                ' [playerIndex](const WZ_Notification&, WZ_Notification_Dismissal_Reason reason)
+        If args(1) <> WZ_Notification_Dismissal_Reason_USER_DISMISSED Then Exit Function
+        ' Notify the player that the answer is "no" by sending a no-op PlayerSlotTypeRequest
+        SendPlayerSlotTypeRequest f.cap(0), NetPlay_players_isSpectator(f.cap(0))
+    Case FN_lobbyDisabled_moreInformation            ' [infoLink](const WZ_Notification&)
+        ' Open the infoLink url
+        wzAsyncExecOnMainThread WzFunc_new(FN_lobbyDisabled_openURL, f.cap(0))
+    Case FN_lobbyDisabled_openURL                    ' [infoLink]
+        If Not openURLInBrowser(f.cap(0)) Then
+            debug_ 5365, LOG_ERROR, "displayLobbyDisabledNotification", "Failed to open url in browser: ""%s""", f.cap(0)
+        End If
     Case FN_startHosting_onClick                     ' [psWeakTitleUI](W_BUTTON&)
         Set strongTitleUI = titleUI_lock(f.cap(0))
         If Not strongTitleUI Is Nothing Then

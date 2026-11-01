@@ -1,0 +1,61 @@
+# lobby commands test (fork S2), the host: --autohost (Sk-Rush: the host, an open slot for s2_join.txt's client,
+# two NullBots; the game never starts: the client stays not ready) with --enablelobbyslashcmd; the host's own
+# slash commands in its chat box (help, admin, me, team, scav, mute / unmute the client, kick the client)
+wait 1800
+shot h_joined
+click 515 689
+wait 10
+text /help
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /admin
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /me
+wait 5
+key 13
+wait 80
+shot h_cmds1
+click 515 689
+wait 10
+text /team 1 3
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /scav 2
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /mute 1
+wait 5
+key 13
+wait 130
+shot h_muted
+click 515 689
+wait 10
+text /unmute 1
+wait 5
+key 13
+wait 160
+shot h_unmuted
+click 515 689
+wait 10
+text /kick 1
+wait 5
+key 13
+wait 300
+shot h_kicked
+wait 200
+log done
+wait 5
+quit

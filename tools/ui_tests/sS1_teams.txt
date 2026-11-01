@@ -1,0 +1,45 @@
+# cluster S, fork S1: the in-game multiplayer menu (multimenu.cpp) in a teams skirmish: player 0 and a NullBot
+# (player 1) in team 0, two NullBots in team 1 (tools/sS1_test.py teams writes the --skirmish file).
+# The menu's rows at 1024x768: player 1 at y 106 (channel 411, droid gift 446, power gift 477, mute 791),
+# the close button 801 32.
+wait 120
+shot lobby
+click 365 455
+wait 120
+shot hosting
+click 775 90
+wait 900
+shot game_start
+# kf_addMultiMenu: the keypad's Enter
+key 13 ext
+wait 90
+shot menu_open
+widgets
+log power gift to player 1
+click 477 106
+wait 60
+shot power_given
+log mute player 1
+click 791 106
+wait 30
+log channel to player 1
+click 411 106
+wait 30
+shot mute_channel
+log close button
+click 801 32
+wait 60
+shot menu_closed
+log reopen, then close with the key
+key 13 ext
+wait 60
+shot menu_reopened
+key 13 ext
+wait 60
+shot menu_closed_key
+log the intelligence screen (its multiplayer form)
+click 36 716
+wait 90
+shot intel_overlay
+wait 10
+quit

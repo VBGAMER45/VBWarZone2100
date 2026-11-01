@@ -1,0 +1,16 @@
+# fork S4 (notifications_test.py vote), the host: autohosted (Sk-Rush, an open slot, two NullBots, port 2193); once
+# the client (sS4_vote_join.txt) is in the lobby, Match Options' gear > Randomize Options: with two humans and no
+# votes yet, the host asks the client for one (multivote.cpp: startLobbyChangeVote)
+wait 1800
+shot vh_lobby
+click 481 203
+wait 30
+shot vh_menu
+click 544 233
+wait 120
+shot vh_asked
+wait 1500
+shot vh_after
+log done
+wait 5
+quit

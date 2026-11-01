@@ -343,6 +343,11 @@ Public Function PHYSFS_mount(ByVal newDir As String, ByVal mountPoint As String,
     PHYSFS_mount = physfs_win.PHYSFS_mount(newDir, mountPoint, appendToPath)
 End Function
 
+' file: a PHYSFS_File the search path owns once mounted
+Public Function PHYSFS_mountHandle(ByVal file As Long, ByVal newDir As String, ByVal mountPoint As String, ByVal appendToPath As physfs_mount_order) As Long
+    PHYSFS_mountHandle = physfs_win.PHYSFS_mountHandle(file, newDir, mountPoint, appendToPath)
+End Function
+
 Public Function PHYSFS_getBaseDir() As String
     PHYSFS_getBaseDir = physfs_win.PHYSFS_getBaseDir()
 End Function
@@ -435,6 +440,10 @@ End Function
 
 Public Function PHYSFS_getSearchPath(out() As String) As Long
     PHYSFS_getSearchPath = physfs_win.PHYSFS_getSearchPath(out)
+End Function
+
+Public Function PHYSFS_getMountPoint(ByVal dir_ As String) As String
+    PHYSFS_getMountPoint = physfs_win.PHYSFS_getMountPoint(dir_)
 End Function
 
 Public Function PHYSFS_openRead(ByVal fname As String) As Long

@@ -1,0 +1,11 @@
+# fork S4 (notifications_test.py ignore, third run): the notification seen twice offers "Do not show again"; the
+# box is ticked, then Dismiss
+wait 240
+shot shown_with_box
+click 290 77
+wait 20
+shot box_ticked
+click 557 77
+wait 90
+shot dismissed
+quit

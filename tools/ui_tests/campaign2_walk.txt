@@ -14,6 +14,8 @@ shot selector
 click 607 575
 waitlevel CAM_2A
 quiet 360
+closeguide
+wait 30
 key 13
 wait 10
 text cheat on
@@ -21,226 +23,332 @@ key 13
 wait 30
 shot 00_CAM_2A
 log level CAM_2A
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 00_CAM_2A_result
 click 511 556
 wait 900
 waitlevel SUB_2_1S
 quiet 360
+closeguide
+wait 30
 shot 01_SUB_2_1S
 log level SUB_2_1S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 01_SUB_2_1S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_1
 quiet 360
+closeguide
+wait 30
 shot 02_SUB_2_1
 log level SUB_2_1
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 02_SUB_2_1_result
 click 511 556
 wait 900
 waitlevel CAM_2B
 quiet 360
+closeguide
+wait 30
 shot 03_CAM_2B
 log level CAM_2B
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 03_CAM_2B_result
 click 511 556
 wait 900
 waitlevel SUB_2_2S
 quiet 360
+closeguide
+wait 30
 shot 04_SUB_2_2S
 log level SUB_2_2S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 04_SUB_2_2S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_2
 quiet 360
+closeguide
+wait 30
 shot 05_SUB_2_2
 log level SUB_2_2
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 05_SUB_2_2_result
 click 511 556
 wait 900
 waitlevel CAM_2C
 quiet 360
+closeguide
+wait 30
 shot 06_CAM_2C
 log level CAM_2C
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 06_CAM_2C_result
 click 511 556
 wait 900
 waitlevel SUB_2_5S
 quiet 360
+closeguide
+wait 30
 shot 07_SUB_2_5S
 log level SUB_2_5S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 07_SUB_2_5S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_5
 quiet 360
+closeguide
+wait 30
 shot 08_SUB_2_5
 log level SUB_2_5
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 08_SUB_2_5_result
 click 511 556
 wait 900
 waitlevel SUB_2DS
 quiet 360
+closeguide
+wait 30
 shot 09_SUB_2DS
 log level SUB_2DS
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 09_SUB_2DS_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2D
 quiet 360
+closeguide
+wait 30
 shot 10_SUB_2D
 log level SUB_2D
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 10_SUB_2D_result
 click 511 556
 wait 900
 waitlevel SUB_2_6S
 quiet 360
+closeguide
+wait 30
 shot 11_SUB_2_6S
 log level SUB_2_6S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 11_SUB_2_6S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_6
 quiet 360
+closeguide
+wait 30
 shot 12_SUB_2_6
 log level SUB_2_6
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 12_SUB_2_6_result
 click 511 556
 wait 900
 waitlevel SUB_2_7S
 quiet 360
+closeguide
+wait 30
 shot 13_SUB_2_7S
 log level SUB_2_7S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 13_SUB_2_7S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_7
 quiet 360
+closeguide
+wait 30
 shot 14_SUB_2_7
 log level SUB_2_7
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 14_SUB_2_7_result
 click 511 556
 wait 900
 waitlevel SUB_2_8S
 quiet 360
+closeguide
+wait 30
 shot 15_SUB_2_8S
 log level SUB_2_8S
 wait 300
 quiet 360
+closeguide
+wait 30
 embark
 wait 600
 quiet 120
+closeguide
+wait 30
 shot 15_SUB_2_8S_boarded
 click 29 30
 wait 1200
 waitlevel SUB_2_8
 quiet 360
+closeguide
+wait 30
 shot 16_SUB_2_8
 log level SUB_2_8
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 16_SUB_2_8_result
 click 511 556
 wait 900
 waitlevel CAM_2END
 quiet 360
+closeguide
+wait 30
 shot 17_CAM_2END
 log level CAM_2END
+closeguide
+wait 30
 key 13
 wait 10
 text let me win
 key 13
 wait 300
 quiet 180
+closeguide
+wait 30
 shot 17_CAM_2END_result
 click 511 556
 wait 900

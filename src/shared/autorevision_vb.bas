@@ -13,4 +13,4 @@ Public Const VCS_FULL_HASH As String = "7d3d8e51a61ceee89e6bf672a41337e1a9cd7392
 Public Const VCS_SHORT_HASH As String = "7d3d8e5"
 Public Const VCS_WC_MODIFIED As Long = 0
 Public Const VCS_MOST_RECENT_TAGGED_VERSION As String = "4.7.0"
-Public Const BUILD_DATE As String = "2026-10-31"
+Public Const BUILD_DATE As String = "2026-11-01"

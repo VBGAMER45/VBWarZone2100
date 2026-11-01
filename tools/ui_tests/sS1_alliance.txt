@@ -1,0 +1,22 @@
+# cluster S, fork S1: the in-game multiplayer menu (multimenu.cpp) in a skirmish with free alliances
+# (alliances 1 = ALLIANCES; four players in four teams; tools/sS1_test.py alliance writes the --skirmish file).
+# The menu's rows at 1024x768: player 1 at y 107 (channel 358, alliance 394; the four gift buttons hidden while
+# not allied).
+wait 120
+click 365 455
+wait 120
+click 775 90
+wait 900
+key 13 ext
+wait 90
+shot menu_open
+log alliance requested from player 1
+click 394 107
+wait 60
+shot alliance_requested
+log alliance withdrawn
+click 394 107
+wait 60
+shot alliance_withdrawn
+wait 10
+quit

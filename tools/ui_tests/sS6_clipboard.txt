@@ -1,0 +1,19 @@
+# fork S6: the clipboard (WZ_TEST_NO_DESKTOP_EFFECTS: the game's own): Multi Player > Host Game, a chat line's
+# "Copy Text to Clipboard", then Ctrl+V into the chat box
+wait 90
+click 512 400
+wait 60
+click 512 365
+wait 240
+click 400 485
+wait 30
+click 484 496
+wait 30
+click 517 689
+wait 10
+keydown 17
+key 86
+keyup 17
+wait 30
+shot pasted
+quit

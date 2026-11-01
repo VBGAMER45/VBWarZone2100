@@ -19,7 +19,7 @@ Attribute VB_Name = "droid_c"
 ' pickHalfATile), checkDroidsBuilding, checkDroidsDemolishing,
 ' setUpBuildModule, electronicDroid, the VTOL ammunition tests, the sensor
 ' tests, giftSingleDroid, droidResistance, the selection (SelectDroid, SelectGroupDroid,
-' DeSelectDroid), droidSetPosition and droidSqDist. For the structures'
+' DeSelectDroid), droidSetPosition and droidSqDist, addDroidDeathAnimationEffect. For the structures'
 ' update: buildDroid (initialOrders != nullptr is hasInitialOrders),
 ' vtolReadyToRearm and fillVtolDroid. The AUDIO_CALLBACKs
 ' droidCheckBuildStillInProgress and droidBuildStartAudioCallback are
@@ -3365,6 +3365,69 @@ End Function
 Public Function droidGetMaxShieldPoints(ByVal psDroid As Long) As Long
     droidGetMaxShieldPoints = 0 ' currently disabled, but left for experimentation with different implementations
 End Function
+
+' DROID_ANIMEVENT_DYING's effect: the body's dying animation drawn by the effects (droid.cpp)
+Public Sub addDroidDeathAnimationEffect(ByVal psDroid As Long)
+    Dim iDroidDir As Long, adiff As Long, move As Long, velocity As Vector3f, position As Vector3i, rotationV As Vector3i
+    Dim psBaseShapeBody As Long, psShapeBody As Long, strImd As Long, psPropStats As Long, typ As EFFECT_TYPE
+
+    ' DERIVED from moveCalcNormalSpeed and moveGetDroidPosDiffs:
+
+    iDroidDir = aDroid(psDroid).rot.direction
+    adiff = (iDroidDir - aDroid(psDroid).sMove.moveDir) And &HFFFF&   ' Cast wrapping intended.
+    move = iCosR(adiff, aDroid(psDroid).sMove.speed)
+    velocity.x = iSinR(iDroidDir, move)
+    velocity.y = iCosR(iDroidDir, move)
+    velocity.z = 0!
+
+    ' DERIVED FROM displayComponentObject:
+
+    ' Get the real position
+    position.x = aDroid(psDroid).pos.x      ' psDroid->pos.xzy()
+    position.y = aDroid(psDroid).pos.z
+    position.z = aDroid(psDroid).pos.y
+
+    If DROID_isTransporter(psDroid) Then
+        position.y = position.y - bobTransporterHeight()
+    End If
+
+    ' Get all the pitch,roll,yaw info
+    rotationV.y = -aDroid(psDroid).rot.direction
+    rotationV.x = aDroid(psDroid).rot.pitch
+    rotationV.z = aDroid(psDroid).rot.roll
+
+    ' ignore electronic damage shimmy
+
+    If BASE_OBJECT_visibleForLocalDisplay(psDroid) = UBYTE_MAX Then
+        ' Get the body graphic now
+        psBaseShapeBody = asBodyStats(DROID_getBodyStats(psDroid)).pIMD     ' BODY_IMD(psDroid, psDroid->player)
+        If psBaseShapeBody = 0 Then
+            Exit Sub
+        End If
+        psShapeBody = iIMDBaseShape_displayModel(psBaseShapeBody)
+        If iIMDShape_objanimpie(psShapeBody, ANIM_EVENT_DYING) <> 0 Then
+            strImd = iIMDBaseShape_displayModel(iIMDShape_objanimpie(psShapeBody, ANIM_EVENT_DYING))
+            ' get propulsion stats (psPropStats: an index, never nullptr)
+            psPropStats = DROID_getPropulsionStats(psDroid)
+            If asPropulsionStats(psPropStats).propulsionType = PROPULSION_TYPE_PROPELLOR Then
+                ' FIXME: change when adding submarines to the game
+                ' modifiedModelMatrix *= glm::translate(glm::vec3(0.f, -world_coord(1) / 2.3f, 0.f));
+                position.y = position.y + Fix(CSng(world_coord(1)) / 2.3!)
+            End If
+
+            typ = DROID_ANIMEVENT_DYING_NORMAL
+            If aDroid(psDroid).droidType = DROID_PERSON Then
+                typ = DROID_ANIMEVENT_DYING_NORMAL_ST
+                ' Applies:
+                ' modifiedModelMatrix *= glm::scale(glm::vec3(.75f)); // FIXME - hideous....!!!!
+            End If
+
+            SetEffectForPlayer aDroid(psDroid).player
+            effectSetSize 100
+            addEffect_rotVelocity position, EFFECT_DROID_ANIMEVENT_DYING, typ, True, strImd, 0, graphicsTime, rotationV, velocity
+        End If
+    End If
+End Sub
 
 ' Deals damage to a droid
 ' \param psDroid droid to deal damage to

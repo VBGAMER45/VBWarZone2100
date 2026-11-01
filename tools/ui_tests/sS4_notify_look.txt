@@ -1,0 +1,6 @@
+# fork S4: the main menu with the videos missing: the "Campaign videos are missing" notification (a look)
+wait 90
+shot menu_start
+wait 150
+shot menu_notification
+quit

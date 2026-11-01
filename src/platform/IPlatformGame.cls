@@ -15,7 +15,6 @@ Attribute VB_Exposed = True
 ' interface (PlatformGame.cls) and hands it to PlatformSetGame at startup.
 ' Each method stands for the C++ function of the same name without its
 ' underscores (VB's Implements refuses them): warGetWidth is war_GetWidth.
-' More arrive with the clusters that port the rest of main_sdl.cpp.
 Option Explicit
 
 ' src/main.cpp: mainLoop(), once per frame
@@ -61,4 +60,57 @@ Public Function warGetDisplayScale() As Long
 End Function
 
 Public Sub warSetDisplayScale(ByVal scale_ As Long)
+End Sub
+
+' src/warzoneconfig.cpp's settings the window, display and cursor functions read and write (cluster S, fork S6)
+Public Function warGetColouredCursor() As Boolean
+End Function
+
+Public Function warGetCursorScale() As Long
+End Function
+
+Public Sub warSetCursorScale(ByVal scale_ As Long)
+End Sub
+
+Public Function warGetFullscreenModeScreen() As Long
+End Function
+
+Public Sub warSetFullscreenModeScreen(ByVal screen As Long)
+End Sub
+
+Public Function warGetFullscreenModeWidth() As Long
+End Function
+
+Public Sub warSetFullscreenModeWidth(ByVal width As Long)
+End Sub
+
+Public Function warGetFullscreenModeHeight() As Long
+End Function
+
+Public Sub warSetFullscreenModeHeight(ByVal height As Long)
+End Sub
+
+Public Function warGetFullscreenModePixelDensity() As Single
+End Function
+
+Public Sub warSetFullscreenModePixelDensity(ByVal pixelDensity As Single)
+End Sub
+
+Public Function warGetFullscreenModeRefreshRate() As Single
+End Function
+
+Public Sub warSetFullscreenModeRefreshRate(ByVal refreshRate As Single)
+End Sub
+
+Public Function warGetMinimizeOnFocusLoss() As Long
+End Function
+
+Public Function warGetAutoAdjustDisplayScale() As Boolean
+End Function
+
+Public Sub warSetWindowMode(ByVal mode As Long)
+End Sub
+
+' src/game.h: void gameDisplayScaleFactorDidChange(float newDisplayScaleFactor)
+Public Sub gameDisplayScaleFactorDidChange(ByVal newDisplayScaleFactor As Single)
 End Sub

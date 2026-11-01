@@ -29,7 +29,7 @@ Public Function backendInternalValue() As Long
 End Function
 
 ' gfx_api::texture_array
-Public Function uploadLayer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_Image) As Boolean
+Public Function uploadLayer(ByVal layer As Long, ByVal mip_level As Long, ByVal image As iV_BaseImage) As Boolean
 End Function
 
 Public Function id() As Long

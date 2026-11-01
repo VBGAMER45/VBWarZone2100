@@ -12,8 +12,8 @@
 //   export   argument "folder|maptype|maxplayers|format": the map loaded and
 //            exported with Map::exportMapToPath into the output folder (a
 //            folder); the runner compares the files written
-// Script-generated maps (QuickJS) are not part of this build: runMapScript
-// is a stub that fails.
+// Script-generated maps run 4.7.0's map_script.cpp over the QuickJS it pins
+// (ref/quickjs-wz, built by tools/run_tests.py).
 #include "../ref/warzone2100/lib/wzmaplib/include/wzmaplib/map.h"
 #include <cstdarg>
 #include <cstdio>
@@ -21,13 +21,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-
-namespace WzMap {
-std::shared_ptr<Map> runMapScript(const std::vector<char>&, const std::string&, uint32_t, bool, LoggingProtocol*)
-{
-	return nullptr;
-}
-}
 
 static std::string out;
 

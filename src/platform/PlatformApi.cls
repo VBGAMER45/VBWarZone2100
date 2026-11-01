@@ -364,3 +364,129 @@ End Sub
 Public Function isInTextInputMode() As Boolean
     isInTextInputMode = main_win.isInTextInputMode()
 End Function
+
+' wzapp.h's display, window, clipboard and system functions (cluster S, fork S6). A screeninfo crosses as its
+' fields: the exe's wzapp_vb keeps wzAvailableResolutions, wzGetCurrentFullscreenDisplayMode and
+' wzChangeFullscreenDisplayMode with screeninfo, over the three *List / *Info / *To functions here.
+Public Function wzAvailableResolutionsList(screens() As Long, widths() As Long, heights() As Long, pixelDensities() As Single, refreshRates() As Single, has_() As Boolean) As Long
+    wzAvailableResolutionsList = main_win.wzAvailableResolutions(screens, widths, heights, pixelDensities, refreshRates, has_)
+End Function
+
+Public Function wzGetCurrentFullscreenDisplayModeInfo(screen As Long, width As Long, height As Long, pixel_density As Single, refresh_rate As Single) As Boolean
+    wzGetCurrentFullscreenDisplayModeInfo = main_win.wzGetCurrentFullscreenDisplayMode(screen, width, height, pixel_density, refresh_rate)
+End Function
+
+Public Function wzChangeFullscreenDisplayModeTo(ByVal has_config As Boolean, ByVal screen As Long, ByVal width As Long, ByVal height As Long, ByVal pixel_density As Single, ByVal refresh_rate As Single) As Boolean
+    wzChangeFullscreenDisplayModeTo = main_win.wzChangeFullscreenDisplayMode(has_config, screen, width, height, pixel_density, refresh_rate)
+End Function
+
+Public Sub wzGetWindowResolution(screen As Long, width As Long, height As Long)
+    main_win.wzGetWindowResolution screen, width, height
+End Sub
+
+Public Function wzIsSupportedWindowMode(ByVal mode As WINDOW_MODE) As Boolean
+    wzIsSupportedWindowMode = main_win.wzIsSupportedWindowMode(mode)
+End Function
+
+Public Function wzAltEnterToggleFullscreen() As WINDOW_MODE
+    wzAltEnterToggleFullscreen = main_win.wzAltEnterToggleFullscreen()
+End Function
+
+Public Function wzIsMaximized() As Boolean
+    wzIsMaximized = main_win.wzIsMaximized()
+End Function
+
+Public Sub wzSetWindowIsResizable(ByVal resizable As Boolean)
+    main_win.wzSetWindowIsResizable resizable
+End Sub
+
+Public Function wzIsWindowResizable() As Boolean
+    wzIsWindowResizable = main_win.wzIsWindowResizable()
+End Function
+
+' std::vector<unsigned int> wzAvailableDisplayScales(): into scales(0 .. n - 1), n returned
+Public Function wzAvailableDisplayScales(scales() As Long) As Long
+    wzAvailableDisplayScales = main_win.wzAvailableDisplayScales(scales)
+End Function
+
+Public Function wzChangeDisplayScale(ByVal displayScale As Long) As Boolean
+    wzChangeDisplayScale = main_win.wzChangeDisplayScale(displayScale)
+End Function
+
+Public Function wzGetMaximumDisplayScaleForCurrentWindowSize() As Long
+    wzGetMaximumDisplayScaleForCurrentWindowSize = main_win.wzGetMaximumDisplayScaleForCurrentWindowSize()
+End Function
+
+Public Function wzGetSuggestedDisplayScaleForCurrentWindowSize(ByVal desiredMaxScreenDimension As Long) As Long
+    wzGetSuggestedDisplayScaleForCurrentWindowSize = main_win.wzGetSuggestedDisplayScaleForCurrentWindowSize(desiredMaxScreenDimension)
+End Function
+
+Public Function wzChangeCursorScale(ByVal cursorScale As Long) As Boolean
+    wzChangeCursorScale = main_win.wzChangeCursorScale(cursorScale)
+End Function
+
+' lib/framework/cursors.h: void wzSetCursor(CURSOR index) (the exe's enum CURSOR)
+Public Sub wzSetCursor(ByVal cur As Long)
+    cursors_win.wzSetCursor cur
+End Sub
+
+Public Sub wzApplyCursor()
+    cursors_win.wzApplyCursor
+End Sub
+
+Public Sub wzGrabMouse()
+    main_win.wzGrabMouse
+End Sub
+
+Public Sub wzReleaseMouse()
+    main_win.wzReleaseMouse
+End Sub
+
+Public Sub wzPostChangedSwapInterval()
+    main_win.wzPostChangedSwapInterval
+End Sub
+
+' MinimizeOnFocusLossBehavior wzGetCurrentMinimizeOnFocusLossBehavior()
+Public Function wzGetCurrentMinimizeOnFocusLossBehavior() As Long
+    wzGetCurrentMinimizeOnFocusLossBehavior = main_win.wzGetCurrentMinimizeOnFocusLossBehavior()
+End Function
+
+Public Sub wzSetMinimizeOnFocusLoss(ByVal behavior As Long)
+    main_win.wzSetMinimizeOnFocusLoss behavior
+End Sub
+
+Public Function wzSetClipboardText(ByVal src As String) As Boolean
+    wzSetClipboardText = main_win.wzSetClipboardText(src)
+End Function
+
+Public Function wzGetSelection() As String
+    wzGetSelection = main_win.wzGetSelection()
+End Function
+
+Public Function wzSeemsLikeNonTouchPlatform() As Boolean
+    wzSeemsLikeNonTouchPlatform = main_win.wzSeemsLikeNonTouchPlatform()
+End Function
+
+' std::vector<video_backend> wzAvailableGfxBackends(): into result(0 .. n - 1), n returned
+Public Function wzAvailableGfxBackends(result() As Long) As Long
+    wzAvailableGfxBackends = main_win.wzAvailableGfxBackends(result)
+End Function
+
+' uint64_t wzGetCurrentSystemRAM() (MiB, a Double)
+Public Function wzGetCurrentSystemRAM() As Double
+    wzGetCurrentSystemRAM = main_win.wzGetCurrentSystemRAM()
+End Function
+
+Public Function wzGetLogicalCPUCount() As Long
+    wzGetLogicalCPUCount = main_win.wzGetLogicalCPUCount()
+End Function
+
+' NOTE: wzBackendAttemptOpenURL should *not* be called directly - instead, call openURLInBrowser() from urlhelpers.h
+Public Function wzBackendAttemptOpenURL(ByVal url As String) As Boolean
+    wzBackendAttemptOpenURL = main_win.wzBackendAttemptOpenURL(url)
+End Function
+
+' (VB) TEST-ONLY: WZ_TEST_NO_DESKTOP_EFFECTS is set (the exe's urlhelpers logs instead of opening)
+Public Function wzTestNoDesktopEffects() As Boolean
+    wzTestNoDesktopEffects = main_win.wzTestNoDesktopEffects()
+End Function

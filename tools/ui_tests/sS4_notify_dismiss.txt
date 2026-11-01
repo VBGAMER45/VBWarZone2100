@@ -1,0 +1,8 @@
+# fork S4 (notifications_test.py ignore): the main menu without the videos raises "Campaign videos are missing"
+# (makeIgnorable("campaignVideoNotification", 2)); its Dismiss button is clicked (never the "Open wz2100.net" action)
+wait 240
+shot shown
+click 557 77
+wait 90
+shot dismissed
+quit

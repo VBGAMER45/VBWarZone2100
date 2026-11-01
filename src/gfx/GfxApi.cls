@@ -883,6 +883,13 @@ Public Function iV_loadImage_PNG_mem(memoryBuffer() As Byte, ByVal image As iV_I
     iV_loadImage_PNG_mem = png_util_gdip.iV_loadImage_PNG_mem(memoryBuffer, image)
 End Function
 
+' cluster J part 2 (fork LB): jpeg_util.cpp
+' JPEGResult iV_loadImage_JPEG(std::vector<unsigned char>&& memoryBuffer, iV_Image *image): memoryBuffer(0 .. UBound); the
+' error text, "" for none
+Public Function iV_loadImage_JPEG(memoryBuffer() As Byte, ByVal image As iV_Image) As String
+    iV_loadImage_JPEG = jpeg_util_gdip.iV_loadImage_JPEG(memoryBuffer, image)
+End Function
+
 Public Function iV_saveImage_PNG(ByVal fileName As String, ByVal image As iV_Image) As String
     iV_saveImage_PNG = png_util_gdip.iV_saveImage_PNG(fileName, image)
 End Function

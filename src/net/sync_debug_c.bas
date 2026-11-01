@@ -4,9 +4,7 @@ Attribute VB_Name = "sync_debug_c"
 ' ticks; dumpLocalDebugSyncLog prints one, and the verbose mode writes each
 ' tick's to a file. checkDebugSync compares a player's CRC with ours and on a
 ' mismatch dumps our log (DesyncLogOutputter) and broadcasts it
-' (sendDebugSync). Receiving other players' logs (recvDebugSync, and the
-' outputter's canWriteLogFor and alreadyWroteLogFor it uses) comes with the
-' network (cluster J).
+' (sendDebugSync); recvDebugSync writes the logs other players send.
 Option Explicit
 
 Private verboseDebugOutputAllSyncLogsUntilGameTime As Long     ' uint32_t
@@ -456,6 +454,24 @@ Private Sub DesyncLogOutputter_willLogLocalDesyncLog(ByVal time_ As Long)
     End If
 End Sub
 
+Private Function DesyncLogOutputter_canWriteLogFor(ByVal time_ As Long, ByVal player As Long) As Boolean
+    If Not ULT(player, MAX_GAMEQUEUE_SLOTS) Then ASSERT_FAILURE "player < players.size()", "lib/netplay/sync_debug.cpp:392", "canWriteLogFor", "Invalid player idx: %u", player: DesyncLogOutputter_canWriteLogFor = False: Exit Function
+    ' PlayerDesyncLogOutput::canWriteLogFor
+    DesyncLogOutputter_canWriteLogFor = PlayerDesyncLogOutput_find(playerDesyncLogOutput(player), time_) >= 0 Or playerDesyncLogOutput(player).numOutputs < MaxPlayerSyncDebugDumps
+End Function
+
+Private Function DesyncLogOutputter_alreadyWroteLogFor(ByVal time_ As Long, ByVal player As Long) As Boolean
+    Dim i As Long
+    If Not ULT(player, MAX_GAMEQUEUE_SLOTS) Then ASSERT_FAILURE "player < players.size()", "lib/netplay/sync_debug.cpp:398", "alreadyWroteLogFor", "Invalid player idx: %u", player: DesyncLogOutputter_alreadyWroteLogFor = False: Exit Function
+    ' PlayerDesyncLogOutput::alreadyWroteLogFor
+    i = PlayerDesyncLogOutput_find(playerDesyncLogOutput(player), time_)
+    If i < 0 Then
+        DesyncLogOutputter_alreadyWroteLogFor = False
+        Exit Function
+    End If
+    DesyncLogOutputter_alreadyWroteLogFor = playerDesyncLogOutput(player).outputs(i).noFurtherWrites
+End Function
+
 ' write(time, player, buf, bufLen): buf(0 .. bufLen - 1)
 Private Function DesyncLogOutputter_write(ByVal time_ As Long, ByVal player As Long, buf() As Byte, ByVal bufLen As Long) As Boolean
     Dim i As Long
@@ -648,3 +664,52 @@ Public Function checkDebugSync(ByVal checkGameTime As Long, ByVal checkCrc As Lo
 
     checkDebugSync = False                      ' Ouch.
 End Function
+
+Public Sub recvDebugSync(ByVal queue As Long)
+    Dim player As Long, time_ As Long, bufLen As Long, recvBuff() As Byte, r As MessageReader, buf As String
+    If Not ULT(NETQUEUE_index(queue), MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "queue.index < MAX_CONNECTED_PLAYERS", "lib/netplay/sync_debug.cpp:732", "recvDebugSync", "Invalid queue.index: %u", NETQUEUE_index(queue): Exit Sub
+    player = NETQUEUE_index(queue)
+
+    time_ = 0
+    bufLen = 0
+
+    ReDim recvBuff(0 To MAX_DESYNC_LOG_TRANSFER_PACKET - 1)
+
+    ' Receive a message of desync data (the next chunk of a desync log)
+    Set r = NETbeginDecode(queue, NET_DEBUG_SYNC)
+    NETuint32_t_r r, time_
+    NETuint32_t_r r, bufLen
+    If Not DesyncLogOutputter_canWriteLogFor(time_, player) Then
+        NETend_r r
+        Exit Sub
+    End If
+    If ULT(MAX_DESYNC_LOG_TRANSFER_PACKET, bufLen) Then
+        ' invalid packet - terminate
+        If DesyncLogOutputter_closeEOF(time_, player) Then
+            dbgOutputDumpedSyncLog time_, player, True
+        End If
+        NETend_r r
+        Exit Sub
+    End If
+    NETbin_r r, recvBuff, bufLen
+    NETend_r r
+
+    If bufLen > 0 Then
+        DesyncLogOutputter_write time_, player, recvBuff, bufLen
+    Else
+        ' 0-length buffer packet considered EOF
+        If DesyncLogOutputter_closeEOF(time_, player) Then
+            dbgOutputDumpedSyncLog time_, player, False
+        End If
+    End If
+
+    ' Also dump the debug sync log for this local client (if possible & needed)
+    If Not DesyncLogOutputter_alreadyWroteLogFor(time_, selectedPlayer) Then
+        debug_ 778, LOG_INFO, "recvDebugSync", "Dumping local debug sync log in response to received for gameTime: %u", time_
+        buf = dumpLocalDebugSyncLogByTime(time_)
+        If Len(buf) > 0 Then
+            DesyncLogOutputter_willLogLocalDesyncLog time_
+            dumpLocalPlayerDebugSync buf, time_, False
+        End If
+    End If
+End Sub

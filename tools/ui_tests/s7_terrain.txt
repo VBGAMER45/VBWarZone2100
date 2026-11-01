@@ -1,0 +1,14 @@
+# fork S7 (cluster S): a skirmish from the main menu (Single Player, Start Skirmish Game, Start Hosting), the
+# game's first view and the game quit; run with the config's terrainMode (0 classic, 1 normal, 2 remastered) to
+# compare the terrain qualities (init.cpp's getAvailableTerrainShaderQualityTextures decides which are offered)
+wait 90
+click 512 365
+wait 60
+click 512 400
+wait 120
+click 365 455
+wait 120
+click 775 90
+wait 600
+shot ingame
+quit

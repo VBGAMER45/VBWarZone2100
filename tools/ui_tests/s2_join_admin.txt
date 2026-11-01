@@ -1,0 +1,74 @@
+# lobby commands test (fork S2), the client with an admin key (the host has it through --addlobbyadminpublickey): joins s2_host.txt's game by the browser's IP box (no Ready, so
+# the game never starts); slash commands from the client (help, kick, me, team); a rename; a chat line while
+# the host has muted it; then the host kicks it
+wait 600
+click 512 400
+wait 60
+click 512 400
+wait 120
+click 340 57
+wait 20
+text 127.0.0.1:2160
+wait 10
+key 13
+wait 300
+shot j_lobby
+click 515 689
+wait 10
+text /help
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /kick 0
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /me
+wait 5
+key 13
+wait 60
+click 515 689
+wait 10
+text /team 0 2
+wait 5
+key 13
+wait 80
+shot j_cmds
+click 465 85
+wait 10
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+key 8
+text VBclient
+wait 5
+key 13
+wait 120
+shot j_renamed
+wait 480
+click 515 689
+wait 10
+text hello while muted
+wait 5
+key 13
+wait 60
+shot j_muted
+wait 500
+shot j_kicked
+wait 300
+shot j_after
+log done
+wait 5
+quit

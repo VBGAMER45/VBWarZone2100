@@ -997,9 +997,9 @@ Public Sub setOption_SpectatorHost(ByVal value As Boolean)
     End If
 End Sub
 
-' (VB) client-only: the redirect join (parseKickRedirectInfo, NET_getCurrentHostTextAddress, the verified join
-' identity, startJoinRedirectAttempt) comes with the joining, cluster J; its checks and the failure path are kept
 Public Sub handleKickRedirect(ByVal kickerPlayerIdx As Long, ByVal redirectString As String)
+    Dim currHostAddress As String, hostIdentity As EcKey, hostPublicKey() As Byte, redirectInfo As KickRedirectInfo
+    Dim expectedHostProps As ExpectedHostProperties
     If Not (Not NetPlay_isHost) Then ASSERT_FAILURE "!NetPlay.isHost", "src/multiint.cpp:5917", "handleKickRedirect", "Host shouldn't be processing kick redirect": Exit Sub
     If Not ((GetGameMode() <> GS_NORMAL)) Then ASSERT_FAILURE "(GetGameMode() != GS_NORMAL)", "src/multiint.cpp:5918", "handleKickRedirect", "Game must not be started": Exit Sub
 
@@ -1007,8 +1007,42 @@ Public Sub handleKickRedirect(ByVal kickerPlayerIdx As Long, ByVal redirectStrin
         ActivityManager_wasKickedByPlayer kickerPlayerIdx, ERROR_REDIRECT, redirectString
     End If
 
-    debug_ 5931, LOG_ERROR, "handleKickRedirect", "Unable to get current host's address?"
-    stopJoining WzMsgBoxTitleUI_new("Disconnected from host:", "Unable to handle host redirect", parent), ERROR_REDIRECT
+    ' Get the info for the host we're currently connected to
+    hostIdentity = getVerifiedJoinIdentity(NetPlay_hostPlayer)
+    EcKey_toBytes hostIdentity, EcKey_Public, hostPublicKey
+
+    If Not NET_getCurrentHostTextAddress(currHostAddress) Then
+        debug_ 5931, LOG_ERROR, "handleKickRedirect", "Unable to get current host's address?"
+        stopJoining WzMsgBoxTitleUI_new("Disconnected from host:", "Unable to handle host redirect", parent), ERROR_REDIRECT
+        Exit Sub
+    End If
+
+    ' Parse the redirect string (should be a valid json object containing an array of connection descriptions and other connection options)
+    If Not parseKickRedirectInfo(redirectString, currHostAddress, redirectInfo) Then
+        debug_ 5940, LOG_ERROR, "handleKickRedirect", "Unable to parse kick redirect info"
+        stopJoining WzMsgBoxTitleUI_new("Disconnected from host:", "Unable to process redirect", parent), ERROR_REDIRECT
+        Exit Sub
+    End If
+    If redirectInfo.connListCount = 0 Then
+        ' No valid connection descriptions!
+        debug_ 5947, LOG_ERROR, "handleKickRedirect", "No valid connection descriptions in redirect: %s", redirectString
+        stopJoining WzMsgBoxTitleUI_new("Disconnected from host:", "Unable to process redirect", parent), ERROR_REDIRECT
+        Exit Sub
+    End If
+
+    ' Stop current joining
+    stopJoining parent, ERROR_REDIRECT
+
+    ' Attempt a redirect join
+    expectedHostProps.has_hostPublicKey = True
+    expectedHostProps.hostPublicKey = hostPublicKey
+    expectedHostProps.has_gamePassword = redirectInfo.has_gamePassword
+    expectedHostProps.gamePassword = redirectInfo.gamePassword
+    If Not startJoinRedirectAttempt(sPlayer, redirectInfo.connList, redirectInfo.connListCount, redirectInfo.asSpectator, expectedHostProps) Then
+        ' Display a message box about being kicked, and unable to rejoin
+        debug_ 5962, LOG_INFO, "handleKickRedirect", "startJoinRedirectAttempt failed"
+        changeTitleUI WzMsgBoxTitleUI_new("Disconnected from host:", "Unable to process repeated or invalid redirects", parent)
+    End If
 End Sub
 
 Public Function frontendMultiMessages(ByVal running As Boolean) As MultiMessagesResult
@@ -1053,7 +1087,7 @@ Public Function frontendMultiMessages(ByVal running As Boolean) As MultiMessages
 
                 debug_ 6018, LOG_WARNING, "frontendMultiMessages", "Received file cancel request from player %u, they weren't expecting the file.", NETQUEUE_index(queue)
                 ' (the player's wzFiles, erased of the file with that hash: the map downloads, cluster J)
-                NetPlay_players_wzFiles_eraseHash NETQUEUE_index(queue), hash
+                NetPlay_players_wzFiles_eraseHash NETQUEUE_index(queue), hash.bytes
             End If
 
         Case NET_OPTIONS                    ' incoming options file.

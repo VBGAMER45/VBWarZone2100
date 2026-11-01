@@ -1,0 +1,24 @@
+# fork S4 (notifications_test.py vote), the client: Multi Player > Join Game > the browser's IP box,
+# 127.0.0.1:2193; in the host's lobby (not ready) it gets the host's vote request: the "Vote" notification, whose
+# "Allow" action is clicked (sendLobbyChangeVoteData(1))
+wait 600
+click 512 400
+wait 60
+click 512 400
+wait 120
+click 340 57
+wait 20
+text 127.0.0.1:2193
+wait 10
+key 13
+wait 300
+shot vj_lobby
+wait 1200
+shot vj_vote
+click 720 77
+wait 120
+shot vj_after
+wait 300
+log done
+wait 5
+quit

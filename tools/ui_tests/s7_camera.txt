@@ -1,0 +1,23 @@
+# fork S7 (cluster S): the tracking camera (Space with a unit selected: warcam's X_UPDATE takes its pitch from
+# raycast.cpp's getBestPitchToEdgeOfGrid, at least 14 degrees): a skirmish from the main menu on Sk-Rush, a
+# truck selected as orders.txt does (the camera moved by the radar), tracked, screenshots as the camera settles
+wait 90
+click 512 365
+wait 60
+click 512 400
+wait 120
+click 365 455
+wait 120
+click 775 90
+wait 600
+rclick 851 615
+wait 120
+click 640 158
+wait 30
+shot selected
+key 32
+wait 240
+shot track1
+wait 240
+shot track2
+quit

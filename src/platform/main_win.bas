@@ -10,13 +10,24 @@ Attribute VB_Name = "main_win"
 ' handleGameScreenSizeChange, handleWindowSizeChange,
 ' wzGetMinimumWindowSizeForDisplayScaleFactor,
 ' processScreenSizeChangeNotificationIfNeeded, setDisplayScale,
-' wzGetCurrentDisplayScale, wzMainScreenSetup_CreateVideoWindow (windowed,
-' primary display), wzAttemptInitializeBackend and wzMainScreenSetup (OpenGL,
-' no fallback), handleActiveEvent, wzEventLoopOneFrame, wzMainEventLoop,
-' wzShutdown, StartTextInput, StopTextInput, isInTextInputMode.
-' Missing: fullscreen and display modes, automatic display scaling, cursors
-' (cursors_sdl.cpp), the clipboard, the window icon, Vulkan, the backend
-' fallback and its prompts, wzAsyncExecOnMainThread, Emscripten.
+' wzGetCurrentDisplayScale, wzMainScreenSetup_CreateVideoWindow,
+' wzAttemptInitializeBackend and wzMainScreenSetup (OpenGL, no fallback),
+' handleActiveEvent, wzEventLoopOneFrame, wzMainEventLoop, wzShutdown,
+' StartTextInput, StopTextInput, isInTextInputMode; the window modes
+' (windowed, fullscreen: borderless or with a display mode set through
+' ChangeDisplaySettingsEx, as SDL's Windows driver does), the display list
+' and modes, the display and cursor scales, the clipboard, the mouse grab,
+' minimize on focus loss, the system's RAM and CPUs (cluster S, fork S6;
+' cursors_sdl.cpp is cursors_win). SDL's own parts these need are win_*
+' functions at the end. The displays are SDL's: ids from 1, the primary
+' first. The process is not DPI-aware: the display content scale is 1.
+' TEST-ONLY: WZ_TEST_NO_DESKTOP_EFFECTS logs what would change the user's
+' desktop (the display mode, a fullscreen window, the cursor clip, the
+' clipboard, opening links) instead of doing it; set to "borderless", it
+' makes a borderless ("Desktop Full") fullscreen window and logs the rest.
+' Missing: the window icon, Vulkan, the backend fallback and its prompts,
+' wzAsyncExecOnMainThread (but the fullscreen transition at start), touch
+' input, Emscripten.
 ' Key names (keyScanToString) come from Windows, not SDL, so some differ.
 ' Also lib/ivis_opengl/gfx_api.h's inline to_swap_mode.
 Option Explicit
@@ -88,6 +99,158 @@ Private Declare Function LoadCursorW Lib "user32" (ByVal hInstance As Long, ByVa
 Private Declare Function SetForegroundWindow Lib "user32" (ByVal hwnd As Long) As Long
 Private Declare Function GetModuleHandleW Lib "kernel32" (ByVal lpModuleName As Long) As Long
 Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (dest As Any, src As Any, ByVal n As Long)
+
+' (VB) the display, window, clipboard and system functions (cluster S, fork S6)
+Private Type DEVMODEW
+    dmDeviceName(0 To 63) As Byte
+    dmSpecVersion As Integer
+    dmDriverVersion As Integer
+    dmSize As Integer
+    dmDriverExtra As Integer
+    dmFields As Long
+    dmPositionX As Long
+    dmPositionY As Long
+    dmDisplayOrientation As Long
+    dmDisplayFixedOutput As Long
+    dmColor As Integer
+    dmDuplex As Integer
+    dmYResolution As Integer
+    dmTTOption As Integer
+    dmCollate As Integer
+    dmFormName(0 To 63) As Byte
+    dmLogPixels As Integer
+    dmBitsPerPel As Long
+    dmPelsWidth As Long
+    dmPelsHeight As Long
+    dmDisplayFlags As Long
+    dmDisplayFrequency As Long
+    dmICMMethod As Long
+    dmICMIntent As Long
+    dmMediaType As Long
+    dmDitherType As Long
+    dmReserved1 As Long
+    dmReserved2 As Long
+    dmPanningWidth As Long
+    dmPanningHeight As Long
+End Type
+
+Private Type DISPLAY_DEVICEW
+    cb As Long
+    DeviceName(0 To 63) As Byte
+    DeviceString(0 To 255) As Byte
+    StateFlags As Long
+    DeviceID(0 To 255) As Byte
+    DeviceKey(0 To 255) As Byte
+End Type
+
+Private Type MONITORINFOEXW
+    cbSize As Long
+    rcMonitor As RECT
+    rcWork As RECT
+    dwFlags As Long
+    szDevice(0 To 63) As Byte
+End Type
+
+Private Type SYSTEM_INFO
+    wProcessorArchitecture As Integer
+    wReserved As Integer
+    dwPageSize As Long
+    lpMinimumApplicationAddress As Long
+    lpMaximumApplicationAddress As Long
+    dwActiveProcessorMask As Long
+    dwNumberOfProcessors As Long
+    dwProcessorType As Long
+    dwAllocationGranularity As Long
+    wProcessorLevel As Integer
+    wProcessorRevision As Integer
+End Type
+
+Private Type MEMORYSTATUSEX_
+    dwLength As Long
+    dwMemoryLoad As Long
+    ullTotalPhys As Currency
+    ullAvailPhys As Currency
+    ullTotalPageFile As Currency
+    ullAvailPageFile As Currency
+    ullTotalVirtual As Currency
+    ullAvailVirtual As Currency
+    ullAvailExtendedVirtual As Currency
+End Type
+
+Private Declare Function EnumDisplayDevicesW Lib "user32" (ByVal lpDevice As Long, ByVal iDevNum As Long, lpDisplayDevice As DISPLAY_DEVICEW, ByVal dwFlags As Long) As Long
+Private Declare Function EnumDisplaySettingsExW Lib "user32" (ByVal lpszDeviceName As Long, ByVal iModeNum As Long, lpDevMode As DEVMODEW, ByVal dwFlags As Long) As Long
+Private Declare Function ChangeDisplaySettingsExW Lib "user32" (ByVal lpszDeviceName As Long, lpDevMode As Any, ByVal hwnd As Long, ByVal dwflags As Long, ByVal lParam As Long) As Long
+Private Declare Function MonitorFromPoint Lib "user32" (ByVal x As Long, ByVal y As Long, ByVal dwFlags As Long) As Long
+Private Declare Function MonitorFromWindow Lib "user32" (ByVal hwnd As Long, ByVal dwFlags As Long) As Long
+Private Declare Function GetMonitorInfoW Lib "user32" (ByVal hMonitor As Long, lpmi As MONITORINFOEXW) As Long
+Private Declare Function GetWindowLongW Lib "user32" (ByVal hwnd As Long, ByVal nIndex As Long) As Long
+Private Declare Function SetWindowLongW Lib "user32" (ByVal hwnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
+Private Declare Function SetWindowPos Lib "user32" (ByVal hwnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
+Private Declare Function IsZoomed Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function IsIconic Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function ClipCursor Lib "user32" (lpRect As Any) As Long
+Private Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
+Private Declare Function ScreenToClient Lib "user32" (ByVal hwnd As Long, lpPoint As POINTAPI) As Long
+Private Declare Function ClientToScreen Lib "user32" (ByVal hwnd As Long, lpPoint As POINTAPI) As Long
+Private Declare Function SetCursor Lib "user32" (ByVal hCursor As Long) As Long
+Private Declare Function OpenClipboard Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function CloseClipboard Lib "user32" () As Long
+Private Declare Function EmptyClipboard Lib "user32" () As Long
+Private Declare Function SetClipboardData Lib "user32" (ByVal uFormat As Long, ByVal hMem As Long) As Long
+Private Declare Function GetClipboardData Lib "user32" (ByVal uFormat As Long) As Long
+Private Declare Function IsClipboardFormatAvailable Lib "user32" (ByVal format As Long) As Long
+Private Declare Function GlobalAlloc Lib "kernel32" (ByVal wFlags As Long, ByVal dwBytes As Long) As Long
+Private Declare Function GlobalLock Lib "kernel32" (ByVal hMem As Long) As Long
+Private Declare Function GlobalUnlock Lib "kernel32" (ByVal hMem As Long) As Long
+Private Declare Function GlobalFree Lib "kernel32" (ByVal hMem As Long) As Long
+Private Declare Function lstrlenW Lib "kernel32" (ByVal lpString As Long) As Long
+Private Declare Sub GetSystemInfo Lib "kernel32" (lpSystemInfo As SYSTEM_INFO)
+Private Declare Function GlobalMemoryStatusEx Lib "kernel32" (lpBuffer As MEMORYSTATUSEX_) As Long
+Private Declare Function ShellExecuteW Lib "shell32" (ByVal hwnd As Long, ByVal lpOperation As Long, ByVal lpFile As Long, ByVal lpParameters As Long, ByVal lpDirectory As Long, ByVal nShowCmd As Long) As Long
+Private Declare Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
+Private Declare Function GetDeviceCaps Lib "gdi32" (ByVal hdc As Long, ByVal nIndex As Long) As Long
+
+Private Const WM_SETCURSOR As Long = &H20
+Private Const HTCLIENT As Long = 1
+Private Const GWL_STYLE As Long = -16
+Private Const WS_POPUP As Long = &H80000000
+Private Const WS_VISIBLE As Long = &H10000000
+Private Const WS_MINIMIZEBOX As Long = &H20000
+Private Const WS_MAXIMIZEBOX As Long = &H10000
+Private Const WS_THICKFRAME As Long = &H40000
+Private Const STYLE_NORMAL As Long = &HCA0000                 ' WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+Private Const STYLE_RESIZABLE As Long = WS_THICKFRAME Or WS_MAXIMIZEBOX
+Private Const STYLE_FULLSCREEN As Long = WS_POPUP Or WS_MINIMIZEBOX
+Private Const STYLE_MASK As Long = STYLE_NORMAL Or STYLE_RESIZABLE Or STYLE_FULLSCREEN
+Private Const HWND_TOP As Long = 0
+Private Const SWP_NOSIZE As Long = &H1
+Private Const SWP_NOMOVE As Long = &H2
+Private Const SWP_NOZORDER As Long = &H4
+Private Const SWP_NOACTIVATE As Long = &H10
+Private Const SWP_FRAMECHANGED As Long = &H20
+Private Const SWP_NOCOPYBITS As Long = &H100
+Private Const SW_MINIMIZE As Long = 6
+Private Const SW_SHOWNORMAL As Long = 1
+Private Const ENUM_CURRENT_SETTINGS As Long = -1
+Private Const ENUM_REGISTRY_SETTINGS As Long = -2
+Private Const CDS_FULLSCREEN As Long = &H4
+Private Const DISP_CHANGE_SUCCESSFUL As Long = 0
+Private Const DM_BITSPERPEL As Long = &H40000
+Private Const DM_PELSWIDTH As Long = &H80000
+Private Const DM_PELSHEIGHT As Long = &H100000
+Private Const DM_DISPLAYFLAGS As Long = &H200000
+Private Const DM_DISPLAYFREQUENCY As Long = &H400000
+Private Const DISPLAY_DEVICE_ATTACHED_TO_DESKTOP As Long = &H1
+Private Const DISPLAY_DEVICE_PRIMARY_DEVICE As Long = &H4
+Private Const MONITOR_DEFAULTTONEAREST As Long = 2
+Private Const CF_UNICODETEXT As Long = 13
+Private Const GMEM_MOVEABLE As Long = &H2
+Private Const LOGPIXELSX As Long = 88
+' enum class MinimizeOnFocusLossBehavior
+Private Const MinimizeOnFocusLossBehavior_Auto As Long = -1
+Private Const MinimizeOnFocusLossBehavior_Off As Long = 0
+Private Const MinimizeOnFocusLossBehavior_On_Fullscreen As Long = 1
 
 Private Const WM_MOVE As Long = &H3
 Private Const WM_SIZE As Long = &H5
@@ -288,6 +451,59 @@ Private highSurrogate As Long
 Private quitAfterFrames As Long
 Private framesDone As Long
 
+' main_sdl.cpp's displaylist: std::vector<optional<screeninfo>> (dlHas False: nullopt, "Desktop Full")
+Private displaylistCount As Long
+Private dlHas() As Boolean
+Private dlScreen() As Long
+Private dlWidth() As Long
+Private dlHeight() As Long
+Private dlPixelDensity() As Single
+Private dlRefreshRate() As Single
+' (VB) SDL's displays: ids 1 .. displayCount (the primary first), their device names
+Private displayCount As Long
+Private displayDeviceName() As String
+' (VB) SDL's fullscreen display modes of each display, as SDL_AddFullscreenDisplayMode keeps and sorts them
+Private fsModeCount As Long
+Private fsDisplay() As Long
+Private fsW() As Long
+Private fsH() As Long
+Private fsBpp() As Long
+Private fsRefresh() As Single
+Private fsFrequency() As Long                   ' DEVMODE's dmDisplayFrequency
+Private fsDisplayFlags() As Long
+' (VB) SDL's window state: its fullscreen mode (SDL_SetWindowFullscreenMode; False: borderless "Desktop Full"),
+' SDL_WINDOW_FULLSCREEN, the display mode changed for it (to restore), its style, the mouse grab
+Private hasFullscreenMode As Boolean
+Private fullscreenModeIndex As Long
+Private windowIsFullscreen As Boolean
+Private exclusiveModeApplied As Boolean
+Private exclusiveModeDisplay As Long
+Private windowStyle As Long
+Private windowResizable As Boolean               ' SDL_WINDOW_RESIZABLE
+Private windowedRestoreRect As RECT
+Private mouseGrabbed As Boolean
+Private cursorClipped As Boolean
+' SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS ("": not set)
+Private minimizeOnFocusLossHint As String
+' main_sdl.cpp's deferredDimensionReset (optional<QueuedWindowDimensions>)
+Private deferredDimensionResetHasValue As Boolean
+Private deferredDimensionResetWidth As Long
+Private deferredDimensionResetHeight As Long
+Private deferredDimensionResetRecenter As Boolean
+' (VB) wzAsyncExecOnMainThread([]() { wzChangeWindowMode(WINDOW_MODE::fullscreen); }): the next frame
+Private pendingFullscreenTransition As Boolean
+' SDL's SDL_cursor (the cursor shown in the client area; 0: the class's arrow)
+Private SDL_cursor As Long
+' TEST-ONLY (WZ_TEST_NO_DESKTOP_EFFECTS set): what would change the user's desktop (the display mode, a
+' fullscreen window, the cursor clip, the clipboard, opening a link) is logged instead, and the clipboard is
+' this process's own
+Private testNoDesktopEffects As Boolean
+' TEST-ONLY (WZ_TEST_NO_DESKTOP_EFFECTS=borderless): a borderless fullscreen window is made all the same (it
+' changes no display mode); a fullscreen display mode is still only logged
+Private testAllowBorderless As Boolean
+Private testClipboardHas As Boolean
+Private testClipboardText As String
+
 '--------------------------------------------------------------------------
 ' (VB) the event ring
 
@@ -429,11 +645,17 @@ Public Function WzWndProc(ByVal hwnd As Long, ByVal uMsg As Long, ByVal wParam A
         QueueEvent EV_WINDOW_FOCUS_GAINED
     Case WM_KILLFOCUS
         QueueEvent EV_WINDOW_FOCUS_LOST
+    Case WM_SETCURSOR
+        If (lParam And &HFFFF&) = HTCLIENT And SDL_cursor <> 0 Then
+            SetCursor SDL_cursor
+            WzWndProc = 1
+            Exit Function
+        End If
     Case WM_GETMINMAXINFO
-        If minTrackWidth > 0 Then
+        If minTrackWidth > 0 And Not windowIsFullscreen Then
             rc.Right = minTrackWidth
             rc.Bottom = minTrackHeight
-            AdjustWindowRectEx rc, WS_OVERLAPPEDWINDOW, 0, 0
+            AdjustWindowRectEx rc, windowStyle, 0, 0
             w = rc.Right - rc.Left
             h = rc.Bottom - rc.Top
             CopyMemory ByVal lParam + 24, w, 4         ' MINMAXINFO.ptMinTrackSize
@@ -527,22 +749,1211 @@ Public Sub wzShowMouse(ByVal visible As Boolean)
 End Sub
 
 Public Function wzGetCurrentWindowMode() As WINDOW_MODE
-    ' (VB) windowed only so far
-    wzGetCurrentWindowMode = WINDOW_MODE_windowed
+    If Not WZbackendHasValue Then
+        ' return a dummy value
+        wzGetCurrentWindowMode = WINDOW_MODE_windowed
+        Exit Function
+    End If
+    If WZwindow = 0 Then
+        debug_ 694, LOG_WARNING, "wzGetCurrentWindowMode", "wzGetCurrentWindowMode called when window is not available"
+        wzGetCurrentWindowMode = WINDOW_MODE_windowed
+        Exit Function
+    End If
+
+    If windowIsFullscreen Then          ' SDL_GetWindowFlags(WZwindow) & SDL_WINDOW_FULLSCREEN
+        wzGetCurrentWindowMode = WINDOW_MODE_fullscreen
+    Else
+        wzGetCurrentWindowMode = WINDOW_MODE_windowed
+    End If
 End Function
 
 Public Function wzChangeWindowMode(ByVal mode As WINDOW_MODE, Optional ByVal silent As Boolean = False) As Boolean
-    ' (VB) windowed only so far
-    wzChangeWindowMode = (mode = WINDOW_MODE_windowed)
+    Dim previousMode As Long, currDisplayId As Long, desiredWidth As Long, desiredHeight As Long, displayUsableBounds As RECT
+    previousMode = wzGetCurrentWindowMode()
+    If previousMode = mode Then
+        ' already in this mode
+        wzChangeWindowMode = True
+        Exit Function
+    End If
+
+    If Not wzIsSupportedWindowMode(mode) Then
+        ' not a supported mode on this system
+        Exit Function
+    End If
+
+    If Not silent Then
+        debug_ 785, LOG_INFO, "wzChangeWindowMode", "Changing window mode: %s -> %s", to_display_string_WINDOW_MODE(previousMode), to_display_string_WINDOW_MODE(mode)
+    End If
+
+    Select Case mode
+    Case WINDOW_MODE_windowed
+        currDisplayId = win_getDisplayForWindow()
+        If currDisplayId = 0 Then
+            currDisplayId = screenIndex
+        End If
+        ' disable fullscreen mode
+        If Not win_setWindowFullscreen(False) Then Exit Function
+        wzSetWindowIsResizable True
+        ' Determine the maximum usable windowed size for this display/screen, and cap the desired window size at that
+        desiredWidth = game.warGetWidth()
+        desiredHeight = game.warGetHeight()
+        If win_getDisplayUsableBounds(currDisplayId, displayUsableBounds) Then
+            If displayUsableBounds.Right - displayUsableBounds.Left > 0 And displayUsableBounds.Bottom - displayUsableBounds.Top > 0 Then
+                If displayUsableBounds.Right - displayUsableBounds.Left < desiredWidth Then desiredWidth = displayUsableBounds.Right - displayUsableBounds.Left
+                If displayUsableBounds.Bottom - displayUsableBounds.Top < desiredHeight Then desiredHeight = displayUsableBounds.Bottom - displayUsableBounds.Top
+            End If
+        End If
+        ' restore the old windowed size
+        win_setWindowSize desiredWidth, desiredHeight
+        ' Position the window (centered) on the screen (for its new size)
+        win_centerWindowOnDisplay currDisplayId
+        ' Workaround for issues properly restoring window dimensions when changing from fullscreen -> windowed (on some platforms)
+        deferredDimensionResetHasValue = True
+        deferredDimensionResetWidth = desiredWidth
+        deferredDimensionResetHeight = desiredHeight
+        deferredDimensionResetRecenter = True
+    Case WINDOW_MODE_fullscreen
+        If Not win_setWindowFullscreen(True) Then
+            Exit Function
+        End If
+        wzSetWindowIsResizable False
+    End Select
+
+    wzChangeWindowMode = True
 End Function
 
 Public Function wzIsFullscreen() As Boolean
-    wzIsFullscreen = False
+    If WZwindow = 0 Then
+        ' NOTE: Can't use debug(...) to log here or it will risk overwriting fatal error messages,
+        ' as `_debug(...)` calls this function
+        Exit Function
+    End If
+    wzIsFullscreen = windowIsFullscreen     ' SDL_GetWindowFlags(WZwindow) & SDL_WINDOW_FULLSCREEN
 End Function
 
 Public Function wzWindowHasFocus() As Boolean
     wzWindowHasFocus = windowHasFocus
 End Function
+
+Public Function wzIsMaximized() As Boolean
+    If WZwindow = 0 Then
+        debug_ 868, LOG_WARNING, "wzIsMaximized", "wzIsMaximized called when window is not available"
+        Exit Function
+    End If
+    wzIsMaximized = (IsZoomed(WZwindow) <> 0)   ' SDL_GetWindowFlags(WZwindow) & SDL_WINDOW_MAXIMIZED
+End Function
+
+Public Sub wzGrabMouse()
+    If Not WZbackendHasValue Then
+        Exit Sub
+    End If
+    If WZwindow = 0 Then
+        debug_ 909, LOG_WARNING, "wzGrabMouse", "wzGrabMouse called when window is not available - ignoring"
+        Exit Sub
+    End If
+    mouseGrabbed = True                 ' SDL_SetWindowMouseGrab(WZwindow, true)
+    win_updateClipCursor
+    If testNoDesktopEffects Then debug_ 0, LOG_INFO, "wzGrabMouse", "(VB) TEST-ONLY: SDL_SetWindowMouseGrab(true): the clip follows the focus (focus: %d)", CLng(windowHasFocus)
+End Sub
+
+Public Sub wzReleaseMouse()
+    If Not WZbackendHasValue Then
+        Exit Sub
+    End If
+    If WZwindow = 0 Then
+        debug_ 923, LOG_WARNING, "wzReleaseMouse", "wzReleaseMouse called when window is not available - ignoring"
+        Exit Sub
+    End If
+    mouseGrabbed = False                ' SDL_SetWindowMouseGrab(WZwindow, false)
+    win_updateClipCursor
+    If testNoDesktopEffects Then debug_ 0, LOG_INFO, "wzReleaseMouse", "(VB) TEST-ONLY: SDL_SetWindowMouseGrab(false): the clip follows the focus (focus: %d)", CLng(windowHasFocus)
+End Sub
+
+'--------------------------------------------------------------------------
+' The clipboard (SDL's on Win32: CF_UNICODETEXT, LF written as CRLF and read back as LF)
+
+' See if we have TEXT in the clipboard
+Private Function has_scrap() As Boolean
+    If testNoDesktopEffects Then
+        has_scrap = testClipboardHas
+        Exit Function
+    End If
+    has_scrap = (IsClipboardFormatAvailable(CF_UNICODETEXT) <> 0)   ' SDL_HasClipboardText()
+End Function
+
+' Set the clipboard text
+Public Function wzSetClipboardText(ByVal src As String) As Boolean
+    If Not win_setClipboardText(src) Then
+        debug_ 247, LOG_ERROR, "wzSetClipboardText", "Could not put clipboard text because : %s", "(VB) the clipboard could not be opened or set (" & Err.LastDllError & ")"
+        Exit Function
+    End If
+    wzSetClipboardText = True
+End Function
+
+' Get text from the clipboard
+Private Function get_scrap(dst As String) As Boolean
+    If has_scrap() Then
+        If Not win_getClipboardText(dst) Then
+            debug_ 261, LOG_ERROR, "get_scrap", "Could not get clipboard text because : %s", "(VB) the clipboard could not be opened or read (" & Err.LastDllError & ")"
+            Exit Function
+        End If
+        get_scrap = True
+    Else
+        ' wasn't text or no text in the clipboard
+    End If
+End Function
+
+' SDL_SetClipboardText on Win32
+Private Function win_setClipboardText(ByVal src As String) As Boolean
+    Dim s As String, h As Long, p As Long, n As Long
+    If testNoDesktopEffects Then
+        testClipboardText = src
+        testClipboardHas = True
+        debug_ 0, LOG_INFO, "win_setClipboardText", "(VB) TEST-ONLY: clipboard text set (this process's, not the user's): %s", src
+        win_setClipboardText = True
+        Exit Function
+    End If
+    ' LF to CRLF
+    s = Replace(Replace(src, vbCrLf, vbLf), vbLf, vbCrLf)
+    If OpenClipboard(WZwindow) = 0 Then Exit Function
+    EmptyClipboard
+    n = (Len(s) + 1) * 2
+    h = GlobalAlloc(GMEM_MOVEABLE, n)
+    If h <> 0 Then
+        p = GlobalLock(h)
+        CopyMemory ByVal p, ByVal StrPtr(s), n
+        GlobalUnlock h
+        If SetClipboardData(CF_UNICODETEXT, h) = 0 Then
+            GlobalFree h
+            h = 0
+        End If
+    End If
+    CloseClipboard
+    win_setClipboardText = (h <> 0)
+End Function
+
+' SDL_GetClipboardText on Win32
+Private Function win_getClipboardText(dst As String) As Boolean
+    Dim h As Long, p As Long, n As Long, s As String
+    If testNoDesktopEffects Then
+        dst = testClipboardText
+        win_getClipboardText = True
+        Exit Function
+    End If
+    If OpenClipboard(WZwindow) = 0 Then Exit Function
+    h = GetClipboardData(CF_UNICODETEXT)
+    If h <> 0 Then
+        p = GlobalLock(h)
+        If p <> 0 Then
+            n = lstrlenW(p)
+            s = String$(n, vbNullChar)
+            If n > 0 Then CopyMemory ByVal StrPtr(s), ByVal p, n * 2
+            GlobalUnlock h
+            ' CRLF to LF
+            dst = Replace(s, vbCrLf, vbLf)
+            win_getClipboardText = True
+        End If
+    End If
+    CloseClipboard
+End Function
+
+' Put a character into a text buffer overwriting any text under the cursor
+Public Function wzGetSelection() As String
+    Dim scrap As String
+    If get_scrap(scrap) Then
+        wzGetSelection = scrap
+    End If
+End Function
+
+' SDL_GetTouchDevices: SDL lists the touch devices it has seen events from; the port handles no touch events
+Private Function wzHasTouchInputDevices() As Boolean
+    Dim numDevices As Long
+    numDevices = 0
+    wzHasTouchInputDevices = numDevices > 0
+End Function
+
+Public Function wzSeemsLikeNonTouchPlatform() As Boolean
+    Dim hasScreenKeyboardSupport As Boolean     ' SDL_HasScreenKeyboardSupport(): the port drives no screen keyboard
+    hasScreenKeyboardSupport = False
+    wzSeemsLikeNonTouchPlatform = Not wzHasTouchInputDevices() Or (hasScreenKeyboardSupport = False)
+End Function
+
+'--------------------------------------------------------------------------
+' Displays and display modes
+
+' std::vector<optional<screeninfo>> wzAvailableResolutions(): (VB) the count, each entry's fields in the arrays
+' (has_(i) False: nullopt, "Desktop Full")
+Public Function wzAvailableResolutions(screens() As Long, widths() As Long, heights() As Long, pixelDensities() As Single, refreshRates() As Single, has_() As Boolean) As Long
+    Dim i As Long
+    If displaylistCount = 0 Then Exit Function
+    ReDim screens(0 To displaylistCount - 1)
+    ReDim widths(0 To displaylistCount - 1)
+    ReDim heights(0 To displaylistCount - 1)
+    ReDim pixelDensities(0 To displaylistCount - 1)
+    ReDim refreshRates(0 To displaylistCount - 1)
+    ReDim has_(0 To displaylistCount - 1)
+    For i = 0 To displaylistCount - 1
+        has_(i) = dlHas(i)
+        screens(i) = dlScreen(i)
+        widths(i) = dlWidth(i)
+        heights(i) = dlHeight(i)
+        pixelDensities(i) = dlPixelDensity(i)
+        refreshRates(i) = dlRefreshRate(i)
+    Next
+    wzAvailableResolutions = displaylistCount
+End Function
+
+' optional<screeninfo> wzGetCurrentFullscreenDisplayMode(): has_value, the value in the ByRef fields
+Public Function wzGetCurrentFullscreenDisplayMode(screen As Long, width As Long, height As Long, pixel_density As Single, refresh_rate As Single) As Boolean
+    Dim displayId As Long
+    If WZwindow = 0 Then
+        debug_ 384, LOG_WARNING, "wzGetCurrentFullscreenDisplayMode", "wzGetCurrentFullscreenDisplayMode called when window is not available"
+        Exit Function
+    End If
+    displayId = win_getDisplayForWindow()
+    If displayId = 0 Then
+        debug_ 390, LOG_WZ, "wzGetCurrentFullscreenDisplayMode", "Failed to get current screen index: %s", "(VB) the window's monitor is none of the displays"
+        displayId = 1
+    End If
+    If Not hasFullscreenMode Then       ' SDL_GetWindowFullscreenMode(WZwindow) == nullptr
+        ' This actually means the current setting is borderless fullscreen
+        Exit Function
+    End If
+    screen = displayId
+    width = fsW(fullscreenModeIndex)
+    height = fsH(fullscreenModeIndex)
+    pixel_density = 1!
+    refresh_rate = fsRefresh(fullscreenModeIndex)
+    wzGetCurrentFullscreenDisplayMode = True
+End Function
+
+' std::vector<unsigned int> wzAvailableDisplayScales(): (VB) into scales(0 .. n - 1), n returned
+Public Function wzAvailableDisplayScales(scales() As Long) As Long
+    ReDim scales(0 To 7)
+    scales(0) = 100
+    scales(1) = 125
+    scales(2) = 150
+    scales(3) = 200
+    scales(4) = 250
+    scales(5) = 300
+    scales(6) = 400
+    scales(7) = 500
+    wzAvailableDisplayScales = 8
+End Function
+
+' std::vector<video_backend> wzAvailableGfxBackends(): (VB) into result(0 .. n - 1), n returned. Windows on x86
+' offers Vulkan, OpenGL, DirectX (ANGLE) and OpenGL ES; the port has only the OpenGL backend
+' (wzMainScreenSetup takes OpenGL for any other), so it offers OpenGL alone.
+Public Function wzAvailableGfxBackends(result() As Long) As Long
+    ReDim result(0 To 0)
+    result(0) = video_backend_opengl
+    wzAvailableGfxBackends = 1
+End Function
+
+' std::vector<WINDOW_MODE> wzSupportedWindowModes(): (VB) into modes(0 .. n - 1), n returned
+Private Function wzSupportedWindowModes(modes() As Long) As Long
+    ReDim modes(0 To 1)
+    modes(0) = WINDOW_MODE_fullscreen
+    modes(1) = WINDOW_MODE_windowed
+    wzSupportedWindowModes = 2
+End Function
+
+Public Function wzIsSupportedWindowMode(ByVal mode As WINDOW_MODE) As Boolean
+    Dim supportedModes() As Long, n As Long, i As Long
+    n = wzSupportedWindowModes(supportedModes)
+    For i = 0 To n - 1
+        If supportedModes(i) = mode Then
+            wzIsSupportedWindowMode = True
+            Exit Function
+        End If
+    Next
+End Function
+
+Public Function wzAltEnterToggleFullscreen() As WINDOW_MODE
+    Dim mode As Long
+    mode = wzGetCurrentWindowMode()
+    Select Case mode
+    Case WINDOW_MODE_fullscreen
+        If wzChangeWindowMode(WINDOW_MODE_windowed) Then
+            mode = WINDOW_MODE_windowed
+        End If
+    Case WINDOW_MODE_windowed
+        If wzChangeWindowMode(WINDOW_MODE_fullscreen) Then
+            mode = WINDOW_MODE_fullscreen
+        End If
+    End Select
+    wzAltEnterToggleFullscreen = mode
+End Function
+
+Public Sub wzPostChangedSwapInterval()
+    ' currently, no-op
+End Sub
+
+'--------------------------------------------------------------------------
+' Display scale and cursor scale
+
+Private Sub wzGetMaximumDisplayScaleFactorsForWindowSize(ByVal width As Long, ByVal height As Long, horizScaleFactor As Single, vertScaleFactor As Single)
+    horizScaleFactor = CSng(width) / CSng(MIN_WZ_GAMESCREEN_WIDTH)
+    vertScaleFactor = CSng(height) / CSng(MIN_WZ_GAMESCREEN_HEIGHT)
+End Sub
+
+Private Function wzGetMaximumDisplayScaleFactorForWindowSize(ByVal width As Long, ByVal height As Long) As Single
+    Dim maxHorizScaleFactor As Single, maxVertScaleFactor As Single
+    wzGetMaximumDisplayScaleFactorsForWindowSize width, height, maxHorizScaleFactor, maxVertScaleFactor
+    If maxHorizScaleFactor < maxVertScaleFactor Then
+        wzGetMaximumDisplayScaleFactorForWindowSize = maxHorizScaleFactor
+    Else
+        wzGetMaximumDisplayScaleFactorForWindowSize = maxVertScaleFactor
+    End If
+End Function
+
+' returns: the maximum display scale percentage (sourced from wzAvailableDisplayScales), or 0 if window is below the minimum required size for the minimum supported display scale
+Private Function wzGetMaximumDisplayScaleForWindowSize(ByVal width As Long, ByVal height As Long) As Long
+    Dim maxDisplayScaleFactor As Single, maxDisplayScalePercentage As Long
+    Dim availableDisplayScales() As Long, n As Long, maxDisplayScale As Long
+    maxDisplayScaleFactor = wzGetMaximumDisplayScaleFactorForWindowSize(width, height)
+    maxDisplayScalePercentage = Int(maxDisplayScaleFactor * 100!)
+
+    n = wzAvailableDisplayScales(availableDisplayScales)
+    ' (std::sort: the list is sorted already)
+
+    ' std::lower_bound
+    maxDisplayScale = 0
+    Do While maxDisplayScale < n
+        If availableDisplayScales(maxDisplayScale) >= maxDisplayScalePercentage Then Exit Do
+        maxDisplayScale = maxDisplayScale + 1
+    Loop
+    If maxDisplayScale = n Then
+        ' return the largest available display scale
+        wzGetMaximumDisplayScaleForWindowSize = availableDisplayScales(n - 1)
+        Exit Function
+    End If
+    If availableDisplayScales(maxDisplayScale) <> maxDisplayScalePercentage Then
+        If maxDisplayScale = 0 Then
+            ' no lower display scale to return
+            wzGetMaximumDisplayScaleForWindowSize = 0
+            Exit Function
+        End If
+        maxDisplayScale = maxDisplayScale - 1
+    End If
+    wzGetMaximumDisplayScaleForWindowSize = availableDisplayScales(maxDisplayScale)
+End Function
+
+Public Function wzGetMaximumDisplayScaleForCurrentWindowSize() As Long
+    wzGetMaximumDisplayScaleForCurrentWindowSize = wzGetMaximumDisplayScaleForWindowSize(windowWidth, windowHeight)
+End Function
+
+Public Function wzGetSuggestedDisplayScaleForCurrentWindowSize(ByVal desiredMaxScreenDimension As Long) As Long
+    Dim maxDisplayScale As Long, availableDisplayScales() As Long, n As Long, it As Long
+    Dim resultingLogicalScreenWidth As Long, resultingLogicalScreenHeight As Long
+    maxDisplayScale = wzGetMaximumDisplayScaleForCurrentWindowSize()
+
+    n = wzAvailableDisplayScales(availableDisplayScales)
+    ' (std::sort: the list is sorted already)
+
+    it = 0
+    Do While it < n
+        If Not (availableDisplayScales(it) <= maxDisplayScale) Then Exit Do
+        resultingLogicalScreenWidth = (windowWidth * 100) \ availableDisplayScales(it)
+        resultingLogicalScreenHeight = (windowHeight * 100) \ availableDisplayScales(it)
+        If resultingLogicalScreenWidth <= desiredMaxScreenDimension And resultingLogicalScreenHeight <= desiredMaxScreenDimension Then
+            wzGetSuggestedDisplayScaleForCurrentWindowSize = availableDisplayScales(it)
+            Exit Function
+        End If
+        it = it + 1
+    Loop
+
+    wzGetSuggestedDisplayScaleForCurrentWindowSize = maxDisplayScale
+End Function
+
+Private Function wzWindowSizeIsSmallerThanMinimumRequired(ByVal width As Long, ByVal height As Long, ByVal displayScaleFactor As Single) As Boolean
+    Dim minWindowWidth As Long, minWindowHeight As Long
+    wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, displayScaleFactor
+    wzWindowSizeIsSmallerThanMinimumRequired = ((width < minWindowWidth) Or (height < minWindowHeight))
+End Function
+
+' SDL_GetDisplayContentScale: the system's scale over 96 DPI as this process sees it (not DPI-aware: 1)
+Public Function wzGetDisplayContentScale() As Single
+    Dim defaultContentScale As Single
+    defaultContentScale = win_contentScale()
+    If defaultContentScale < 1! Then
+        wzGetDisplayContentScale = 1!
+        Exit Function
+    End If
+    wzGetDisplayContentScale = defaultContentScale
+End Function
+
+Private Function wzGetDefaultBaseDisplayScale(ByVal displayIndex As Long) As Long
+    Dim defaultContentScale As Single, approxActualDisplayScale As Long, availableDisplayScales() As Long, n As Long, displayScale As Long
+    defaultContentScale = win_contentScale()
+    debug_ 1991, LOG_WZ, "wzGetDefaultBaseDisplayScale", "GetDisplayContentScale(%d)=%f", displayIndex, defaultContentScale
+    If defaultContentScale <= 0! Then
+        wzGetDefaultBaseDisplayScale = 100
+        Exit Function
+    End If
+    ' This is an system-configured value that _could_ be applied *IN ADDITION TO* the user-configured display scaling value for WZ
+    ' But for now, simply apply it as the default display scale
+    approxActualDisplayScale = -Int(-(defaultContentScale * 100!))     ' ceilf
+    If approxActualDisplayScale < 100 Then approxActualDisplayScale = 100
+    n = wzAvailableDisplayScales(availableDisplayScales)
+    displayScale = 0
+    Do While displayScale < n
+        If availableDisplayScales(displayScale) >= approxActualDisplayScale Then Exit Do
+        displayScale = displayScale + 1
+    Loop
+    If displayScale = n Then
+        ' return the largest available display scale
+        wzGetDefaultBaseDisplayScale = availableDisplayScales(n - 1)
+        Exit Function
+    End If
+    If availableDisplayScales(displayScale) <> approxActualDisplayScale Then
+        If displayScale = 0 Then
+            ' no lower display scale to return
+            wzGetDefaultBaseDisplayScale = 100
+            Exit Function
+        End If
+        displayScale = displayScale - 1
+    End If
+    wzGetDefaultBaseDisplayScale = availableDisplayScales(displayScale)
+End Function
+
+Public Function wzChangeDisplayScale(ByVal displayScale As Long) As Boolean
+    Dim newDisplayScaleFactor As Single, minWindowWidth As Long, minWindowHeight As Long
+    Dim oldScreenWidth As Long, oldScreenHeight As Long, newScreenWidth As Long, newScreenHeight As Long, pt As POINTAPI
+    If WZwindow = 0 Then
+        debug_ 2026, LOG_WARNING, "wzChangeDisplayScale", "wzChangeDisplayScale called when window is not available"
+        Exit Function
+    End If
+
+    newDisplayScaleFactor = CSng(displayScale) / 100!
+
+    If wzWindowSizeIsSmallerThanMinimumRequired(windowWidth, windowHeight, newDisplayScaleFactor) Then
+        ' The current window width and/or height are below the required minimum window size
+        ' for this display scale factor.
+        Exit Function
+    End If
+
+    ' Store the new display scale factor
+    setDisplayScale displayScale
+
+    ' Set the new minimum window size
+    If wzGetCurrentWindowMode() = WINDOW_MODE_windowed Then
+        wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, newDisplayScaleFactor
+        minTrackWidth = minWindowWidth          ' SDL_SetWindowMinimumSize
+        minTrackHeight = minWindowHeight
+    End If
+
+    ' Update the game's logical screen size
+    oldScreenWidth = screenWidth
+    oldScreenHeight = screenHeight
+    newScreenWidth = windowWidth
+    newScreenHeight = windowHeight
+    If newDisplayScaleFactor > 1! Then
+        newScreenWidth = Fix(windowWidth / newDisplayScaleFactor)
+        newScreenHeight = Fix(windowHeight / newDisplayScaleFactor)
+    End If
+    handleGameScreenSizeChange oldScreenWidth, oldScreenHeight, newScreenWidth, newScreenHeight
+    game.gameDisplayScaleFactorDidChange newDisplayScaleFactor
+
+    ' Update the current mouse coordinates
+    ' (The prior stored mouseXPos / mouseYPos apply to the old coordinate system, and must be translated to the
+    ' new game coordinate system. Since the mouse hasn't moved - or it would generate events that override this -
+    ' the current position with respect to the window (which hasn't changed size) can be queried and used to
+    ' calculate the new game coordinate system mouse position.)
+    GetCursorPos pt                     ' SDL_GetMouseState: relative to the window
+    ScreenToClient WZwindow, pt
+    debug_ 2069, LOG_WZ, "wzChangeDisplayScale", "Old mouse position: %d, %d", mouseXPos, mouseYPos
+    mouseXPos = Fix(CSng(pt.x) / current_displayScaleFactor)
+    mouseYPos = Fix(CSng(pt.y) / current_displayScaleFactor)
+    debug_ 2072, LOG_WZ, "wzChangeDisplayScale", "New mouse position: %d, %d", mouseXPos, mouseYPos
+
+    processScreenSizeChangeNotificationIfNeeded
+
+    wzChangeDisplayScale = True
+End Function
+
+Public Function wzChangeCursorScale(ByVal cursorScale As Long) As Boolean
+    If WZwindow = 0 Then
+        debug_ 2084, LOG_WARNING, "wzChangeCursorScale", "wzChangeCursorScale called when window is not available"
+        Exit Function
+    End If
+
+    If cursorScale = game.warGetCursorScale() Then
+        wzChangeCursorScale = True
+        Exit Function
+    End If
+
+    game.warSetCursorScale cursorScale  ' must be set before cursors are reinit
+    wzSDLReinitCursors
+    wzChangeCursorScale = True
+End Function
+
+Private Function wzReduceDisplayScalingIfNeeded(ByVal currWidth As Long, ByVal currHeight As Long) As Boolean
+    Dim maxDisplayScale As Long
+    ' Check whether the desired window size is smaller than the minimum required for the current Display Scale
+    If wzWindowSizeIsSmallerThanMinimumRequired(currWidth, currHeight, current_displayScaleFactor) Then
+        ' The new window size is smaller than the minimum required size for the current display scale level.
+
+        maxDisplayScale = wzGetMaximumDisplayScaleForWindowSize(currWidth, currHeight)
+        If maxDisplayScale < 100 Then
+            ' Cannot adjust display scale factor below 1. Desired window size is below the minimum supported.
+            debug_ 2109, LOG_WZ, "wzReduceDisplayScalingIfNeeded", "Size (%d x %d) is smaller than the minimum supported at a 100%% display scale", currWidth, currHeight
+            Exit Function
+        End If
+
+        ' Adjust the current display scale level to the nearest supported level.
+        debug_ 2114, LOG_WZ, "wzReduceDisplayScalingIfNeeded", "The current Display Scale (%d%%) is too high for the desired window size. Reducing the current Display Scale to the maximum possible for the desired window size: %d%%.", current_displayScale, maxDisplayScale
+        wzChangeDisplayScale maxDisplayScale
+
+        ' Store the new display scale
+        game.warSetDisplayScale maxDisplayScale
+    End If
+
+    wzReduceDisplayScalingIfNeeded = True
+End Function
+
+Public Function wzChangeFullscreenDisplayMode(ByVal has_config As Boolean, ByVal req_screen As Long, ByVal req_width As Long, ByVal req_height As Long, ByVal req_pixel_density As Single, ByVal req_refresh_rate As Single) As Boolean
+    Dim closest As Long, dm As DEVMODEW, desktopDisplay As Long
+    If WZwindow = 0 Then
+        debug_ 2128, LOG_WARNING, "wzChangeFullscreenDisplayMode", "wzChangeFullscreenDisplayMode called when window is not available"
+        Exit Function
+    End If
+
+    If Not has_config Then
+        debug_ 2134, LOG_INFO, "wzChangeFullscreenDisplayMode", "Changing fullscreen mode to Desktop Full"
+        If Not win_setWindowFullscreenMode(False, 0) Then
+            debug_ 2137, LOG_INFO, "wzChangeFullscreenDisplayMode", "Unable to set desktop fullscreen mode?: %s", "(VB) the window could not take it"
+        End If
+
+        game.warSetFullscreenModeScreen 0
+        game.warSetFullscreenModeWidth 0
+        game.warSetFullscreenModeHeight 0
+        game.warSetFullscreenModePixelDensity 1!
+        game.warSetFullscreenModeRefreshRate 0!
+        wzChangeFullscreenDisplayMode = True
+        Exit Function
+    End If
+
+    debug_ 2149, LOG_INFO, "wzChangeFullscreenDisplayMode", "Changing fullscreen mode to [%u] %dx%d", req_screen, req_width, req_height
+
+    If req_width = 0 Or req_height = 0 Then
+        debug_ 2154, LOG_INFO, "wzChangeFullscreenDisplayMode", "Getting desktop display mode"
+        If req_screen > 0 Then desktopDisplay = req_screen Else desktopDisplay = win_getDisplayForWindow()
+        If Not win_getDesktopDisplayMode(desktopDisplay, dm) Then
+            debug_ 2158, LOG_INFO, "wzChangeFullscreenDisplayMode", "Unable to get desktop DisplayMode?: %s", "(VB) no such display"
+            Exit Function
+        End If
+        req_screen = desktopDisplay
+        req_width = dm.dmPelsWidth
+        req_height = dm.dmPelsHeight
+        req_pixel_density = 1!
+        req_refresh_rate = win_refreshRate(dm.dmDisplayFrequency)
+    End If
+
+    closest = win_getClosestFullscreenDisplayMode(req_screen, req_width, req_height, req_refresh_rate, (req_pixel_density > 1!))
+    If closest < 0 Then
+        ' no match was found
+        debug_ 2171, LOG_INFO, "wzChangeFullscreenDisplayMode", "No closest DisplayMode found ([%u] [%u x %u]); error: %s", req_screen, req_width, req_height, "Couldn't find any matching video modes"
+        Exit Function
+    End If
+
+    If (fsW(closest) < MIN_WZ_GAMESCREEN_WIDTH) Or (fsH(closest) < MIN_WZ_GAMESCREEN_HEIGHT) Then
+        debug_ 2177, LOG_INFO, "wzChangeFullscreenDisplayMode", "Closest fullscreen mode minimum logical resolution < %d x %d", MIN_WZ_GAMESCREEN_WIDTH, MIN_WZ_GAMESCREEN_HEIGHT
+        Exit Function
+    End If
+
+    If Not win_setWindowFullscreenMode(True, closest) Then
+        ' SDL_SetWindowFullscreenMode failed
+        debug_ 2184, LOG_INFO, "wzChangeFullscreenDisplayMode", "SDL_SetWindowFullscreenMode ([%u] [%u x %u]) failed: %s", req_screen, req_width, req_height, "(VB) the window could not take it"
+        Exit Function
+    End If
+
+    ' Note: Reducing display scaling if needed is handled in the window resize event
+
+    game.warSetFullscreenModeScreen fsDisplay(closest)
+    game.warSetFullscreenModeWidth fsW(closest)
+    game.warSetFullscreenModeHeight fsH(closest)
+    game.warSetFullscreenModePixelDensity 1!
+    game.warSetFullscreenModeRefreshRate fsRefresh(closest)
+
+    wzChangeFullscreenDisplayMode = True
+End Function
+
+Private Function wzSetDefaultFullscreenDisplayMode() As Boolean
+    Dim info_screen As Long, info_width As Long, info_height As Long, info_pixel_density As Single, info_refresh_rate As Single
+    info_screen = game.warGetFullscreenModeScreen()
+    info_width = game.warGetFullscreenModeWidth()
+    info_height = game.warGetFullscreenModeHeight()
+    info_pixel_density = game.warGetFullscreenModePixelDensity()
+    info_refresh_rate = game.warGetFullscreenModeRefreshRate()
+
+    If info_width <= 0 Or info_height <= 0 Then
+        ' Desktop Full mode
+        wzSetDefaultFullscreenDisplayMode = wzChangeFullscreenDisplayMode(False, 0, 0, 0, 0!, 0!)
+        Exit Function
+    End If
+
+    wzSetDefaultFullscreenDisplayMode = wzChangeFullscreenDisplayMode(True, info_screen, info_width, info_height, info_pixel_density, info_refresh_rate)
+End Function
+
+Public Function wzGetCurrentMinimizeOnFocusLossBehavior() As Long
+    Dim hint As String
+    hint = minimizeOnFocusLossHint              ' SDL_GetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS)
+    If Len(hint) = 0 Or StrComp(hint, "auto", vbTextCompare) = 0 Then
+        wzGetCurrentMinimizeOnFocusLossBehavior = MinimizeOnFocusLossBehavior_Auto
+        Exit Function
+    End If
+    If win_hintBoolean(hint) Then
+        wzGetCurrentMinimizeOnFocusLossBehavior = MinimizeOnFocusLossBehavior_On_Fullscreen
+    Else
+        wzGetCurrentMinimizeOnFocusLossBehavior = MinimizeOnFocusLossBehavior_Off
+    End If
+End Function
+
+Public Sub wzSetMinimizeOnFocusLoss(ByVal behavior As Long)
+    Dim value As String
+    value = "auto"
+    Select Case behavior
+    Case MinimizeOnFocusLossBehavior_Off
+        value = "0"
+    Case MinimizeOnFocusLossBehavior_On_Fullscreen
+        value = "1"
+    Case MinimizeOnFocusLossBehavior_Auto
+        value = "auto"
+    Case Else
+        Exit Sub
+    End Select
+    minimizeOnFocusLossHint = value             ' SDL_SetHintWithPriority(..., SDL_HINT_OVERRIDE)
+End Sub
+
+' Returns the current window screen, width, and height
+Public Sub wzGetWindowResolution(screen As Long, width As Long, height As Long)
+    Dim rc As RECT
+    If WZwindow = 0 Then
+        ASSERT_FAILURE "WZwindow != nullptr", "lib/sdl/main_sdl.cpp:2375", "wzGetWindowResolution", "wzGetWindowResolution called when window is not available"
+        Exit Sub
+    End If
+
+    screen = screenIndex
+
+    GetClientRect WZwindow, rc          ' SDL_GetWindowSize
+    width = rc.Right - rc.Left
+    height = rc.Bottom - rc.Top
+End Sub
+
+Public Sub wzSetWindowIsResizable(ByVal resizable As Boolean)
+    Dim minWindowWidth As Long, minWindowHeight As Long
+    If WZwindow = 0 Then
+        debug_ 3501, LOG_WARNING, "wzSetWindowIsResizable", "wzSetWindowIsResizable called when window is not available"
+        Exit Sub
+    End If
+    win_setWindowResizable resizable    ' SDL_SetWindowResizable(WZwindow, resizable)
+
+    If resizable Then
+        ' Set the minimum window size
+        wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, current_displayScaleFactor
+        minTrackWidth = minWindowWidth          ' SDL_SetWindowMinimumSize
+        minTrackHeight = minWindowHeight
+    End If
+End Sub
+
+Public Function wzIsWindowResizable() As Boolean
+    If WZwindow = 0 Then
+        debug_ 3519, LOG_WARNING, "wzIsWindowResizable", "wzIsWindowResizable called when window is not available"
+        Exit Function
+    End If
+    wzIsWindowResizable = windowResizable       ' SDL_GetWindowFlags(WZwindow) & SDL_WINDOW_RESIZABLE
+End Function
+
+' NOTE: wzBackendAttemptOpenURL should *not* be called directly - instead, call openURLInBrowser() from urlhelpers.h
+Public Function wzBackendAttemptOpenURL(ByVal url As String) As Boolean
+    Dim rc As Long
+    ' SDL_OpenURL on Win32: ShellExecuteW "open"
+    If testNoDesktopEffects Then
+        debug_ 0, LOG_INFO, "wzBackendAttemptOpenURL", "(VB) TEST-ONLY: not opened: %s", url
+        wzBackendAttemptOpenURL = True
+        Exit Function
+    End If
+    rc = ShellExecuteW(0, StrPtr("open"), StrPtr(url), 0, 0, SW_SHOWNORMAL)
+    wzBackendAttemptOpenURL = (rc > 32)
+End Function
+
+' Gets the system RAM in MiB (a uint64_t: a Double)
+Public Function wzGetCurrentSystemRAM() As Double
+    Dim value As Double, m As MEMORYSTATUSEX_
+    ' SDL_GetSystemRAM on Win32: GlobalMemoryStatusEx's ullTotalPhys / (1024 * 1024)
+    m.dwLength = LenB(m)
+    If GlobalMemoryStatusEx(m) <> 0 Then value = Fix(CDbl(m.ullTotalPhys) * 10000# / 1048576#)
+    If value > 0 Then wzGetCurrentSystemRAM = value
+End Function
+
+Public Function wzGetLogicalCPUCount() As Long
+    Dim result As Long, si As SYSTEM_INFO
+    GetSystemInfo si                    ' SDL_GetNumLogicalCPUCores on Win32
+    result = si.dwNumberOfProcessors
+    If result <= 0 Then
+        debug_ 3830, LOG_ERROR, "wzGetLogicalCPUCount", "Failed to get logical CPU count - defaulting to 1"
+        result = 1
+    End If
+    wzGetLogicalCPUCount = result
+End Function
+
+'--------------------------------------------------------------------------
+' (VB) SDL's display and window primitives on Win32
+
+' (VB) the game's side, for cursors_win
+Public Function platformGame() As IPlatformGame
+    Set platformGame = game
+End Function
+
+' TEST-ONLY: True when WZ_TEST_NO_DESKTOP_EFFECTS is set (see the state's comment)
+Public Function wzTestNoDesktopEffects() As Boolean
+    wzTestNoDesktopEffects = testNoDesktopEffects
+End Function
+
+' a WCHAR[] field's text
+Private Function wideName(b() As Byte) As String
+    Dim s As String, i As Long
+    s = b
+    i = InStr(s, vbNullChar)
+    If i > 0 Then s = Left$(s, i - 1)
+    wideName = s
+End Function
+
+' SDL_GetHintBoolean: "0" and "false" are false, any other value true
+Private Function win_hintBoolean(ByVal hint As String) As Boolean
+    win_hintBoolean = Not (hint = "0" Or StrComp(hint, "false", vbTextCompare) = 0)
+End Function
+
+' the system's scale over 96 DPI, as this process sees it
+Private Function win_contentScale() As Single
+    Dim hdc As Long
+    hdc = GetDC(0)
+    win_contentScale = CSng(GetDeviceCaps(hdc, LOGPIXELSX)) / 96!
+    ReleaseDC 0, hdc
+End Function
+
+' (VB) SDL_Init's displays (WIN_InitModes: the attached adapters, the primary first, ids from 1) and each
+' display's fullscreen modes (WIN_GetDisplayModes and SDL_AddFullscreenDisplayMode: palettized and unknown
+' formats skipped, duplicates dropped, sorted as cmpmodes sorts)
+Private Sub win_enumerateDisplays()
+    Dim pass As Long, i As Long, dd As DISPLAY_DEVICEW, isPrimary As Boolean
+    displayCount = 0
+    ReDim displayDeviceName(0 To 0)
+    fsModeCount = 0
+    For pass = 0 To 1
+        i = 0
+        Do
+            dd.cb = LenB(dd)
+            If EnumDisplayDevicesW(0, i, dd, 0) = 0 Then Exit Do
+            If (dd.StateFlags And DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) <> 0 Then
+                isPrimary = ((dd.StateFlags And DISPLAY_DEVICE_PRIMARY_DEVICE) <> 0)
+                If isPrimary = (pass = 0) Then
+                    displayCount = displayCount + 1
+                    ReDim Preserve displayDeviceName(0 To displayCount)
+                    displayDeviceName(displayCount) = wideName(dd.DeviceName)
+                    win_addDisplayModes displayCount
+                End If
+            End If
+            i = i + 1
+        Loop
+    Next
+End Sub
+
+' WIN_GetRefreshRate: NTSC timings for 119, 59 and 29 Hz
+Private Function win_refreshRate(ByVal frequency As Long) As Single
+    Select Case frequency
+    Case 119, 59, 29
+        win_refreshRate = ((100 * (frequency + 1) * 1000) \ 1001) / 100!
+    Case Else
+        win_refreshRate = CSng(frequency)
+    End Select
+End Function
+
+' cmpmodes: < 0 when mode a sorts before mode b (wider, then taller, more bits per pixel, faster refresh first)
+Private Function win_cmpmodes(ByVal aw As Long, ByVal ah As Long, ByVal abpp As Long, ByVal arefresh As Single, ByVal bw As Long, ByVal bh As Long, ByVal bbpp As Long, ByVal brefresh As Single) As Long
+    If aw <> bw Then
+        win_cmpmodes = bw - aw
+    ElseIf ah <> bh Then
+        win_cmpmodes = bh - ah
+    ElseIf abpp <> bbpp Then
+        win_cmpmodes = bbpp - abpp
+    ElseIf Fix(arefresh * 100) <> Fix(brefresh * 100) Then
+        win_cmpmodes = Fix(brefresh * 100) - Fix(arefresh * 100)
+    End If
+End Function
+
+Private Sub win_addDisplayModes(ByVal id As Long)
+    Dim i As Long, j As Long, k As Long, dm As DEVMODEW, w As Long, h As Long, bpp As Long, refresh As Single
+    i = 0
+    Do
+        dm.dmSize = LenB(dm)
+        If EnumDisplaySettingsExW(StrPtr(displayDeviceName(id)), i, dm, 0) = 0 Then Exit Do
+        i = i + 1
+        bpp = dm.dmBitsPerPel
+        ' We don't support palettized modes now (8, 4); other bit counts have no SDL format
+        If bpp <> 32 And bpp <> 24 And bpp <> 16 And bpp <> 15 Then GoTo nextMode
+        w = dm.dmPelsWidth
+        h = dm.dmPelsHeight
+        refresh = win_refreshRate(dm.dmDisplayFrequency)
+        ' Make sure we don't already have the mode in the list
+        For j = 0 To fsModeCount - 1
+            If fsDisplay(j) = id Then
+                If win_cmpmodes(w, h, bpp, refresh, fsW(j), fsH(j), fsBpp(j), fsRefresh(j)) = 0 Then GoTo nextMode
+            End If
+        Next
+        ' sorted in: before the first of this display's modes it sorts before
+        k = fsModeCount
+        For j = 0 To fsModeCount - 1
+            If fsDisplay(j) = id Then
+                If win_cmpmodes(w, h, bpp, refresh, fsW(j), fsH(j), fsBpp(j), fsRefresh(j)) < 0 Then
+                    k = j
+                    Exit For
+                End If
+            End If
+        Next
+        ReDim Preserve fsDisplay(0 To fsModeCount)
+        ReDim Preserve fsW(0 To fsModeCount)
+        ReDim Preserve fsH(0 To fsModeCount)
+        ReDim Preserve fsBpp(0 To fsModeCount)
+        ReDim Preserve fsRefresh(0 To fsModeCount)
+        ReDim Preserve fsFrequency(0 To fsModeCount)
+        ReDim Preserve fsDisplayFlags(0 To fsModeCount)
+        For j = fsModeCount To k + 1 Step -1
+            fsDisplay(j) = fsDisplay(j - 1)
+            fsW(j) = fsW(j - 1)
+            fsH(j) = fsH(j - 1)
+            fsBpp(j) = fsBpp(j - 1)
+            fsRefresh(j) = fsRefresh(j - 1)
+            fsFrequency(j) = fsFrequency(j - 1)
+            fsDisplayFlags(j) = fsDisplayFlags(j - 1)
+        Next
+        fsDisplay(k) = id
+        fsW(k) = w
+        fsH(k) = h
+        fsBpp(k) = bpp
+        fsRefresh(k) = refresh
+        fsFrequency(k) = dm.dmDisplayFrequency
+        fsDisplayFlags(k) = dm.dmDisplayFlags
+        fsModeCount = fsModeCount + 1
+nextMode:
+    Loop
+End Sub
+
+' SDL_GetPixelFormatName of the mode's format (WIN_GetDisplayMode's format for its bits per pixel)
+Private Function win_pixelFormatName(ByVal bpp As Long) As String
+    Select Case bpp
+    Case 32: win_pixelFormatName = "SDL_PIXELFORMAT_XRGB8888"
+    Case 24: win_pixelFormatName = "SDL_PIXELFORMAT_RGB24"
+    Case 16: win_pixelFormatName = "SDL_PIXELFORMAT_RGB565"
+    Case 15: win_pixelFormatName = "SDL_PIXELFORMAT_XRGB1555"
+    Case Else: win_pixelFormatName = "SDL_PIXELFORMAT_UNKNOWN"
+    End Select
+End Function
+
+' main_sdl.cpp's displaylist.push_back
+Private Sub win_displaylistAdd(ByVal has As Boolean, ByVal screen As Long, ByVal width As Long, ByVal height As Long, ByVal pixel_density As Single, ByVal refresh_rate As Single)
+    ReDim Preserve dlHas(0 To displaylistCount)
+    ReDim Preserve dlScreen(0 To displaylistCount)
+    ReDim Preserve dlWidth(0 To displaylistCount)
+    ReDim Preserve dlHeight(0 To displaylistCount)
+    ReDim Preserve dlPixelDensity(0 To displaylistCount)
+    ReDim Preserve dlRefreshRate(0 To displaylistCount)
+    dlHas(displaylistCount) = has
+    dlScreen(displaylistCount) = screen
+    dlWidth(displaylistCount) = width
+    dlHeight(displaylistCount) = height
+    dlPixelDensity(displaylistCount) = pixel_density
+    dlRefreshRate(displaylistCount) = refresh_rate
+    displaylistCount = displaylistCount + 1
+End Sub
+
+' SDL_GetDisplayBounds: the display's current mode's position and size
+Private Function win_getDisplayBounds(ByVal id As Long, rc As RECT) As Boolean
+    Dim dm As DEVMODEW
+    If id < 1 Or id > displayCount Then Exit Function
+    dm.dmSize = LenB(dm)
+    If EnumDisplaySettingsExW(StrPtr(displayDeviceName(id)), ENUM_CURRENT_SETTINGS, dm, 0) = 0 Then Exit Function
+    rc.Left = dm.dmPositionX
+    rc.Top = dm.dmPositionY
+    rc.Right = rc.Left + dm.dmPelsWidth
+    rc.Bottom = rc.Top + dm.dmPelsHeight
+    win_getDisplayBounds = True
+End Function
+
+' SDL_GetDisplayUsableBounds: the work area of the display's monitor
+Private Function win_getDisplayUsableBounds(ByVal id As Long, rc As RECT) As Boolean
+    Dim b As RECT, mi As MONITORINFOEXW, hmon As Long
+    If Not win_getDisplayBounds(id, b) Then Exit Function
+    hmon = MonitorFromPoint((b.Left + b.Right) \ 2, (b.Top + b.Bottom) \ 2, MONITOR_DEFAULTTONEAREST)
+    mi.cbSize = LenB(mi)
+    If GetMonitorInfoW(hmon, mi) = 0 Then Exit Function
+    rc = mi.rcWork
+    win_getDisplayUsableBounds = True
+End Function
+
+' SDL_GetDesktopDisplayMode: the display's mode in the registry (the desktop's, while a fullscreen mode is set)
+Private Function win_getDesktopDisplayMode(ByVal id As Long, dm As DEVMODEW) As Boolean
+    If id < 1 Or id > displayCount Then Exit Function
+    dm.dmSize = LenB(dm)
+    win_getDesktopDisplayMode = (EnumDisplaySettingsExW(StrPtr(displayDeviceName(id)), ENUM_REGISTRY_SETTINGS, dm, 0) <> 0)
+End Function
+
+' SDL_GetDisplayForWindow (0: none)
+Private Function win_getDisplayForWindow() As Long
+    Dim mi As MONITORINFOEXW, hmon As Long, nm As String, i As Long
+    If WZwindow = 0 Then Exit Function
+    hmon = MonitorFromWindow(WZwindow, MONITOR_DEFAULTTONEAREST)
+    mi.cbSize = LenB(mi)
+    If GetMonitorInfoW(hmon, mi) = 0 Then Exit Function
+    nm = wideName(mi.szDevice)
+    For i = 1 To displayCount
+        If StrComp(displayDeviceName(i), nm, vbTextCompare) = 0 Then
+            win_getDisplayForWindow = i
+            Exit Function
+        End If
+    Next
+End Function
+
+' a display id, or the primary for 0 or an unknown id (SDL_WINDOWPOS_CENTERED_DISPLAY(0))
+Private Function win_displayOrPrimary(ByVal id As Long) As Long
+    If id < 1 Or id > displayCount Then id = 1
+    win_displayOrPrimary = id
+End Function
+
+' SDL_GetClosestFullscreenDisplayMode: the index of the closest of the display's fullscreen modes (-1: none)
+Private Function win_getClosestFullscreenDisplayMode(ByVal displayID As Long, ByVal w As Long, ByVal h As Long, ByVal refresh_rate As Single, ByVal include_high_density_modes As Boolean) As Long
+    Dim i As Long, closest As Long, aspect_ratio As Single, current_aspect_ratio As Single, closest_aspect_ratio As Single, dm As DEVMODEW
+    closest = -1
+    If displayID < 1 Or displayID > displayCount Then
+        win_getClosestFullscreenDisplayMode = -1
+        Exit Function
+    End If
+    If h > 0 Then
+        aspect_ratio = CSng(w) / CSng(h)
+    Else
+        aspect_ratio = 1!
+    End If
+    If refresh_rate <= 0! Then
+        If win_getDesktopDisplayMode(displayID, dm) Then refresh_rate = win_refreshRate(dm.dmDisplayFrequency)
+    End If
+    ' (the modes' pixel density is 1 here: include_high_density_modes changes nothing)
+    For i = 0 To fsModeCount - 1
+        If fsDisplay(i) <> displayID Then GoTo nextMode
+        If fsW(i) < w Then
+            ' Out of sorted modes large enough here
+            Exit For
+        End If
+        If fsH(i) < h Then
+            ' Wider, but not tall enough, due to a different aspect ratio.
+            GoTo nextMode
+        End If
+        If closest >= 0 Then
+            current_aspect_ratio = CSng(fsW(i)) / CSng(fsH(i))
+            closest_aspect_ratio = CSng(fsW(closest)) / CSng(fsH(closest))
+            If Abs(aspect_ratio - closest_aspect_ratio) < Abs(aspect_ratio - current_aspect_ratio) Then
+                ' The mode we already found has a better aspect ratio match
+                GoTo nextMode
+            End If
+            If fsW(i) = fsW(closest) And fsH(i) = fsH(closest) And Abs(fsRefresh(closest) - refresh_rate) < Abs(fsRefresh(i) - refresh_rate) Then
+                ' We already found a mode and the new mode is further from our refresh rate target
+                GoTo nextMode
+            End If
+        End If
+        closest = i
+nextMode:
+    Next
+    win_getClosestFullscreenDisplayMode = closest
+End Function
+
+' SDL_SetWindowFullscreenMode: the window's fullscreen mode (hasMode False: borderless, "Desktop Full"),
+' applied at once when the window is fullscreen
+Private Function win_setWindowFullscreenMode(ByVal hasMode As Boolean, ByVal modeIndex As Long) As Boolean
+    hasFullscreenMode = hasMode
+    fullscreenModeIndex = modeIndex
+    If windowIsFullscreen Then
+        win_setWindowFullscreenMode = win_setWindowFullscreen(True)
+        Exit Function
+    End If
+    win_setWindowFullscreenMode = True
+End Function
+
+' (SDL_SetDisplayModeForDisplay, WIN_SetDisplayMode) the display changed to the window's fullscreen mode
+Private Function win_applyFullscreenDisplayMode() As Boolean
+    Dim dm As DEVMODEW, cur As DEVMODEW, id As Long, r As Long
+    id = fsDisplay(fullscreenModeIndex)
+    ' the display shows this mode already: nothing to change
+    cur.dmSize = LenB(cur)
+    If EnumDisplaySettingsExW(StrPtr(displayDeviceName(id)), ENUM_CURRENT_SETTINGS, cur, 0) <> 0 Then
+        If cur.dmPelsWidth = fsW(fullscreenModeIndex) And cur.dmPelsHeight = fsH(fullscreenModeIndex) And cur.dmBitsPerPel = fsBpp(fullscreenModeIndex) _
+            And cur.dmDisplayFrequency = fsFrequency(fullscreenModeIndex) Then
+            win_applyFullscreenDisplayMode = True
+            Exit Function
+        End If
+    End If
+    If testNoDesktopEffects Then
+        debug_ 0, LOG_INFO, "win_applyFullscreenDisplayMode", "(VB) TEST-ONLY: ChangeDisplaySettingsEx not called: display %d to %dx%d %d bpp @%d Hz", id, fsW(fullscreenModeIndex), fsH(fullscreenModeIndex), fsBpp(fullscreenModeIndex), fsFrequency(fullscreenModeIndex)
+        Exit Function
+    End If
+    dm.dmSize = LenB(dm)
+    dm.dmFields = DM_BITSPERPEL Or DM_PELSWIDTH Or DM_PELSHEIGHT Or DM_DISPLAYFREQUENCY Or DM_DISPLAYFLAGS
+    dm.dmBitsPerPel = fsBpp(fullscreenModeIndex)
+    dm.dmPelsWidth = fsW(fullscreenModeIndex)
+    dm.dmPelsHeight = fsH(fullscreenModeIndex)
+    dm.dmDisplayFrequency = fsFrequency(fullscreenModeIndex)
+    dm.dmDisplayFlags = fsDisplayFlags(fullscreenModeIndex)
+    r = ChangeDisplaySettingsExW(StrPtr(displayDeviceName(id)), dm, 0, CDS_FULLSCREEN, 0)
+    If r <> DISP_CHANGE_SUCCESSFUL Then
+        debug_ 0, LOG_ERROR, "win_applyFullscreenDisplayMode", "(VB) ChangeDisplaySettingsEx failed: %d", r
+        Exit Function
+    End If
+    exclusiveModeApplied = True
+    exclusiveModeDisplay = id
+    win_applyFullscreenDisplayMode = True
+End Function
+
+' (VB) the display's desktop mode back
+Private Sub win_restoreDesktopDisplayMode()
+    If Not exclusiveModeApplied Then Exit Sub
+    ChangeDisplaySettingsExW StrPtr(displayDeviceName(exclusiveModeDisplay)), ByVal 0&, 0, CDS_FULLSCREEN, 0
+    exclusiveModeApplied = False
+End Sub
+
+' (VB) GetWindowStyle and WIN_SetWindowResizable: the window's style for its state
+Private Sub win_applyStyle(ByVal newStyle As Long)
+    Dim style As Long
+    style = GetWindowLongW(WZwindow, GWL_STYLE)
+    style = style And Not STYLE_MASK
+    style = style Or newStyle
+    windowStyle = newStyle
+    SetWindowLongW WZwindow, GWL_STYLE, style
+End Sub
+
+' SDL_SetWindowResizable
+Private Sub win_setWindowResizable(ByVal resizable As Boolean)
+    windowResizable = resizable
+    If windowIsFullscreen Then Exit Sub         ' (a fullscreen window's style has no frame)
+    If resizable Then win_applyStyle STYLE_NORMAL Or STYLE_RESIZABLE Else win_applyStyle STYLE_NORMAL
+End Sub
+
+' SDL_SetWindowFullscreen on Win32. Into fullscreen: the window's fullscreen mode set on its display (as SDL's
+' WIN_SetDisplayMode does) or, with none, the display left as it is (borderless); a popup window over the
+' display's bounds. Out of it: the desktop mode back, the windowed style and rect.
+Private Function win_setWindowFullscreen(ByVal fullscreen As Boolean) As Boolean
+    Dim id As Long, b As RECT
+    If fullscreen Then
+        If hasFullscreenMode Then
+            id = fsDisplay(fullscreenModeIndex)
+        Else
+            id = win_displayOrPrimary(win_getDisplayForWindow())
+        End If
+        If testNoDesktopEffects And (hasFullscreenMode Or Not testAllowBorderless) Then
+            If hasFullscreenMode Then
+                debug_ 0, LOG_INFO, "win_setWindowFullscreen", "(VB) TEST-ONLY: not entering fullscreen: display %d at %dx%d @%d Hz", id, fsW(fullscreenModeIndex), fsH(fullscreenModeIndex), fsFrequency(fullscreenModeIndex)
+            Else
+                debug_ 0, LOG_INFO, "win_setWindowFullscreen", "(VB) TEST-ONLY: not entering fullscreen: display %d, Desktop Full", id
+            End If
+            Exit Function
+        End If
+        If Not windowIsFullscreen Then GetWindowRect WZwindow, windowedRestoreRect
+        If hasFullscreenMode Then
+            If Not win_applyFullscreenDisplayMode() Then Exit Function
+        ElseIf exclusiveModeApplied Then
+            win_restoreDesktopDisplayMode
+        End If
+        If Not win_getDisplayBounds(id, b) Then Exit Function
+        windowIsFullscreen = True
+        win_applyStyle STYLE_FULLSCREEN
+        SetWindowPos WZwindow, HWND_TOP, b.Left, b.Top, b.Right - b.Left, b.Bottom - b.Top, SWP_FRAMECHANGED Or SWP_NOCOPYBITS Or SWP_NOACTIVATE
+    Else
+        If Not windowIsFullscreen Then
+            win_setWindowFullscreen = True
+            Exit Function
+        End If
+        win_restoreDesktopDisplayMode
+        windowIsFullscreen = False
+        If windowResizable Then win_applyStyle STYLE_NORMAL Or STYLE_RESIZABLE Else win_applyStyle STYLE_NORMAL
+        SetWindowPos WZwindow, HWND_TOP, windowedRestoreRect.Left, windowedRestoreRect.Top, windowedRestoreRect.Right - windowedRestoreRect.Left, _
+            windowedRestoreRect.Bottom - windowedRestoreRect.Top, SWP_FRAMECHANGED Or SWP_NOCOPYBITS Or SWP_NOACTIVATE
+    End If
+    win_updateClipCursor
+    win_setWindowFullscreen = True
+End Function
+
+' SDL_SetWindowSize: the client area's size
+Private Sub win_setWindowSize(ByVal w As Long, ByVal h As Long)
+    Dim rc As RECT
+    rc.Right = w
+    rc.Bottom = h
+    AdjustWindowRectEx rc, windowStyle, 0, 0
+    SetWindowPos WZwindow, 0, 0, 0, rc.Right - rc.Left, rc.Bottom - rc.Top, SWP_NOMOVE Or SWP_NOZORDER Or SWP_NOACTIVATE
+End Sub
+
+' SDL_SetWindowPosition(SDL_WINDOWPOS_CENTERED_DISPLAY(id), ...): centred in the display's usable area
+Private Sub win_centerWindowOnDisplay(ByVal id As Long)
+    Dim wr As RECT, b As RECT, x As Long, y As Long
+    If Not win_getDisplayUsableBounds(win_displayOrPrimary(id), b) Then Exit Sub
+    GetWindowRect WZwindow, wr
+    x = b.Left + ((b.Right - b.Left) - (wr.Right - wr.Left)) \ 2
+    y = b.Top + ((b.Bottom - b.Top) - (wr.Bottom - wr.Top)) \ 2
+    If x < b.Left Then x = b.Left
+    If y < b.Top Then y = b.Top
+    SetWindowPos WZwindow, 0, x, y, 0, 0, SWP_NOSIZE Or SWP_NOZORDER Or SWP_NOACTIVATE
+End Sub
+
+' SDL_ShouldMinimizeOnFocusLoss: a fullscreen window with a fullscreen mode (exclusive) minimizes, unless the hint
+' says otherwise ("Real fullscreen windows should minimize on focus loss so the desktop video mode is restored")
+Private Function win_shouldMinimizeOnFocusLoss() As Boolean
+    Dim hint As String
+    If Not windowIsFullscreen Then Exit Function
+    hint = minimizeOnFocusLossHint
+    If Len(hint) = 0 Or StrComp(hint, "auto", vbTextCompare) = 0 Then
+        win_shouldMinimizeOnFocusLoss = hasFullscreenMode
+        Exit Function
+    End If
+    win_shouldMinimizeOnFocusLoss = win_hintBoolean(hint)
+End Function
+
+' WIN_UpdateClipCursor: the cursor kept in the client area while the mouse is grabbed and the window has the
+' focus and is not minimized
+Private Sub win_updateClipCursor()
+    Dim rc As RECT, pt As POINTAPI, wantClip As Boolean
+    wantClip = mouseGrabbed And windowHasFocus And WZwindow <> 0
+    If wantClip Then
+        If IsIconic(WZwindow) <> 0 Then wantClip = False
+    End If
+    If wantClip Then
+        GetClientRect WZwindow, rc
+        pt.x = 0
+        pt.y = 0
+        ClientToScreen WZwindow, pt
+        rc.Left = pt.x
+        rc.Top = pt.y
+        rc.Right = rc.Right + pt.x
+        rc.Bottom = rc.Bottom + pt.y
+        If testNoDesktopEffects Then
+            If Not cursorClipped Then debug_ 0, LOG_INFO, "win_updateClipCursor", "(VB) TEST-ONLY: ClipCursor not called: (%d, %d) - (%d, %d)", rc.Left, rc.Top, rc.Right, rc.Bottom
+        Else
+            ClipCursor rc
+        End If
+        cursorClipped = True
+    ElseIf cursorClipped Then
+        If testNoDesktopEffects Then
+            debug_ 0, LOG_INFO, "win_updateClipCursor", "(VB) TEST-ONLY: ClipCursor(NULL) not called"
+        Else
+            ClipCursor ByVal 0&
+        End If
+        cursorClipped = False
+    End If
+End Sub
+
+' SDL_SetCursor (WIN_ShowCursor): the cursor the client area shows (0: the default arrow)
+Public Sub win_setCursor(ByVal hCursor As Long)
+    SDL_cursor = hCursor
+    If WZwindow <> 0 And mouseInWindow Then
+        If hCursor <> 0 Then SetCursor hCursor Else SetCursor LoadCursorW(0, IDC_ARROW)
+    End If
+End Sub
 
 Public Sub wzQuit(ByVal exitCode As Long)
     If Not wzQuitExitCodeHasValue Then
@@ -1194,6 +2605,11 @@ Public Sub wzMain()
     windowHasFocus = True
     current_displayScale = 100
     current_displayScaleFactor = 1!
+    ' (VB) SDL reads a hint's default from the environment variable of its name
+    minimizeOnFocusLossHint = Environ$("SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS")
+    ' TEST-ONLY
+    testNoDesktopEffects = (Len(Environ$("WZ_TEST_NO_DESKTOP_EFFECTS")) > 0)
+    testAllowBorderless = (Environ$("WZ_TEST_NO_DESKTOP_EFFECTS") = "borderless")
     ' (VB) the window functions lib/framework calls
     Set frameworkPlatform = New PlatformFramework
     frameSetPlatform frameworkPlatform
@@ -1278,16 +2694,54 @@ Private Function wzSDLOneTimeInit() As Boolean
     wzSDLOneTimeInit = True
 End Function
 
-' C: wzMainScreenSetup_CreateVideoWindow: windowed, on the primary display. Returns False on failure.
+' C: wzMainScreenSetup_CreateVideoWindow. Returns False on failure.
 Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVal antialiasing As Long, ByVal fullscreen As Long, ByVal highDPI As Boolean) As Boolean
     Dim desiredWindowWidth As Long, desiredWindowHeight As Long
     Dim minWindowWidth As Long, minWindowHeight As Long
-    Dim displayUsableBounds As RECT, rc As RECT, x As Long, y As Long, w As Long, h As Long
-    Dim resultingWidth As Long, resultingHeight As Long
+    Dim displayUsableBounds As RECT, bounds As RECT, rc As RECT, x As Long, y As Long, w As Long, h As Long
+    Dim resultingWidth As Long, resultingHeight As Long, i As Long
+    Dim screenBaseDisplayScale As Long, priorDisplayScale As Long, displayScaleDiff As Single, maxDisplayScale As Long
+
+    ' ensure "fullscreen" is in the supported fullscreen modes for the current system
+    If Not wzIsSupportedWindowMode(fullscreen) Then
+        debug_ 2668, LOG_ERROR, "wzMainScreenSetup_CreateVideoWindow", "Unsupported fullscreen mode specified: %d; using default", fullscreen
+        fullscreen = WINDOW_MODE_windowed
+        game.warSetWindowMode fullscreen ' persist the change
+    End If
+
+    ' (VB) SDL_Init's displays and their fullscreen modes
+    win_enumerateDisplays
+
+    displaylistCount = 0
+
+    ' Add the "Desktop Full" (borderless fullscreen) mode to the displaylist
+    win_displaylistAdd False, 0, 0, 0, 0!, 0!
+
+    ' Populate our resolution list (does all displays now)
+    For i = 0 To fsModeCount - 1
+        debug_ 2713, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor [%d] %dx%d %f @%f %s", fsDisplay(i), fsW(i), fsH(i), fsRefresh(i), 1!, win_pixelFormatName(fsBpp(i))
+
+        If (fsW(i) < MIN_WZ_GAMESCREEN_WIDTH) Or (fsH(i) < MIN_WZ_GAMESCREEN_HEIGHT) Then
+            debug_ 2719, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor mode logical resolution < %d x %d -- discarding entry", MIN_WZ_GAMESCREEN_WIDTH, MIN_WZ_GAMESCREEN_HEIGHT
+        ElseIf fsRefresh(i) < 59! Then
+            debug_ 2723, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor mode refresh rate < 59 -- discarding entry"
+            ' only store 60Hz & higher modes, some display report 59 on Linux
+        ElseIf fsBpp(i) < 24 Then           ' the 16 and 15 bits per pixel formats: R, G or B bits < 8
+            debug_ 2734, LOG_INFO, "wzMainScreenSetup_CreateVideoWindow", "Monitor mode pixel format has R, G, or B bits < 8 -- discarding entry"
+        Else
+            win_displaylistAdd True, fsDisplay(i), fsW(i), fsH(i), 1!, fsRefresh(i)    ' which display this belongs to
+
+            debug_ 2745, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor [%d] %dx%d %f @%f %s", fsDisplay(i), fsW(i), fsH(i), fsRefresh(i), 1!, win_pixelFormatName(fsBpp(i))
+        End If
+    Next
 
     ' populate with the saved configuration values (if we had any) for windowed mode
     desiredWindowWidth = game.warGetWidth()
     desiredWindowHeight = game.warGetHeight()
+
+    ' NOTE: Prior to wzMainScreenSetup being run, the display system is populated with the window width + height
+    ' (i.e. not taking into account the game display scale). This function later sets the display system
+    ' to the *game screen* width and height (taking into account the display scale).
 
     If desiredWindowWidth = 0 Or desiredWindowHeight = 0 Then
         windowWidth = 1024
@@ -1299,12 +2753,23 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
 
     setDisplayScale game.warGetDisplayScale()
 
-    debug_ 2777, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor %d: pos %d x %d : res %d x %d", 0, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN)
+    For i = 1 To displayCount
+        win_getDisplayBounds i, bounds
+        debug_ 2777, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Monitor %d: pos %d x %d : res %d x %d", i, bounds.Left, bounds.Top, bounds.Right - bounds.Left, bounds.Bottom - bounds.Top
+    Next
+    If displayCount < 1 Then
+        debug_ 2781, LOG_FATAL, "wzMainScreenSetup_CreateVideoWindow", "SDL_GetDisplays returned: %d, with error: %s", displayCount, "(VB) EnumDisplayDevices found no display attached to the desktop"
+        exit_ 1                         ' EXIT_FAILURE
+    End If
 
-    ' Check desired screen index values versus current system (one display here)
-    If game.warGetScreen() > 1 Then
-        debug_ 2790, LOG_WARNING, "wzMainScreenSetup_CreateVideoWindow", "Invalid screen [%d] defined in configuration; there are only %d displays; falling back to display 0", game.warGetScreen(), 1
+    ' Check desired screen index values versus current system
+    If game.warGetScreen() > displayCount Then
+        debug_ 2790, LOG_WARNING, "wzMainScreenSetup_CreateVideoWindow", "Invalid screen [%d] defined in configuration; there are only %d displays; falling back to display 0", game.warGetScreen(), displayCount
         game.warSetScreen 0
+    End If
+    If game.warGetFullscreenModeScreen() > displayCount Or game.warGetFullscreenModeScreen() < 0 Then
+        debug_ 2795, LOG_WARNING, "wzMainScreenSetup_CreateVideoWindow", "Invalid fullscreen screen [%d] defined in configuration; there are only %d displays; falling back to display 0", game.warGetFullscreenModeScreen(), displayCount
+        game.warSetFullscreenModeScreen 0
     End If
 
     screenIndex = game.warGetScreen()
@@ -1313,12 +2778,44 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
     wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, current_displayScaleFactor
 
     If fullscreen <> WINDOW_MODE_fullscreen Then
+        If game.warGetAutoAdjustDisplayScale() Then
+            ' Since SDL (at least <= 2.0.14) does not provide built-in support for high-DPI displays on *some* platforms
+            ' (example: Windows), do our best to bump up the game's Display Scale setting to be a better match if the screen
+            ' on which the game starts has a higher effective Display Scale than the game's starting Display Scale setting.
+            If screenIndex > 0 Then
+                screenBaseDisplayScale = wzGetDefaultBaseDisplayScale(screenIndex)
+            Else
+                screenBaseDisplayScale = wzGetDefaultBaseDisplayScale(1)    ' SDL_GetPrimaryDisplay()
+            End If
+
+            If screenBaseDisplayScale > wzGetCurrentDisplayScale() Then
+                ' When bumping up the display scale, also increase the target window size proportionally
+                debug_ 2817, LOG_WZ, "wzMainScreenSetup_CreateVideoWindow", "Increasing game Display Scale to better match calculated default base display scale: %u%% -> %u%%", wzGetCurrentDisplayScale(), screenBaseDisplayScale
+                priorDisplayScale = wzGetCurrentDisplayScale()
+                setDisplayScale screenBaseDisplayScale
+                displayScaleDiff = CSng(screenBaseDisplayScale) / CSng(priorDisplayScale)
+                windowWidth = -Int(-(CSng(windowWidth) * displayScaleDiff))     ' ceil
+                windowHeight = -Int(-(CSng(windowHeight) * displayScaleDiff))
+            End If
+        End If
+
+        If (windowWidth < minWindowWidth) Or (windowHeight < minWindowHeight) Then
+            ' The desired window width and/or height is lower than the required minimum for the current display scale.
+            ' Reduce the display scale to the maximum supported (for the desired window size), and recalculate the required minimum window size.
+            maxDisplayScale = wzGetMaximumDisplayScaleForWindowSize(windowWidth, windowHeight)
+            If maxDisplayScale < 100 Then maxDisplayScale = 100     ' if wzGetMaximumDisplayScaleForWindowSize fails, it returns < 100
+            setDisplayScale maxDisplayScale
+            wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, current_displayScaleFactor
+        End If
+
         If windowWidth < minWindowWidth Then windowWidth = minWindowWidth
         If windowHeight < minWindowHeight Then windowHeight = minWindowHeight
 
         If fullscreen = WINDOW_MODE_windowed Then
             ' Determine the maximum usable windowed size for this display/screen
-            If SystemParametersInfoW(SPI_GETWORKAREA, 0, displayUsableBounds, 0) <> 0 Then
+            ' (4.7.0 tests SDL3's bool result against 0: the cap runs only when the call fails, with empty bounds,
+            ' so it never caps; the port does the same)
+            If win_getDisplayUsableBounds(screenIndex, displayUsableBounds) = False Then
                 w = displayUsableBounds.Right - displayUsableBounds.Left
                 h = displayUsableBounds.Bottom - displayUsableBounds.Top
                 If w > 0 And h > 0 Then
@@ -1329,12 +2826,16 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
         End If
     End If
 
-    ' The client area gets windowWidth x windowHeight, centred in the usable area
+    ' SDL_CreateWindowWithProperties: the client area windowWidth x windowHeight, centred on the display
+    ' Allow the window to be manually resized, if not fullscreen
+    windowResizable = (fullscreen = WINDOW_MODE_windowed)
+    If windowResizable Then windowStyle = STYLE_NORMAL Or STYLE_RESIZABLE Else windowStyle = STYLE_NORMAL
     rc.Right = windowWidth
     rc.Bottom = windowHeight
-    AdjustWindowRectEx rc, WS_OVERLAPPEDWINDOW, 0, 0
+    AdjustWindowRectEx rc, windowStyle, 0, 0
     w = rc.Right - rc.Left
     h = rc.Bottom - rc.Top
+    win_getDisplayUsableBounds win_displayOrPrimary(screenIndex), displayUsableBounds
     x = displayUsableBounds.Left + ((displayUsableBounds.Right - displayUsableBounds.Left) - w) \ 2
     y = displayUsableBounds.Top + ((displayUsableBounds.Bottom - displayUsableBounds.Top) - h) \ 2
     If x < displayUsableBounds.Left Then x = displayUsableBounds.Left
@@ -1345,7 +2846,7 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
     lastClientWidth = windowWidth
     lastClientHeight = windowHeight
     lastSizeType = SIZE_RESTORED
-    WZwindow = CreateWindowExW(0, StrPtr(className), StrPtr(PACKAGE_NAME), WS_OVERLAPPEDWINDOW, x, y, w, h, 0, 0, GetModuleHandleW(0), 0)
+    WZwindow = CreateWindowExW(0, StrPtr(className), StrPtr(PACKAGE_NAME), windowStyle, x, y, w, h, 0, 0, GetModuleHandleW(0), 0)
     If WZwindow = 0 Then
         debug_ 2879, LOG_INFO, "wzMainScreenSetup_CreateVideoWindow", "Failed to create a window, because: %s", "CreateWindowExW failed (" & Err.LastDllError & ")"
         Exit Function
@@ -1353,11 +2854,64 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
     queueEnabled = True
     ShowWindow WZwindow, SW_SHOW
     SetForegroundWindow WZwindow
+    If testNoDesktopEffects Then
+        debug_ 0, LOG_INFO, "wzMainScreenSetup_CreateVideoWindow", "(VB) TEST-ONLY: WZ_TEST_NO_DESKTOP_EFFECTS is set: display mode changes, fullscreen, the cursor clip, the clipboard and links are logged, not made"
+        If testAllowBorderless Then debug_ 0, LOG_INFO, "wzMainScreenSetup_CreateVideoWindow", "(VB) TEST-ONLY: borderless: a borderless fullscreen window is made all the same"
+    End If
+
+    ' Always set the fullscreen mode (so switching works to the desired mode, even if we don't start in fullscreen mode)
+    If wzSetDefaultFullscreenDisplayMode() Then
+        If fullscreen = WINDOW_MODE_fullscreen Then
+            ' queue a later transition to fullscreen mode
+            pendingFullscreenTransition = True
+        End If
+    Else
+        If fullscreen = WINDOW_MODE_fullscreen Then
+            debug_ 2899, LOG_ERROR, "wzMainScreenSetup_CreateVideoWindow", "Failed to initialize at fullscreen mode ([%d] [%u x %u]); reverting to windowed mode", screenIndex, game.warGetFullscreenModeWidth(), game.warGetFullscreenModeHeight()
+            wzChangeWindowMode WINDOW_MODE_windowed
+            fullscreen = WINDOW_MODE_windowed
+        End If
+    End If
 
     ' Get resulting logical window size
     GetClientRect WZwindow, rc
     resultingWidth = rc.Right - rc.Left
     resultingHeight = rc.Bottom - rc.Top
+
+    ' Check that the actual window size matches the desired window size (but not for classic fullscreen mode)
+    If (wzGetCurrentWindowMode() <> WINDOW_MODE_fullscreen) And (resultingWidth < minWindowWidth Or resultingHeight < minWindowHeight) Then
+        ' The created window size (that the system returned) is less than the minimum required window size (for this display scale)
+        debug_ 2913, LOG_WARNING, "wzMainScreenSetup_CreateVideoWindow", "Failed to create window at desired resolution: [%d] %d x %d; instead, received window of resolution: [%d] %d x %d; which is below the required minimum size of %d x %d for the current display scale level", game.warGetScreen(), windowWidth, windowHeight, game.warGetScreen(), resultingWidth, resultingHeight, minWindowWidth, minWindowHeight
+
+        ' Adjust the display scale (if possible)
+        maxDisplayScale = wzGetMaximumDisplayScaleForWindowSize(resultingWidth, resultingHeight)
+        If maxDisplayScale >= 100 Then
+            ' Reduce the display scale
+            debug_ 2920, LOG_WARNING, "wzMainScreenSetup_CreateVideoWindow", "Reducing the display scale level to the maximum supported for this window size: %u", maxDisplayScale
+            setDisplayScale maxDisplayScale
+            wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, current_displayScaleFactor
+        Else
+            ' Problem: The resulting window size that the system provided is below the minimum required
+            '          for the lowest possible display scale - i.e. the window is just too small
+            debug_ 2928, LOG_ERROR, "wzMainScreenSetup_CreateVideoWindow", "The window size created by the system is too small!"
+
+            ' Attempt to default to base resolution at 100%
+            setDisplayScale 100
+            wzGetMinimumWindowSizeForDisplayScaleFactor minWindowWidth, minWindowHeight, current_displayScaleFactor
+
+            win_setWindowSize minWindowWidth, minWindowHeight
+            windowWidth = minWindowWidth
+            windowHeight = minWindowHeight
+
+            ' Center window on screen
+            win_centerWindowOnDisplay screenIndex
+
+            ' Re-request resulting window size
+            GetClientRect WZwindow, rc
+            resultingWidth = rc.Right - rc.Left
+            resultingHeight = rc.Bottom - rc.Top
+        End If
+    End If
     lastClientWidth = resultingWidth
     lastClientHeight = resultingHeight
     If Not (resultingWidth > 0 And resultingHeight > 0) Then
@@ -1376,6 +2930,10 @@ Private Function wzMainScreenSetup_CreateVideoWindow(ByVal backend As Long, ByVa
     End If
     pie_SetVideoBufferWidth screenWidth
     pie_SetVideoBufferHeight screenHeight
+
+    ' Set the minimum window size
+    minTrackWidth = minWindowWidth
+    minTrackHeight = minWindowHeight
 
     wzMainScreenSetup_CreateVideoWindow = True
 End Function
@@ -1459,10 +3017,19 @@ Public Function wzGetDefaultGfxBackendForCurrentSystem() As video_backend
 End Function
 
 Public Function wzMainScreenSetup(ByVal hasBackend As Boolean, ByVal backend As video_backend, ByVal antialiasing As Long, ByVal fullscreen As WINDOW_MODE, ByVal vsync As Long, ByVal lodDistanceBiasPercentage As Long, ByVal depthMapResolution As Long, Optional ByVal highDPI As Boolean = True) As Boolean
-    Dim swapMode As Long, lodDistanceBias As Single
+    Dim swapMode As Long, lodDistanceBias As Single, minOnFocusLossSettingVal As Long, hint As String
 
     If Not wzSDLOneTimeInit() Then
         Exit Function
+    End If
+
+    minOnFocusLossSettingVal = game.warGetMinimizeOnFocusLoss()
+    If minOnFocusLossSettingVal < -1 Or minOnFocusLossSettingVal > 1 Then
+        minOnFocusLossSettingVal = -1
+    End If
+    hint = minimizeOnFocusLossHint                  ' SDL_GetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS)
+    If Len(hint) = 0 Or StrComp(hint, "auto", vbTextCompare) = 0 Then
+        wzSetMinimizeOnFocusLoss minOnFocusLossSettingVal
     End If
 
     swapMode = to_swap_mode(vsync)
@@ -1477,6 +3044,15 @@ Public Function wzMainScreenSetup(ByVal hasBackend As Boolean, ByVal backend As 
     If Not wzAttemptInitializeBackend(hasBackend, backend, antialiasing, fullscreen, swapMode, lodDistanceBias, depthMapResolution) Then
         WZbackendHasValue = False
         Exit Function
+    End If
+
+    If hasBackend Then
+        ' initialise all cursors
+        If game.warGetColouredCursor() Then
+            sdlInitColoredCursors
+        Else
+            sdlInitCursors
+        End If
     End If
     game.warSetDisplayScale wzGetCurrentDisplayScale() ' persist any auto-adjustments to the display scale
     wzMainScreenSetup = True
@@ -1495,6 +3071,7 @@ Private Sub handleActiveEvent(ev As WzEvent)
         debug_ 3543, LOG_WZ, "handleActiveEvent", "Window %d hidden", 1
     Case EV_WINDOW_MOVED
         debug_ 3549, LOG_WZ, "handleActiveEvent", "Window %d moved to %d,%d", 1, ev.a, ev.b
+        win_updateClipCursor                ' (SDL: WIN_UpdateClipCursor on WM_WINDOWPOSCHANGED)
     Case EV_WINDOW_RESIZED
         debug_ 3554, LOG_WZ, "handleActiveEvent", "Window %d resized to %dx%d", 1, ev.a, ev.b
         oldWindowWidth = windowWidth
@@ -1510,12 +3087,32 @@ Private Sub handleActiveEvent(ev As WzEvent)
             game.warSetWidth newWindowWidth
             game.warSetHeight newWindowHeight
         End If
+
+        ' Handle deferred size reset
+        If deferredDimensionResetHasValue Then
+            If WZwindow <> 0 Then
+                win_setWindowSize deferredDimensionResetWidth, deferredDimensionResetHeight
+                If deferredDimensionResetRecenter Then
+                    win_centerWindowOnDisplay screenIndex
+                End If
+                wzReduceDisplayScalingIfNeeded deferredDimensionResetWidth, deferredDimensionResetHeight
+            End If
+            deferredDimensionResetHasValue = False
+        Else
+            wzReduceDisplayScalingIfNeeded newWindowWidth, newWindowHeight
+        End If
+        win_updateClipCursor
     Case EV_WINDOW_MINIMIZED
         debug_ 3594, LOG_INFO, "handleActiveEvent", "Window %d minimized", 1
+        ' (SDL_OnWindowMinimized: a fullscreen mode gives the display back its desktop mode)
+        If windowIsFullscreen Then win_restoreDesktopDisplayMode
+        win_updateClipCursor
     Case EV_WINDOW_MAXIMIZED
         debug_ 3597, LOG_WZ, "handleActiveEvent", "Window %d maximized", 1
     Case EV_WINDOW_RESTORED
         debug_ 3600, LOG_INFO, "handleActiveEvent", "Window %d restored", 1
+        ' (SDL_OnWindowRestored: the fullscreen mode set again)
+        If windowIsFullscreen And hasFullscreenMode And Not exclusiveModeApplied Then win_setWindowFullscreen True
         oldWindowWidth = windowWidth
         oldWindowHeight = windowHeight
         GetClientRect WZwindow, rc
@@ -1534,6 +3131,7 @@ Private Sub handleActiveEvent(ev As WzEvent)
     Case EV_WINDOW_FOCUS_GAINED
         windowHasFocus = True
         debug_ 3632, LOG_WZ, "handleActiveEvent", "Window %d gained keyboard focus", 1
+        win_updateClipCursor
     Case EV_WINDOW_FOCUS_LOST
         windowHasFocus = False
         debug_ 3636, LOG_WZ, "handleActiveEvent", "Window %d lost keyboard focus", 1
@@ -1541,6 +3139,9 @@ Private Sub handleActiveEvent(ev As WzEvent)
             aKeyState(i).state = KEY_UP
             actualKeyState(i).state = KEY_UP
         Next
+        win_updateClipCursor
+        ' (SDL_OnWindowFocusLost: SDL_ShouldMinimizeOnFocusLoss)
+        If win_shouldMinimizeOnFocusLoss() Then ShowWindow WZwindow, SW_MINIMIZE
     Case EV_WINDOW_CLOSE_REQUESTED
         debug_ 3644, LOG_WZ, "handleActiveEvent", "Window %d closed", 1
     End Select
@@ -1555,6 +3156,12 @@ Private Function wzEventLoopOneFrame() As Boolean
         TranslateMessage m
         DispatchMessageW m
     Loop
+    ' (VB) wzAsyncExecOnMainThread's task queued by wzMainScreenSetup_CreateVideoWindow
+    If pendingFullscreenTransition Then
+        pendingFullscreenTransition = False
+        ' transition to fullscreen mode
+        wzChangeWindowMode WINDOW_MODE_fullscreen
+    End If
     Do While PollEvent(ev)
         Select Case ev.typ
         Case EV_KEY_UP, EV_KEY_DOWN
@@ -1607,6 +3214,11 @@ End Sub
 
 Public Sub wzShutdown()
     ' order is important!
+    sdlFreeCursors
+    ' (VB) SDL_Quit: the cursor clip and the display mode given back
+    mouseGrabbed = False
+    win_updateClipCursor
+    win_restoreDesktopDisplayMode
     queueEnabled = False
     If WZwindow <> 0 Then
         DestroyWindow WZwindow

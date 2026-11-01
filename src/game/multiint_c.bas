@@ -1,6 +1,7 @@
 Attribute VB_Name = "multiint_c"
 ' src/multiint.cpp: the JSON converters of the game's options (Sha256,
 ' MULTIPLAYERGAME, MULTISTRUCTLIMITS, InGameSide, MULTIPLAYERINGAME, PLAYER),
+' JoinConnectionDescription's and KickRedirectInfo's (parseKickRedirectInfo),
 ' DataHashToJSON and decideWRF (static in C++: WZGameReplayOptionsHandler,
 ' its own class, calls it); the skirmish AIs (aidata, readAIs,
 ' setDefaultSkirmishAI, getDefaultSkirmishAI, getAIName) and
@@ -30,6 +31,15 @@ Option Explicit
 
 Private Const StringSize As Long = 64           ' netplay.h: size of strings used.
 Private Const PATH_MAX As Long = 260            ' MAX_PATH on Windows
+
+' multiplay.h: struct KickRedirectInfo
+Public Type KickRedirectInfo
+    connList() As JoinConnectionDescription     ' std::vector<JoinConnectionDescription>: connList(0 .. connListCount - 1)
+    connListCount As Long
+    has_gamePassword As Boolean                 ' optional<std::string> gamePassword = nullopt
+    gamePassword As String
+    asSpectator As Boolean                      ' = false
+End Type
 
 ' netplay.h: struct PLAYER, the fields the replays keep (wzFiles, autoGame and IPtextAddress are not persisted)
 Public Type PLAYER_
@@ -1423,9 +1433,23 @@ Public Function loadMapChallengeAndPlayerSettings(Optional ByVal forceLoadPlayer
     loadMapChallengeAndPlayerSettings = retVal
 End Function
 
-' (the notification and its "More Information" link: the notifications, cluster F)
 Public Sub displayLobbyDisabledNotification()
-    ' if (!hasNotificationsWithTag(LOBBY_DISABLED_TAG)) { ... notification.tag = LOBBY_DISABLED_TAG; addNotification(...); }
+    Dim notification As WZ_Notification, infoLink As String
+    If Not hasNotificationsWithTag(LOBBY_DISABLED_TAG) Then
+        notification.duration = 0
+        notification.contentTitle = "Multiplayer Lobby Support Unavailable"
+
+        notification.contentText = "Your client cannot connect to the mutiplayer lobby."
+        notification.contentText = notification.contentText & vbLf & vbLf
+        notification.contentText = notification.contentText & "Please click the button below for more information on how to fix it."
+
+        infoLink = NET_getLobbyDisabledInfoLinkURL()
+        notification.action_title = "More Information"  ' WZ_Notification_Action(_("More Information"), [infoLink](const WZ_Notification&) {...})
+        Set notification.action_onAction = WzFunc_new(FN_lobbyDisabled_moreInformation, infoLink)
+        notification.tag = LOBBY_DISABLED_TAG
+
+        addNotification notification, 0                 ' WZ_Notification_Trigger::Immediate()
+    End If
 End Sub
 
 ' Process click events on the multiplayer/skirmish options screen
@@ -1492,8 +1516,16 @@ Public Sub printHostHelpMessagesToConsole()
     End If
     If NetPlay_bComms Then
         If NetPlay_isPortMappingEnabled Then
-            ' (ipv4MappingRequest and PortMappingManager's status, "Port mapping creation is in progress...": the
-            ' port mapping, cluster J)
+            If Not ipv4MappingRequest_exists() Then
+                Exit Sub
+            End If
+            Select Case PortMappingManager_get_status_ipv4MappingRequest()
+            ' rely on callbacks / output in NETaddRedirects() for everything except pending
+            Case PortMappingDiscoveryStatus_IN_PROGRESS
+                buf = "Port mapping creation is in progress..."
+                displayRoomNotifyMessage buf
+            Case Else
+            End Select
         Else
             buf = va("Port mapping disabled by user. Autoconfig of port %d will not happen.", NETgetGameserverPort())
             displayRoomNotifyMessage buf
@@ -1582,4 +1614,102 @@ Public Function WzMultiplayerOptionsTitleUI_new(ByVal parent As WzTitleUI) As Wz
     Set ui = New WzMultiplayerOptionsTitleUI
     ui.init parent
     Set WzMultiplayerOptionsTitleUI_new = ui
+End Function
+
+Public Function formatGameName(ByVal name_ As String) As String
+    Dim withoutTechlevel As String
+    withoutTechlevel = mapNameWithoutTechlevel(name_)
+    formatGameName = withoutTechlevel & " (T" & CStr(game.techLevel) & " " & CStr(game.maxPlayers) & "P)"
+End Function
+
+' multiint.cpp: void to_json(nlohmann::json& j, const JoinConnectionDescription::JoinConnectionType& v)
+Public Function JoinConnectionType_to_json(ByVal v As JoinConnectionType) As nlohmann_json
+    Set JoinConnectionType_to_json = json_value(JoinConnectionDescription_connectiontype_to_string(v))
+End Function
+
+' multiint.cpp: void to_json(nlohmann::json& j, const JoinConnectionDescription& v)
+Public Function JoinConnectionDescription_to_json(v As JoinConnectionDescription) As nlohmann_json
+    Dim j As nlohmann_json
+    Set j = json_object()
+    j.set_item "h", json_value(v.host)
+    j.set_item "p", json_value_unsigned(v.port)
+    j.set_item "t", JoinConnectionType_to_json(v.type_)
+    Set JoinConnectionDescription_to_json = j
+End Function
+
+' multiint.cpp: void from_json(const nlohmann::json& j, JoinConnectionDescription::JoinConnectionType& v)
+Public Function JoinConnectionType_from_json(ByVal j As nlohmann_json) As JoinConnectionType
+    Dim str_ As String, result As Long
+    str_ = j.get_string()
+    If JoinConnectionDescription_connectiontype_from_string(str_, result) Then
+        JoinConnectionType_from_json = result
+    Else
+        Err.Raise vbObjectError + 302, "nlohmann::json", "[json.exception.type_error.302] JoinConnectionType value is unknown: """ & str_ & """"
+    End If
+End Function
+
+' multiint.cpp: void from_json(const nlohmann::json& j, JoinConnectionDescription& v)
+Public Sub JoinConnectionDescription_from_json(ByVal j As nlohmann_json, v As JoinConnectionDescription)
+    v.host = j.at("h").get_string()
+    v.port = j.at("p").get_int()                ' get<int32_t>()
+    v.type_ = JoinConnectionType_from_json(j.at("t"))
+End Sub
+
+' multiint.cpp: void from_json(const nlohmann::json& j, KickRedirectInfo& v)
+Public Sub KickRedirectInfo_from_json(ByVal j As nlohmann_json, v As KickRedirectInfo)
+    Dim c As nlohmann_json, i As Long
+    ' v.connList = j.at("c").get<std::vector<JoinConnectionDescription>>()
+    Set c = j.at("c")
+    If Not c.is_array() Then json_throw_not_array c
+    v.connListCount = c.size()
+    If v.connListCount > 0 Then ReDim v.connList(0 To v.connListCount - 1) Else Erase v.connList
+    For i = 0 To v.connListCount - 1
+        JoinConnectionDescription_from_json c.at_idx(i), v.connList(i)
+    Next
+    v.has_gamePassword = False
+    v.gamePassword = ""
+    If j.contains("p") Then
+        v.gamePassword = j.at("p").get_string()
+        v.has_gamePassword = True
+    End If
+    v.asSpectator = False
+    If j.contains("s") Then
+        v.asSpectator = j.at("s").get_uint() <> 0
+    End If
+End Sub
+
+' optional<KickRedirectInfo> parseKickRedirectInfo(const std::string& redirectString, const std::string& currHostAddress)
+' (has_value: the result; the value in out)
+Public Function parseKickRedirectInfo(ByVal redirectString As String, ByVal currHostAddress As String, out As KickRedirectInfo) As Boolean
+    Dim redirectInfo As KickRedirectInfo, obj As nlohmann_json, i As Long, n As Long
+    ' Parse the redirect string (should be a valid json object containing an array of connection descriptions and other connection options)
+    On Error GoTo invalid
+    Set obj = json_parse(redirectString)
+    KickRedirectInfo_from_json obj, redirectInfo
+    On Error GoTo 0
+
+    ' Process & verify the connection descriptions
+    For i = 0 To redirectInfo.connListCount - 1
+        If Len(redirectInfo.connList(i).host) = 0 Or redirectInfo.connList(i).host = "=" Then
+            ' replace with the same host's address
+            redirectInfo.connList(i).host = currHostAddress
+        End If
+    Next
+    ' erase(remove_if(..., desc.host != currHostAddress || desc.port <= 1024)): the others keep their order
+    n = 0
+    For i = 0 To redirectInfo.connListCount - 1
+        If Not (redirectInfo.connList(i).host <> currHostAddress Or Not ULT(1024, redirectInfo.connList(i).port)) Then
+            redirectInfo.connList(n) = redirectInfo.connList(i)
+            n = n + 1
+        End If
+    Next
+    redirectInfo.connListCount = n
+    If n > 0 Then ReDim Preserve redirectInfo.connList(0 To n - 1) Else Erase redirectInfo.connList
+
+    out = redirectInfo
+    parseKickRedirectInfo = True
+    Exit Function
+invalid:
+    debug_ 5895, LOG_ERROR, "parseKickRedirectInfo", "Invalid redirect string - could not be processed: %s", redirectString
+    parseKickRedirectInfo = False
 End Function

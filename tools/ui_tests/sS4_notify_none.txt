@@ -1,0 +1,4 @@
+# fork S4 (notifications_test.py ignore, fourth run): "Do not show again" was ticked: no notification
+wait 240
+shot none
+quit

@@ -168,6 +168,10 @@ End Function
 Public Function alliancesCanGiveResearchAndRadar(ByVal t As Long) As Boolean
     alliancesCanGiveResearchAndRadar = t = ALLIANCES_
 End Function
+
+Public Function alliancesCanGiveAnything(ByVal t As Long) As Boolean
+    alliancesCanGiveAnything = t <> NO_ALLIANCES
+End Function
 ' Shutdown the AI system
 Public Function aiShutdown() As Boolean
     aiShutdown = True

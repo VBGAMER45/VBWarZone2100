@@ -24,11 +24,14 @@ Private watchShotFrame As Long
 Private watchLastTicks As Long
 ' (VB) --vbscript=<file>: a test script run on the game's frames (the title screen's and the game's):
 ' one command a line, each run when the previous one is done: wait <frames>, move <x> <y>,
-' click <x> <y>, rclick <x> <y>, key <virtual key code>, text <characters>, shot <name> (screen_c's
-' screenshot, screenshots/wz2100-<time>-<name>.png), log <text>, quit. The mouse and keys are messages
+' click <x> <y>, rclick <x> <y>, key <virtual key code>, keydown <virtual key code>, keyup <virtual key
+' code> (a key held across the next commands: keydown 17, key 86, keyup 17 is Ctrl+V), text <characters>,
+' shot <name> (screen_c's screenshot, screenshots/wz2100-<time>-<name>.png), log <text>, quit. The mouse and keys are messages
 ' posted to the game's window, as Windows would send them; '#' starts a comment line.
 Public vbScriptFile As String
-Private Declare Function FindWindowW Lib "user32" (ByVal lpClassName As Long, ByVal lpWindowName As Long) As Long
+Private Declare Function FindWindowExW Lib "user32" (ByVal hWndParent As Long, ByVal hWndChildAfter As Long, ByVal lpszClass As Long, ByVal lpszWindow As Long) As Long
+Private Declare Function GetWindowThreadProcessId Lib "user32" (ByVal hWnd As Long, lpdwProcessId As Long) As Long
+Private Declare Function GetCurrentProcessId Lib "kernel32" () As Long
 Private Declare Function PostMessageW Lib "user32" (ByVal hWnd As Long, ByVal msg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 Private Declare Function MapVirtualKeyW Lib "user32" (ByVal uCode As Long, ByVal uMapType As Long) As Long
 Private Const MAPVK_VK_TO_VSC As Long = 0
@@ -142,12 +145,22 @@ Public Sub watchtest_frame()
     End If
 End Sub
 
+' This process's game window: with two copies running (the LAN test), the first window of the class may be the
+' other copy's
 Private Function gameWindow() As Long
     Static hWnd As Long
-    Dim cls As String
+    Dim cls As String, h As Long, pid As Long
     If hWnd = 0 Then
         cls = "WarzoneVB"
-        hWnd = FindWindowW(StrPtr(cls), 0)
+        h = FindWindowExW(0, 0, StrPtr(cls), 0)
+        Do While h <> 0
+            GetWindowThreadProcessId h, pid
+            If pid = GetCurrentProcessId() Then
+                hWnd = h
+                Exit Do
+            End If
+            h = FindWindowExW(0, h, StrPtr(cls), 0)
+        Loop
     End If
     gameWindow = hWnd
 End Function
@@ -253,14 +266,27 @@ Public Sub vbscript_frame()
         ' WzPlatform reads the key's scan code from lParam's bits 16-23 (as SDL does): the press, then a
         ' frame later the release
         x = MapVirtualKeyW(CLng(w(1)), MAPVK_VK_TO_VSC) And &HFF&
+        x = x * &H10000
+        If UBound(w) >= 2 Then
+            If LCase$(w(2)) = "ext" Then x = x Or &H1000000     ' (VB) "key <vk> ext": an extended key (lParam bit 24)
+        End If
         If scriptPhase = 0 Then
-            PostMessageW gameWindow(), WM_KEYDOWN, CLng(w(1)), 1 Or x * &H10000
+            PostMessageW gameWindow(), WM_KEYDOWN, CLng(w(1)), 1 Or x
             scriptPhase = 1
         Else
-            PostMessageW gameWindow(), WM_KEYUP, CLng(w(1)), &HC0000001 Or x * &H10000
+            PostMessageW gameWindow(), WM_KEYUP, CLng(w(1)), &HC0000001 Or x
             scriptPhase = 0
             scriptPos = scriptPos + 1
         End If
+    Case "keydown", "keyup"
+        ' a key held across the next commands (the same messages as key's, one at a time)
+        x = MapVirtualKeyW(CLng(w(1)), MAPVK_VK_TO_VSC) And &HFF&
+        If LCase$(w(0)) = "keydown" Then
+            PostMessageW gameWindow(), WM_KEYDOWN, CLng(w(1)), 1 Or x * &H10000
+        Else
+            PostMessageW gameWindow(), WM_KEYUP, CLng(w(1)), &HC0000001 Or x * &H10000
+        End If
+        scriptPos = scriptPos + 1
     Case "text"
         For i = Len(w(0)) + 2 To Len(cmd)
             PostMessageW gameWindow(), WM_CHAR, AscW(Mid$(cmd, i, 1)), 1
@@ -291,6 +317,10 @@ Public Sub vbscript_frame()
         If StrComp(getLevelName(), w(1), vbTextCompare) = 0 And GetGameMode() = GS_NORMAL And Not loop_GetVideoStatus() Then
             scriptPos = scriptPos + 1
         End If
+    Case "closeguide"
+        ' (VB) closes the Game Guide when it is open (a campaign topic's pop-up pauses the game until closed)
+        closeGuideScreen
+        scriptPos = scriptPos + 1
     Case "widgets"
         dumpWidgets psWScreen.psForm, 0
         scriptPos = scriptPos + 1

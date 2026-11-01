@@ -21,8 +21,8 @@ Attribute VB_Name = "map_c"
 '   v1 JSON keys can repeat, and the later object replaces the earlier);
 '   jsonGetRootMapObjectsContainer assigns the container into the root
 '   object, and is not given the logger.
-' Missing: Map::calculateMapStats (map_stats.cpp); script-generated maps
-' (runMapScript, map_script.cpp) are a stand-in (stubs_map).
+' Missing: Map::calculateMapStats (map_stats.cpp). Script-generated maps:
+' runMapScript (map_script_c).
 Option Explicit
 
 Private Const VERSION_39 As Long = 39            ' last game.map version in the old format (with bytes for tile height, must be multiplied by ELEVATION_SCALE)

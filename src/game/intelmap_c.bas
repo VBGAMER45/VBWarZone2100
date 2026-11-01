@@ -3,8 +3,8 @@ Attribute VB_Name = "intelmap_c"
 ' whose root form W_INTELLIGENCEOVERLAY_FORM holds the message buttons (IntMessageButton) on a tab
 ' list, the paused label, the multiplayer menu and the message view (WzMessageView: the title, the
 ' close button, the research PIE view, the FLIC view and the message texts); their fields are the
-' classes of the same names. The videos (seqdisp, lib/sequence), the research model
-' (mapdisplay's renderResearchToBuffer), the streamed research audio and the VIEW_REPLAY /
+' classes of the same names. The research model is mapdisplay_c's renderResearchToBuffer. The
+' videos (seqdisp, lib/sequence), the streamed research audio and the VIEW_REPLAY /
 ' VIEW_RESEARCH data of a VIEWDATA (VIEWDATA_replaySeqCount, VIEWDATA_replaySeq, VIEWDATA_research:
 ' message.cpp's view data loading is not ported) are stand-ins. intelmap.h's intAddMessageView and
 ' intRemoveMessageView have no definition in 4.7.0.

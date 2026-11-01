@@ -1,0 +1,11 @@
+# fork S6: Options > Interface > Display Scale 125% (the window keeps its size, the game's screen shrinks to 819 x 614)
+wait 90
+click 512 470
+wait 90
+click 693 231
+wait 30
+click 687 286
+wait 60
+shot scale_125
+wait 30
+quit

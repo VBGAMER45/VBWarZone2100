@@ -1,0 +1,7 @@
+# fork S4: a look at the autohosted lobby's Match Options menu (its gear button)
+wait 300
+shot vl_lobby
+click 481 203
+wait 30
+shot vl_menu
+quit

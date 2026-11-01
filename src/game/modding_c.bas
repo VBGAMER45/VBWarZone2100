@@ -1,8 +1,8 @@
 Attribute VB_Name = "modding_c"
 ' src/modding.cpp. WZ_PHYSFS_enumerateFiles's callback is a loop over the
 ' list PHYSFS_enumerateFiles returns. The mods' hashes (getModHashList,
-' WzMods::LoadedMod::getHash) come from findHashOfFile, a stand-in that
-' gives the zero hash until SHA-256 is ported. Missing: getModFilename.
+' WzMods::LoadedMod::getHash) come from findHashOfFile (frame_hash_c, over
+' src/shared/sodium's SHA-256).
 Option Explicit
 
 Private Const PATH_MAX As Long = 260            ' MAX_PATH on Windows
@@ -268,4 +268,17 @@ Public Function getModHashList(out() As Sha256) As Long
     End If
     If mod_hash_list_size > 0 Then out = mod_hash_list
     getModHashList = mod_hash_list_size
+End Function
+
+' std::string getModFilename(Sha256 const &hash)
+Public Function getModFilename(hash As Sha256) As String
+    Dim i As Long, foundHash As Sha256
+    For i = 0 To loaded_mods_size - 1
+        findHashOfFile loaded_mods(i).filename, foundHash
+        If Sha256_equals(foundHash, hash) Then
+            getModFilename = loaded_mods(i).filename
+            Exit Function
+        End If
+    Next
+    getModFilename = ""
 End Function

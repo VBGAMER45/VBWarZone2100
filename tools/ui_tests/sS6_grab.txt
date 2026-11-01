@@ -1,0 +1,14 @@
+# fork S6: a skirmish from the menu with Trap Cursor on (config trapCursor=1): wzGrabMouse at the game's start,
+# the clip released at the quit (WZ_TEST_NO_DESKTOP_EFFECTS: ClipCursor logged, not called)
+wait 90
+click 512 365
+wait 60
+click 512 400
+wait 120
+click 365 455
+wait 120
+click 775 90
+wait 600
+shot ingame
+wait 30
+quit

@@ -1,0 +1,8 @@
+# fork S6: Alt+Enter on the title screen (wzAltEnterToggleFullscreen: refused under WZ_TEST_NO_DESKTOP_EFFECTS)
+wait 90
+keydown 18
+key 13
+keyup 18
+wait 30
+shot after_altenter
+quit

@@ -1,15 +1,16 @@
 Attribute VB_Name = "nettypes_c"
 ' lib/netplay/nettypes.cpp, lib/netplay/nettypes.h: the queues (game queues, net
 ' queues, temporary queues, the broadcast queue), NETbeginEncode /
-' NETbeginDecode / NETend and the serialisation of each type. Not ported:
-' the secured messages' encryption and NETsetSessionKeys (libsodium: no
-' session key ever exists here, so their asserts always fail as they would
-' without a key).
+' NETbeginDecode / NETend and the serialisation of each type, the session
+' keys and the secured messages (SessionKeys: src/shared/sodium's crc_sodium_c).
 '
 ' A NETQUEUE is a Long: queueType * &H10000 + index * &H100 + exclude. Its
 ' queue pointer and isPair follow from queueType and index (TMP, NET and
 ' TRANSIENT_JOIN are pairs; GAME and GAME_FORCED use gameQueues(index),
 ' BROADCAST broadcastQueue), looked up when the queue is used.
+' TRANSIENT_JOIN's pair is the joining screen's tmpJoiningQueuePair (a
+' NetQueuePair* it owns in C++): it lives here as transientJoinQueuePair, which
+' the screen reads and deletes through NETtransientJoin*.
 '
 ' nettypes.h's overload pairs NETx(MessageReader&, T&) / NETx(MessageWriter&, T)
 ' are NETx_r and NETx_w here, and NETx (the C++ name, as NetApi exposes it)
@@ -33,8 +34,16 @@ Private tmpQueues(0 To MAX_TMP_SOCKETS - 1) As NetQueuePair
 ' Sending a message to the broadcast queue is equivalent to sending the message to the net queues of all other players.
 Private broadcastQueue As NetQueue
 
-' std::array<std::unique_ptr<SessionKeys>, MAX_CONNECTED_PLAYERS> netSessionKeys: True where a key is set (never: no libsodium)
-Private netSessionKeys(0 To MAX_CONNECTED_PLAYERS - 1) As Boolean
+' joiningscreen.cpp's NetQueuePair *tmpJoiningQueuePair (QUEUE_TRANSIENT_JOIN's pair)
+Private transientJoinQueuePair As NetQueuePair
+
+' std::array<std::unique_ptr<SessionKeys>, MAX_CONNECTED_PLAYERS> netSessionKeys: hasSessionKeys True where the
+' unique_ptr is set
+Private netSessionKeys(0 To MAX_CONNECTED_PLAYERS - 1) As SessionKeys
+Private hasSessionKeys(0 To MAX_CONNECTED_PLAYERS - 1) As Boolean
+
+' static std::vector<uint8_t> tmpMessageRawDataBuffer (NETend's)
+Private tmpMessageRawDataBuffer() As Byte
 
 Private bIsReplay As Boolean
 
@@ -126,7 +135,6 @@ Private Function queueOf(ByVal queue As Long) As NetQueue
 End Function
 
 ' Gets the &NetQueuePair, corresponding to queue.
-' (QUEUE_TRANSIENT_JOIN's pair belongs to the joining screen: cluster J; Nothing here)
 Private Function pairQueue(ByVal queue As Long) As NetQueuePair
     Dim index As Long
     If Not NETQUEUE_isPair(queue) Then ASSERT_FAILURE "queue.isPair", "lib/netplay/nettypes.cpp:88", "pairQueue", "Huh?"
@@ -136,6 +144,8 @@ Private Function pairQueue(ByVal queue As Long) As NetQueuePair
         If index < MAX_CONNECTED_PLAYERS Then Set pairQueue = netQueues(index)
     Case QUEUE_TMP
         If index < MAX_TMP_SOCKETS Then Set pairQueue = tmpQueues(index)
+    Case QUEUE_TRANSIENT_JOIN
+        Set pairQueue = transientJoinQueuePair
     End Select
 End Function
 
@@ -149,8 +159,33 @@ Private Sub setPairQueue(ByVal queue As Long, ByVal p As NetQueuePair)
         If index < MAX_CONNECTED_PLAYERS Then Set netQueues(index) = p
     Case QUEUE_TMP
         If index < MAX_TMP_SOCKETS Then Set tmpQueues(index) = p
+    Case QUEUE_TRANSIENT_JOIN
+        Set transientJoinQueuePair = p
     End Select
 End Sub
+
+' (VB) the joining screen's tmpJoiningQueuePair: &tmpJoiningQueuePair->send's numMessagesForNet, getMessageForNet,
+' popMessageForNet; delete tmpJoiningQueuePair (also its "= nullptr" once NETpromoteJoinAttemptToEstablishedConnectionToHost
+' moved it to the host's net queue: NETmoveQueue left Nothing here then)
+Public Function NETtransientJoinSendQueue_numMessagesForNet() As Long
+    NETtransientJoinSendQueue_numMessagesForNet = transientJoinQueuePair.send.numMessagesForNet()
+End Function
+
+Public Function NETtransientJoinSendQueue_getMessageForNet() As NetMessage
+    Set NETtransientJoinSendQueue_getMessageForNet = transientJoinQueuePair.send.getMessageForNet()
+End Function
+
+Public Sub NETtransientJoinSendQueue_popMessageForNet()
+    transientJoinQueuePair.send.popMessageForNet
+End Sub
+
+Public Sub NETtransientJoinQueuePair_delete()
+    Set transientJoinQueuePair = Nothing
+End Sub
+
+Public Function NETtransientJoinQueuePair_exists() As Boolean
+    NETtransientJoinQueuePair_exists = Not transientJoinQueuePair Is Nothing
+End Function
 
 ' One of the temp queues from before a client has joined the game. (See comments on tmpQueues.)
 Public Function NETnetTmpQueue(ByVal tmpPlayer As Long) As Long
@@ -320,18 +355,33 @@ Public Function NETbeginDecode(ByVal queue As Long, ByVal typ As Long) As Messag
     Set NETbeginDecode = res
 End Function
 
+' NETsetSessionKeys(uint8_t player, SessionKeys&& keys): the keys as their bytes (receiveKey, sendKey: whole arrays)
+Public Sub NETsetSessionKeys(ByVal player As Long, receiveKey() As Byte, sendKey() As Byte)
+    Dim keys As SessionKeys
+    If Not ULT(player, MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < netSessionKeys.size()", "lib/netplay/nettypes.cpp:306", "NETsetSessionKeys", "Invalid player: %u", player: Exit Sub
+    keys.receiveKey = receiveKey
+    keys.receiveKeySize = byteArraySize(receiveKey)
+    keys.sendKey = sendKey
+    keys.sendKeySize = byteArraySize(sendKey)
+    netSessionKeys(player) = keys               ' std::make_unique<SessionKeys>(std::move(keys))
+    hasSessionKeys(player) = True
+End Sub
+
 ' NETclearSessionKeys()
 Public Sub NETclearSessionKeys()
-    Dim i As Long
+    Dim i As Long, blank As SessionKeys
     For i = 0 To MAX_CONNECTED_PLAYERS - 1
-        netSessionKeys(i) = False               ' key.reset()
+        netSessionKeys(i) = blank               ' key.reset()
+        hasSessionKeys(i) = False
     Next
 End Sub
 
 ' NETclearSessionKeys(uint8_t player)
 Public Sub NETclearSessionKeys_player(ByVal player As Long)
-    If Not (player < MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < netSessionKeys.size()", "lib/netplay/nettypes.cpp:320", "NETclearSessionKeys", "Invalid player: %u", player: Exit Sub
-    netSessionKeys(player) = False
+    Dim blank As SessionKeys
+    If Not ULT(player, MAX_CONNECTED_PLAYERS) Then ASSERT_FAILURE "player < netSessionKeys.size()", "lib/netplay/nettypes.cpp:320", "NETclearSessionKeys", "Invalid player: %u", player: Exit Sub
+    netSessionKeys(player) = blank
+    hasSessionKeys(player) = False
 End Sub
 
 Public Function NETisExpectedSecuredMessageType(ByVal typ As Long) As Boolean
@@ -355,7 +405,7 @@ Public Function NETbeginEncodeSecured(ByVal queue As Long, ByVal typ As Long) As
     If Not (typ < NET_MAX_TYPE) Then ASSERT_FAILURE "type < NET_MAX_TYPE", "lib/netplay/nettypes.cpp:343", "NETbeginEncodeSecured", "Message type %u is >= NET_MAX_TYPE", typ: Exit Function
     If Not (index <> realSelectedPlayer) Then ASSERT_FAILURE "queue.index != realSelectedPlayer", "lib/netplay/nettypes.cpp:344", "NETbeginEncodeSecured", "Secured messages are for other players, not ourselves.": Exit Function
     If Not (index < MAX_PLAYERS Or index = NetPlay.hostPlayer) Then ASSERT_FAILURE "queue.index < MAX_PLAYERS || queue.index == NetPlay.hostPlayer", "lib/netplay/nettypes.cpp:345", "NETbeginEncodeSecured", "Invalid recipient (queue.index == %u)", index: Exit Function
-    If Not netSessionKeys(index) Then ASSERT_FAILURE "netSessionKeys[queue.index] != nullptr", "lib/netplay/nettypes.cpp:346", "NETbeginEncodeSecured", "Lacking session key for recipient: %u", index: Exit Function
+    If Not hasSessionKeys(index) Then ASSERT_FAILURE "netSessionKeys[queue.index] != nullptr", "lib/netplay/nettypes.cpp:346", "NETbeginEncodeSecured", "Lacking session key for recipient: %u", index: Exit Function
     If Not NETisExpectedSecuredMessageType(typ) Then ASSERT_FAILURE "NETisExpectedSecuredMessageType(type)", "lib/netplay/nettypes.cpp:347", "NETbeginEncodeSecured", "Message type is not expected to be secured, and will be ignored on receipt"
 
     Set w = NETbeginEncode(queue, typ)
@@ -383,17 +433,51 @@ End Function
 ' Decrypts a secured net message in a queue *and replaces it with the decrypted message*
 ' If message is successfully decrypted:
 '   - Returns true, updates the current message in queue to be the decrypted message, updates `type`
-' (VB: no session key ever exists (libsodium), so the second assert always
-' returns; the decryption after it is not ported.)
 Public Function NETdecryptSecuredNetMessage(ByVal queue As Long, typ As Long) As Boolean
-    Dim index As Long
+    Dim index As Long, pReceiveQueue As NetQueue, encryptedMessage As NetMessage
+    Dim payload() As Byte, decryptedMessageRawData() As Byte, decryptedSize As Long, decryptedMessage As NetMessage
     index = NETQUEUE_index(queue)
     If Not (index < MAX_PLAYERS Or index = NetPlay.hostPlayer) Then ASSERT_FAILURE "queue.index < MAX_PLAYERS || queue.index == NetPlay.hostPlayer", "lib/netplay/nettypes.cpp:375", "NETdecryptSecuredNetMessage", "Invalid sender (queue.index == %u", index: NETdecryptSecuredNetMessage = False: Exit Function
-    If Not netSessionKeys(index) Then ASSERT_FAILURE "netSessionKeys[queue.index] != nullptr", "lib/netplay/nettypes.cpp:376", "NETdecryptSecuredNetMessage", "Lacking session key for player: %u", index: NETdecryptSecuredNetMessage = False: Exit Function
+    If Not hasSessionKeys(index) Then ASSERT_FAILURE "netSessionKeys[queue.index] != nullptr", "lib/netplay/nettypes.cpp:376", "NETdecryptSecuredNetMessage", "Lacking session key for player: %u", index: NETdecryptSecuredNetMessage = False: Exit Function
     If Not (typ = NET_SECURED_NET_MESSAGE) Then ASSERT_FAILURE "type == NET_SECURED_NET_MESSAGE", "lib/netplay/nettypes.cpp:377", "NETdecryptSecuredNetMessage", "Not a secured message?": NETdecryptSecuredNetMessage = False: Exit Function
 
-    ' (the decryption: libsodium's session keys, not ported)
-    NETdecryptSecuredNetMessage = False
+    Set pReceiveQueue = receiveQueue(queue)
+
+    ' Get & decrypt message raw data
+    Set encryptedMessage = pReceiveQueue.getMessage()
+    If Not (encryptedMessage.type_() = NET_SECURED_NET_MESSAGE) Then ASSERT_FAILURE "encryptedMessage.type() == NET_SECURED_NET_MESSAGE", "lib/netplay/nettypes.cpp:383", "NETdecryptSecuredNetMessage", "Not a secured message?": NETdecryptSecuredNetMessage = False: Exit Function
+    payload = encryptedMessage.payload()
+    If Not SessionKeys_decryptMessageFromOther(netSessionKeys(index), payload, 0, encryptedMessage.payloadSize(), decryptedMessageRawData, decryptedSize) Then
+        debug_ 387, LOG_INFO, "NETdecryptSecuredNetMessage", "Invalid encrypted message from player: %u", index
+        NETdecryptSecuredNetMessage = False
+        Exit Function
+    End If
+
+    Set decryptedMessage = NetMessage_tryFromRawData(decryptedMessageRawData, decryptedSize)
+    If decryptedMessage Is Nothing Then
+        debug_ 394, LOG_INFO, "NETdecryptSecuredNetMessage", "Failed to parse decrypted data from player: %u", index
+        NETdecryptSecuredNetMessage = False
+        Exit Function
+    End If
+
+    If Not (decryptedMessage.type_() > NET_MIN_TYPE And decryptedMessage.type_() < NET_MAX_TYPE) Then
+        debug_ 400, LOG_NET, "NETdecryptSecuredNetMessage", "Not a secured NET_* message? (type: %s) - ignoring", messageTypeToString(decryptedMessage.type_())
+        NETdecryptSecuredNetMessage = False
+        Exit Function
+    End If
+
+    If Not NETisExpectedSecuredMessageType(decryptedMessage.type_()) Then
+        ' Ignore message types that aren't expected to be secured
+        debug_ 407, LOG_NET, "NETdecryptSecuredNetMessage", "Not a message type that's expected to be secured: (type: %s) - ignoring", messageTypeToString(decryptedMessage.type_())
+        NETdecryptSecuredNetMessage = False
+        Exit Function
+    End If
+
+    NETlogPacket NET_SECURED_NET_MESSAGE, encryptedMessage.rawDataSize(), True
+
+    typ = decryptedMessage.type_()              ' must update type!
+    pReceiveQueue.replaceCurrentWithDecrypted decryptedMessage
+    NETdecryptSecuredNetMessage = True
 End Function
 
 ' NETend(MessageReader& r)
@@ -412,6 +496,7 @@ Public Function NETend_w(ByVal w As MessageWriter) As Boolean
     Dim shareQueueWriter As MessageWriter, builtShareGameQueueMessage As NetMessage
     Dim sendToPlayerWriter As MessageWriter, sendToHostSelfWriter As MessageWriter
     Dim msgType As Long, msgRawDataSize As Long, qt As Long
+    Dim tmpMessageRawDataSize As Long, encryptedData() As Byte, encryptedDataSize As Long, encryptedNetMessage As NetMessageBuilder
     shouldWrapSecretMessage = w.bSecretMessageWrap
     w.bSecretMessageWrap = False                ' reset, always
 
@@ -434,9 +519,17 @@ Public Function NETend_w(ByVal w As MessageWriter) As Boolean
         ' Need to actually encrypt and wrap the current net message in a NET_SECURED_NET_MESSAGE message
         If Not (msg.type_() < NET_MAX_TYPE) Then ASSERT_FAILURE "msg.type() < NET_MAX_TYPE", "lib/netplay/nettypes.cpp:453", "NETend", "Message type %u is >= NET_MAX_TYPE", msg.type_()
         If Not (NETQUEUE_index(w.queueInfo) < MAX_PLAYERS Or NETQUEUE_index(w.queueInfo) = NetPlay.hostPlayer) Then ASSERT_FAILURE "w.queueInfo.index < 11 || w.queueInfo.index == NetPlay.hostPlayer", "lib/netplay/nettypes.cpp:454", "NETend", "Invalid recipient (queue.index == %u)", NETQUEUE_index(w.queueInfo)
-        If Not netSessionKeys(NETQUEUE_index(w.queueInfo)) Then ASSERT_FAILURE "netSessionKeys[w.queueInfo.index] != nullptr", "lib/netplay/nettypes.cpp:455", "NETend", "Lacking session key for recipient: %u", NETQUEUE_index(w.queueInfo)
+        If Not hasSessionKeys(NETQUEUE_index(w.queueInfo)) Then ASSERT_FAILURE "netSessionKeys[w.queueInfo.index] != nullptr", "lib/netplay/nettypes.cpp:455", "NETend", "Lacking session key for recipient: %u", NETQUEUE_index(w.queueInfo)
 
-        ' (the encryption: no session key exists here (libsodium), so NETbeginEncodeSecured never returns a writer to wrap)
+        ' Decoded in NETprocessSystemMessage in netplay.cpp.
+        ' Encrypt the serialized message (including type and size)
+        tmpMessageRawDataSize = 0               ' tmpMessageRawDataBuffer.clear()
+        msg.rawDataAppendToVector tmpMessageRawDataBuffer, tmpMessageRawDataSize
+
+        encryptedDataSize = SessionKeys_encryptMessageForOther(netSessionKeys(NETQUEUE_index(w.queueInfo)), tmpMessageRawDataBuffer, 0, tmpMessageRawDataSize, encryptedData)
+        Set encryptedNetMessage = NetMessageBuilder_new(NET_SECURED_NET_MESSAGE, encryptedDataSize)
+        If encryptedDataSize > 0 Then encryptedNetMessage.append_bytes encryptedData, 0, encryptedDataSize
+        Set msg = encryptedNetMessage.build()
     End If
 
     qt = NETQUEUE_queueType(w.queueInfo)

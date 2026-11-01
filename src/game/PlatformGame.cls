@@ -68,3 +68,71 @@ End Function
 Private Sub IPlatformGame_warSetDisplayScale(ByVal scale_ As Long)
     war_SetDisplayScale scale_
 End Sub
+
+Private Function IPlatformGame_warGetColouredCursor() As Boolean
+    IPlatformGame_warGetColouredCursor = war_GetColouredCursor()
+End Function
+
+Private Function IPlatformGame_warGetCursorScale() As Long
+    IPlatformGame_warGetCursorScale = war_getCursorScale()
+End Function
+
+Private Sub IPlatformGame_warSetCursorScale(ByVal scale_ As Long)
+    war_setCursorScale scale_
+End Sub
+
+Private Function IPlatformGame_warGetFullscreenModeScreen() As Long
+    IPlatformGame_warGetFullscreenModeScreen = war_GetFullscreenModeScreen()
+End Function
+
+Private Sub IPlatformGame_warSetFullscreenModeScreen(ByVal screen As Long)
+    war_SetFullscreenModeScreen screen
+End Sub
+
+Private Function IPlatformGame_warGetFullscreenModeWidth() As Long
+    IPlatformGame_warGetFullscreenModeWidth = war_GetFullscreenModeWidth()
+End Function
+
+Private Sub IPlatformGame_warSetFullscreenModeWidth(ByVal width As Long)
+    war_SetFullscreenModeWidth width
+End Sub
+
+Private Function IPlatformGame_warGetFullscreenModeHeight() As Long
+    IPlatformGame_warGetFullscreenModeHeight = war_GetFullscreenModeHeight()
+End Function
+
+Private Sub IPlatformGame_warSetFullscreenModeHeight(ByVal height As Long)
+    war_SetFullscreenModeHeight height
+End Sub
+
+Private Function IPlatformGame_warGetFullscreenModePixelDensity() As Single
+    IPlatformGame_warGetFullscreenModePixelDensity = war_GetFullscreenModePixelDensity()
+End Function
+
+Private Sub IPlatformGame_warSetFullscreenModePixelDensity(ByVal pixelDensity As Single)
+    war_SetFullscreenModePixelDensity pixelDensity
+End Sub
+
+Private Function IPlatformGame_warGetFullscreenModeRefreshRate() As Single
+    IPlatformGame_warGetFullscreenModeRefreshRate = war_GetFullscreenModeRefreshRate()
+End Function
+
+Private Sub IPlatformGame_warSetFullscreenModeRefreshRate(ByVal refreshRate As Single)
+    war_SetFullscreenModeRefreshRate refreshRate
+End Sub
+
+Private Function IPlatformGame_warGetMinimizeOnFocusLoss() As Long
+    IPlatformGame_warGetMinimizeOnFocusLoss = war_getMinimizeOnFocusLoss()
+End Function
+
+Private Function IPlatformGame_warGetAutoAdjustDisplayScale() As Boolean
+    IPlatformGame_warGetAutoAdjustDisplayScale = war_getAutoAdjustDisplayScale()
+End Function
+
+Private Sub IPlatformGame_warSetWindowMode(ByVal mode As Long)
+    war_setWindowMode mode
+End Sub
+
+Private Sub IPlatformGame_gameDisplayScaleFactorDidChange(ByVal newDisplayScaleFactor As Single)
+    gameDisplayScaleFactorDidChange newDisplayScaleFactor
+End Sub

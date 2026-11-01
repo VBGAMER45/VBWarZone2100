@@ -113,7 +113,6 @@ bool testPlayerHasWon() { return false; }
 
 // the network: data checks, pings, the lobby's player info and identities, the kick routines, the win sequence
 unsigned int selDroidDeselect(unsigned int player) { return 0; }
-bool sendDataCheck() { return true; }
 bool sendPing() { return true; }
 void NETSendAllPlayerInfoTo(unsigned to) {}
 bool sendMultiStatsHostVerifiedIdentities(uint32_t playerIndex) { return true; }

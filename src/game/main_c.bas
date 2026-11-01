@@ -651,6 +651,7 @@ End Sub
 ' Fetches events, executes appropriate code
 '
 Public Sub mainLoop()
+    urlRequestPoll                      ' (VB) urlrequest's transfer thread: the URL requests' progress and callbacks
     wzAsyncExecOnMainThread_runPending  ' (VB) the SDL backend's WZ_SDL_MAINTHREAD_EXEC events, run before mainLoop
     frameUpdate ' General housekeeping
     vbscript_frame                       ' (VB) --vbscript: the UI test script's next command
@@ -748,6 +749,9 @@ Public Function realmain(ByVal argc As Long, argv() As String) As Long
     NetSetGame New NetGame                 ' (VB) lib/netplay's calls into the game
     SoundSetGame New SoundGame             ' (VB) lib/sound's calls into the game
 
+    '** Initialize URL Request library **
+    urlRequestInit
+
     ' find early boot info
     earlyCommandLineParsingResult = ParseCommandLineEarly(utfargc, utfargv)
     If earlyCommandLineParsingResult <> ParseCLIEarlyResult_OK_CONTINUE Then
@@ -824,6 +828,7 @@ Public Function realmain(ByVal argc As Long, argv() As String) As Long
     debug_ 1895, LOG_WZ, "realmain", "Warzone 2100 - %s", version_getFormattedVersionString(False)
     debug_ 1896, LOG_WZ, "realmain", "Using language: %s", getLanguage()
     debug_ 1897, LOG_WZ, "realmain", "Backend: %s", BACKEND
+    urlRequestOutputDebugInfo
 
     ' Put in the writedir root
     gInputManager_setKeyMapJsonPath "keymap.json"

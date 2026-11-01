@@ -696,6 +696,16 @@ Public Sub widgForEachOverlayScreen(ByVal func As WzFunc)
     cleanupDeletedOverlays
 End Sub
 
+' (VB) widgForEachOverlayScreen with multiplay.cpp sendDataCheck2's lambda (it counts each overlay's zOrder): the
+' overlays' zOrders, in the overlays' order, in zOrders(0 .. count - 1); the count returned
+Public Function widgGetOverlayScreenZOrders(zOrders() As Long) As Long
+    Dim scr() As W_SCREEN, n As Long
+    n = overlaysCopy(scr, zOrders)
+    ' now that we aren't in the middle of enumerating overlays, handling removing any that were queued for deletion
+    cleanupDeletedOverlays
+    widgGetOverlayScreenZOrders = n
+End Function
+
 Public Sub widgOverlaysScreenSizeDidChange(ByVal oldWidth As Long, ByVal oldHeight As Long, ByVal newWidth As Long, ByVal newHeight As Long)
     Dim scr() As W_SCREEN, z() As Long, n As Long, i As Long
     n = overlaysCopy(scr, z)

@@ -3,7 +3,7 @@ Attribute VB_Name = "physfs_zip_c"
 ' is: zip64, the DOS times, symlinks and "traditional" PKWARE encryption as the C handles them), with the
 ' directory tree it keeps its entries in (physfs.c's __PHYSFS_DirTree*: __PHYSFS_DirTreeInit, hashPathName,
 ' addAncestors, __PHYSFS_DirTreeAdd, __PHYSFS_DirTreeFind, __PHYSFS_DirTreeEnumerate, __PHYSFS_DirTreeDeinit:
-' PHYSFS_DirTreeAdd__ ... here) and zlib through physfs_miniz_c. physfs_win dispatches to the ZIP_ functions
+' PHYSFS_DirTreeAdd__ ... here) and zlib through src/shared/miniz (miniz_tinfl_c). physfs_win dispatches to the ZIP_ functions
 ' (__PHYSFS_Archiver_ZIP's table) and owns the PHYSFS_Io objects (an io is its handle; io->read(io, ...) is
 ' PHYSFS_Io_read(io, ...)); a ZIP io's opaque is a ZIPfileinfo of this module's pool. (VB) A ZIPinfo (the
 ' archiver's opaque) is a 1-based handle into zipInfos(); its tree's entries are its own array, a ZIPentry *
@@ -121,7 +121,7 @@ Private Type ZIPfileinfo
     hasBuffer As Boolean                ' (VB) buffer != NULL
     crypto_keys(0 To 2) As Long         ' for "traditional" crypto.
     initial_crypto_keys(0 To 2) As Long ' for "traditional" crypto.
-    stream As mz_stream                 ' zlib stream state.
+    stream As z_stream                  ' zlib stream state.
     inUse As Boolean                    ' (VB) the pool's
 End Type
 
@@ -472,14 +472,14 @@ End Function ' zip_prep_crypto_keys
 
 '
 ' Bridge physfs allocation functions to zlib's format...: (VB) zlibPhysfsAlloc and zlibPhysfsFree are
-' physfs_miniz_c's pool
+' miniz_tinfl_c's pool
 '
 
 '
 ' Construct a new z_stream to a sane state.
 '
-Private Sub initializeZStream(pstr As mz_stream)
-    Dim blank As mz_stream
+Private Sub initializeZStream(pstr As z_stream)
+    Dim blank As z_stream
     pstr = blank                                        ' memset(pstr, '\0', sizeof (z_stream))
     ' (pstr->zalloc = zlibPhysfsAlloc; pstr->zfree = zlibPhysfsFree; pstr->opaque = &allocator;)
 End Sub ' initializeZStream
@@ -607,7 +607,7 @@ End Function ' ZIP_tell
 
 Public Function ZIP_seek(ByVal io_ As Long, ByVal offset As Double) As Long
     Dim finfo As Long, info As Long, entry As Long, io As Long, encrypted As Boolean, newpos As Double
-    Dim str_ As mz_stream, buf(0 To 511) As Byte, maxread As Long, i As Long
+    Dim str_ As z_stream, buf(0 To 511) As Byte, maxread As Long, i As Long
     finfo = PHYSFS_Io_opaque(io_)
     info = fileInfos(finfo).archive
     entry = fileInfos(finfo).entry
@@ -954,7 +954,7 @@ Private Function zip_follow_symlink(ByVal io As Long, ByVal info As Long, ByVal 
 End Function ' zip_follow_symlink
 
 Private Function zip_resolve_symlink(ByVal io As Long, ByVal info As Long, ByVal entry As Long) As Long
-    Dim size As Long, path() As Byte, rc As Long, complen As Long, compressed() As Byte, stream As mz_stream
+    Dim size As Long, path() As Byte, rc As Long, complen As Long, compressed() As Byte, stream As z_stream
     Dim pathStr As String, n As Long
     size = zipInfos(info).entries(entry).uncompressed_size
     rc = 0

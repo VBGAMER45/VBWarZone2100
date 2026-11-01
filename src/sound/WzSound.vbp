@@ -1,6 +1,6 @@
 Type=OleDll
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Reference=*\G{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}#1.f#0#..\..\bin\WzFramework.dll#WzFramework
+Reference=*\G{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}#1.11#0#..\..\bin\WzFramework.dll#WzFramework
 Class=AUDIO_SAMPLE; AUDIO_SAMPLE.cls
 Class=AUDIO_STREAM; AUDIO_STREAM.cls
 Class=CdAudioTrackFinished; CdAudioTrackFinished.cls

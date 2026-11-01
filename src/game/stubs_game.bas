@@ -58,8 +58,6 @@ Public bMultiMessages As Boolean        ' == bMultiPlayer unless multimessages a
 ' stdinreader.cpp, multilobbycommands.cpp, gamehistorylogger.cpp
 Private cmdInterfaceMode As Long
 Private cmdInterfaceValue As String
-Private lobbyAdminIdentityHashes As StringVector
-Private lobbyAdminPublicKeys As StringVector
 Private gameStoryOutputModes As GameStoryLogger_OutputModes
 Private gameStoryOutputKey As Long
 Private gameStoryOutputNaming As Long
@@ -193,6 +191,10 @@ Public Type MULTIPLAYERINGAME
     hostChatPermissions(0 To MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS - 1) As Boolean ' std::array<bool, MAX_CONNECTED_PLAYERS>: the *host*-set free chat permission status for players (true if free chat is allowed, false if only Quick Chat is allowed)
     startTime As Currency               ' std::chrono::steady_clock::time_point: a QueryPerformanceCounter count
     has_lastSentPlayerDataCheck2(0 To MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS - 1) As Boolean ' optional<std::chrono::steady_clock::time_point> lastSentPlayerDataCheck2[MAX_CONNECTED_PLAYERS]: has_value()
+    lastSentPlayerDataCheck2(0 To MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS - 1) As Currency ' its values: QueryPerformanceCounter counts
+    lastLagCheck As Currency            ' std::chrono::steady_clock::time_point: a QueryPerformanceCounter count
+    lastDesyncCheck As Currency         ' std::chrono::steady_clock::time_point
+    lastNotReadyCheck As Currency       ' std::chrono::steady_clock::time_point
 End Type
 
 ' multiplay.cpp
@@ -248,23 +250,6 @@ Public Const GameLoadType_MapPackage As Long = 2
 Public releaseObjectives As Boolean     ' mission.cpp
 
 
-
-' netplay.h: enum LOBBY_ERROR_TYPES, SYNC_FLAG (WzNet does not export them yet)
-Public Enum LOBBY_ERROR_TYPES
-    ERROR_NOERROR
-    ERROR_CONNECTION
-    ERROR_FULL
-    ERROR_INVALID
-    ERROR_KICKED
-    ERROR_WRONGVERSION
-    ERROR_WRONGPASSWORD
-    ERROR_HOSTDROPPED
-    ERROR_WRONGDATA
-    ERROR_UNKNOWNFILEISSUE
-    ERROR_REDIRECT
-End Enum
-
-Public Const SYNC_FLAG As Long = &H10000000     ' special flag used for logging.
 
 ' transporter.h
 
@@ -384,9 +369,6 @@ Public nextMissionType As Long
 Public prevMissionType As Long
 
 '   -> in loop_c_init (or stubs_game_init):  nextMissionType = LEVEL_TYPE_LDS_NONE: prevMissionType = LEVEL_TYPE_LDS_NONE
-' screens/guidescreen.h: enum class ShowTopicFlags : int (the guide: cluster G)
-Public Const ShowTopicFlags_FirstAdd As Long = 1      ' 1 << 0: open guide only if this topic is newly-added (this playthrough)
-Public Const ShowTopicFlags_NeverViewed As Long = 2   ' 1 << 1: open guide only if this topic has never been viewed by the player before
 
 ' ai.h: enum class AIDifficulty (fork P adds EASY = 1; these two complete getUsefulConstants' list)
 Public Const AIDifficulty_MEDIUM As Long = 2
@@ -434,17 +416,7 @@ Public Function wz_command_interface_enabled() As Boolean
     wz_command_interface_enabled = (cmdInterfaceMode <> WZ_Command_Interface_None)
 End Function
 
-' C: false (and an error) for a malformed hash
-Public Function addLobbyAdminIdentityHash(ByVal playerIdentityHash As String) As Boolean
-    StringVector_push_back lobbyAdminIdentityHashes, playerIdentityHash
-    addLobbyAdminIdentityHash = True
-End Function
 
-' C: false (and an error) for a key that does not decode
-Public Function addLobbyAdminPublicKey(ByVal publicKeyB64Str As String) As Boolean
-    StringVector_push_back lobbyAdminPublicKeys, publicKeyB64Str
-    addLobbyAdminPublicKey = True
-End Function
 
 ' GameStoryLogger::instance().setOutputModes(modes) and the other setters
 Public Sub GameStoryLogger_setOutputModes(modes As GameStoryLogger_OutputModes)
@@ -575,11 +547,6 @@ End Sub
 Public Sub ActivityManager_loadedLevel(ByVal levelType As Long, ByVal levelName As String)
 End Sub
 
-' lib/framework/frame.cpp (SHA-256 is not ported): the zero hash
-Public Sub findHashOfFile(ByVal realFileName As String, hash As Sha256)
-    Sha256_setZero hash
-End Sub
-
 '--------------------------------------------------------------------------
 ' cluster A2: data.cpp's callees. The images, tracks and string resources
 ' of the DLLs (iV_Image, IMAGEFILE, TRACK) wait here until those DLLs design
@@ -604,33 +571,12 @@ End Sub
 
 
 
-Public Function notificationsInitialize() As Boolean
-    notificationsInitialize = True
-End Function
-
-Public Sub notificationsShutDown()
-End Sub
-
-
-Public Sub urlRequestShutdown()
-End Sub
 
 
 
 
-Public Function multiShutdown() As Boolean
-    multiShutdown = True
-End Function
-
-Public Sub shutdownKnownPlayers()
-End Sub
 
 
-' lib/wzmaplib/plugins/ZipIOProvider (WzMap): WzZipIOPHYSFSSourceReadProvider::make, shared_ptr<WzZipIOSourceReadProvider>
-' (zip archives are not read yet: nullptr)
-Public Function WzZipIOPHYSFSSourceReadProvider_make(ByVal filename As String) As Object
-    Set WzZipIOPHYSFSSourceReadProvider_make = Nothing
-End Function
 
 ' ---- cluster B's callees in later clusters (see the declarations)
 
@@ -643,13 +589,6 @@ End Function
 Public Sub jsDebugMessageUpdate()
 End Sub
 
-
-' lib/framework/wzapp.h (WzPlatform's wzapp, cluster F): SDL_GetCPUCount(), the logical CPUs
-Public Function wzGetLogicalCPUCount() As Long
-    Dim si As SYSTEM_INFO
-    GetSystemInfo si
-    wzGetLogicalCPUCount = si.dwNumberOfProcessors
-End Function
 
 
 
@@ -718,20 +657,10 @@ End Sub
 
 
 
-' effects.h
-Public Sub addDroidDeathAnimationEffect(ByVal psDroid As Long)
-End Sub
 
 
 ' multiplay.h: getPlayerName(uint32_t player, bool treatAsNonHost = false) (the players' names come with the network)
 
-
-' multistat.h: the players' statistics (the multiplayer statistics come with the network)
-Public Sub updateMultiStatsDamage(ByVal attacker As Long, ByVal defender As Long, ByVal inflicted As Long)
-End Sub
-
-Public Sub updateMultiStatsKills(ByVal psKilled As Long, ByVal player As Long)
-End Sub
 
 
 
@@ -741,13 +670,6 @@ End Sub
 
 
 
-' multistat.h (the multiplayer statistics come with the network)
-Public Sub incrementMultiStatsResearchPotential(ByVal player As Long)
-End Sub
-
-Public Sub incrementMultiStatsResearchPerformance(ByVal player As Long)
-End Sub
-
 
 '--------------------------------------------------------------------------
 ' B10: what multiplay.cpp's recvMessage dispatches to outside the game state
@@ -755,40 +677,12 @@ End Sub
 
 
 
-' netlog.h: NETlogEntry (no net log file is open: false, as C++ without one)
-Public Function NETlogEntry(ByVal str_ As String, ByVal a As Long, ByVal b As Long) As Boolean
-    NETlogEntry = False
-End Function
 
-' netplay.h (the connections: cluster J): no player has a connection; kicking closes none
-Public Sub NETplayerKicked(ByVal index As Long, Optional ByVal quiet As Boolean = False)
-End Sub
-
-Public Function NETplayerHasConnection(ByVal index As Long) As Boolean
-    NETplayerHasConnection = False
-End Function
-
-' netplay.h: NetPlay.players[i].IPtextAddress (the connections: cluster J)
-Public Function NetPlay_players_IPtextAddress(ByVal i As Long) As String
-    NetPlay_players_IPtextAddress = ""
-End Function
-
-' multiplay.cpp: sendInGameSystemMessage (the chat: cluster J): neither printed nor sent
-Public Sub sendInGameSystemMessage(ByVal Text As String)
-End Sub
-
-
-Public Sub displayKickReasonPopup(ByVal reason As String)
-End Sub
 
 ' activity.h: ActivityManager::instance().wasKickedByPlayer(NetPlay.players[kicker], kick_type, reason) (kicker: the index)
 Public Sub ActivityManager_wasKickedByPlayer(ByVal kicker As Long, ByVal kick_type As LOBBY_ERROR_TYPES, ByVal reason As String)
 End Sub
 
-' multistat.h: addKnownPlayer(name, getMultiStats(player).identity, override) (the player statistics and identities:
-' cluster J; the player's index stands for the key)
-Public Sub addKnownPlayer(ByVal name_ As String, ByVal identityPlayer As Long, Optional ByVal override As Boolean = False)
-End Sub
 
 ' stdinreader.cpp (the command interface is not ported): recvMessage's NET_PLAYERRESPONDING output, the
 ' "WZEVENT: playerResponding: ..." line (identity, verified status, name in base64, address) and
@@ -796,59 +690,7 @@ End Sub
 Public Sub wz_command_interface_output_playerResponding(ByVal player_id As Long)
 End Sub
 
-' multirecv.h, multijoin.h, multistat.h, multivote.h, multigifts.h, cheat.h, teamstrategy.h and
-' multiplay.cpp's static recvBeacon and recvDataCheck2: the messages recvMessage hands on that do not change the
-' game state yet: chat, beacons, data checks, pings, votes, host configuration, player statistics (the network,
-' cluster J); gifts and alliances, a player leaving, debug mode and debug features (with the game messages that
-' change the game state, later in cluster B or J). Each leaves its message undecoded (recvMessage pops it).
-Public Function receiveInGameTextMessage(ByVal queue As Long) As Boolean
-    receiveInGameTextMessage = True
-End Function
 
-Public Function recvDataCheck(ByVal queue As Long) As Boolean
-    recvDataCheck = True
-End Function
-
-Public Function recvDataCheck2(ByVal queue As Long) As Boolean
-    recvDataCheck2 = True
-End Function
-
-Public Function recvTextMessageAI(ByVal queue As Long) As Boolean
-    recvTextMessageAI = True
-End Function
-
-Public Function recvSpecInGameTextMessage(ByVal queue As Long) As Boolean
-    recvSpecInGameTextMessage = True
-End Function
-
-Public Function recvStrategyPlanUpdate(ByVal queue As Long) As Boolean
-    recvStrategyPlanUpdate = True
-End Function
-
-
-
-Public Function recvPing(ByVal queue As Long) As Boolean
-    recvPing = True
-End Function
-
-Public Function recvVote(ByVal queue As Long, Optional ByVal inLobby As Boolean = True) As Boolean
-    recvVote = True
-End Function
-
-Public Function recvVoteRequest(ByVal queue As Long) As Boolean
-    recvVoteRequest = True
-End Function
-
-Public Function recvHostConfig(ByVal queue As Long) As Boolean
-    recvHostConfig = True
-End Function
-
-Public Function recvMultiStats(ByVal queue As Long) As Boolean
-    recvMultiStats = True
-End Function
-
-Public Sub recvPlayerLeft(ByVal queue As Long)
-End Sub
 
 '--------------------------------------------------------------------------
 ' B11: the replays' options (WZGameReplayOptionsHandler)
@@ -874,30 +716,6 @@ End Function
 
 
 
-Public Function wzIsMaximized() As Boolean
-    wzIsMaximized = False
-End Function
-
-' lib/sdl (WzPlatform, until cluster D adds them to PlatformApi): the cursor, mouse grab and window
-Public Sub wzSetCursor(ByVal cur As Long)
-End Sub
-
-Public Sub wzApplyCursor()
-End Sub
-
-Public Sub wzGrabMouse()
-End Sub
-
-Public Sub wzReleaseMouse()
-End Sub
-
-Public Sub wzSetWindowIsResizable(ByVal resizable As Boolean)
-End Sub
-
-' C: the new window mode after toggling fullscreen
-Public Function wzAltEnterToggleFullscreen() As Long
-    wzAltEnterToggleFullscreen = wzGetCurrentWindowMode()
-End Function
 
 
 
@@ -933,20 +751,6 @@ End Function
 
 
 
-Public Sub shutdownGameGuide()
-End Sub
-
-Public Function specStatsViewShutdown() As Boolean
-    specStatsViewShutdown = True
-End Function
-
-Public Sub strategyPlansInit()
-End Sub
-
-
-
-Public Sub runNotifications()
-End Sub
 
 
 
@@ -993,27 +797,6 @@ Public Function clearSpecialInMemoryMap() As Boolean
     clearSpecialInMemoryMap = True
 End Function
 
-' lib/netplay (WzNet, the connections: cluster J), multijoin_helpers.cpp, multiplay.cpp's start screen
-Public Sub NETadjustConnectedTimeoutForClients()
-End Sub
-
-Public Function NETinit(ByVal pt As Long) As Long
-    NETinit = 0
-End Function
-
-Public Sub NETinitPortMapping()
-End Sub
-
-Public Sub joinGameFromIPOrHostnameConnectionStr(ByVal ipOrHostnameConnectionStr As String, Optional ByVal asSpectator As Boolean = False)
-End Sub
-
-Public Sub joinLobbyGame(ByVal lobbyAddress As String, ByVal lobbyGameId As String, Optional ByVal asSpectator As Boolean = False)
-End Sub
-
-Public Function multiStartScreenInit() As Boolean
-    multiStartScreenInit = True
-End Function
-
 ' In files forks L and P own: drop each one they ported.
 
 
@@ -1028,12 +811,6 @@ End Function
 
 
 
-' multiplay.cpp: bool setPlayerName(int player, const char *sName) (its real body; multiplay.cpp's names come with cluster J)
-Public Function setPlayerName(ByVal player As Long, ByVal sName As String) As Boolean
-    If Not (player < MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS And player >= 0) Then ASSERT_FAILURE "player < MAX_CONNECTED_PLAYERS && player >= 0", "src/multiplay.cpp:892", "setPlayerName", "Player index (%u) out of range", player: setPlayerName = False: Exit Function
-    NetPlay_players_name(player) = Left$(sName, 64 - 1)    ' sstrcpy(NetPlay.players[player].name, sName) (char name[StringSize])
-    setPlayerName = True
-End Function
 
 
 
@@ -1066,12 +843,6 @@ End Function
 
 
 
-
-
-' spectatorwidgets.cpp (cluster G)
-Public Function specLayerInit(Optional ByVal showButton As Boolean = True) As Boolean
-    specLayerInit = True
-End Function
 
 '--------------------------------------------------------------------------
 ' C1 (the script engine): what qtscript.cpp, wzapi.cpp and the Chakra backend call in later clusters
@@ -1092,14 +863,6 @@ Public Sub jsDebugCreate(ByVal debugInterface As Object, ByVal shutdownFunc As L
 End Sub
 
 
-
-' multistat.cpp (the players' statistics: cluster J): void updateMultiStatsBuilt(BASE_OBJECT *psBuilt)
-Public Sub updateMultiStatsBuilt(ByVal psBuilt As Long)
-End Sub
-
-' multistat.cpp (cluster J): void updateMultiStatsResearchComplete(RESEARCH *psResearch, UDWORD player)
-Public Sub updateMultiStatsResearchComplete(ByVal psResearch As Long, ByVal player As Long)
-End Sub
 
 ' gamehistorylogger.cpp (the game story log: cluster J): GameStoryLogger::instance().logResearchCompleted(psResearch, psStruct, player)
 Public Sub GameStoryLogger_logResearchCompleted(ByVal psResearch As Long, ByVal psStruct As Long, ByVal player As Long)
@@ -1124,15 +887,6 @@ End Sub
 
 
 
-
-' screens/guidescreen.cpp (the in-game guide: cluster G): void addGuideTopic(const std::string& guideTopicId,
-' ShowTopicFlags showFlags = ShowTopicFlags::None, const std::unordered_set<std::string>& excludedTopicIDs = {});
-' the overload with excluded topics is addGuideTopic_excluding (the set as a StringVector)
-Public Sub addGuideTopic(ByVal guideTopicId As String, Optional ByVal showFlags As Long = 0)
-End Sub
-
-Public Sub addGuideTopic_excluding(ByVal guideTopicId As String, ByVal showFlags As Long, excludedTopicIDs As StringVector)
-End Sub
 
 
 ' gamehistorylogger.cpp: GameStoryLogger::instance().logGameOver()
@@ -1187,10 +941,6 @@ End Function
 
 
 
-' notifications.cpp, screen overlays (cluster G)
-Public Function isDraggingInGameNotification() As Boolean
-    isDraggingInGameNotification = False
-End Function
 
 
 
@@ -1203,37 +953,9 @@ End Function
 
 
 
-
-
-' multiplay.cpp, multiint.cpp, multistat.cpp, multivote.cpp, netplay (the network: cluster J): the data checks,
-' pings, the lobby's player info and identities, the kick routines, the win sequence's effects
-Public Sub sendDataCheck()
-End Sub
-
-Public Sub sendDataCheck2()
-End Sub
-
-Public Sub sendPing()
-End Sub
-
-Public Sub sendMultiStatsHostVerifiedIdentities(ByVal playerIndex As Long)
-End Sub
 
 Public Sub wz_command_interface_output_room_status_json(Optional ByVal queued As Boolean = False)
 End Sub
-
-Public Sub autoLagKickRoutine(ByVal now_ As Currency)
-End Sub
-
-Public Sub autoDesyncKickRoutine(ByVal now_ As Currency)
-End Sub
-
-Public Sub processPendingKickVotes()
-End Sub
-
-Public Function multiplayerWinSequence(ByVal firstCall As Boolean) As Boolean
-    multiplayerWinSequence = True
-End Function
 
 '--------------------------------------------------------------------------
 ' C2 (the skirmish's start, gifts, chat and beacons): what they call in later clusters
@@ -1242,45 +964,8 @@ End Function
 
 
 
-' notifications.cpp (cluster F): bool cancelOrDismissNotificationsWithTag(const std::string& desiredTag,
-' NotificationScope scope = NotificationScope::DISPLAYED_AND_QUEUED)
-Public Function cancelOrDismissNotificationsWithTag(ByVal desiredTag As String) As Boolean
-End Function
-
-' notifications.cpp (cluster F): bool cancelOrDismissNotificationIfTag(matchTagFunc, scope); (VB) the one
-' matchTagFunc used so far (startMultiplayerGame): the tags that start with prefix
-Public Function cancelOrDismissNotificationIfTagHasPrefix(ByVal prefix As String) As Boolean
-End Function
-
-' notifications.cpp (cluster F): bool removeNotificationPreferencesIf(matchIdentifierFunc); (VB) the one
-' matchIdentifierFunc used so far (WzMultiplayerOptionsTitleUI's start): the identifiers that start with prefix
-Public Function removeNotificationPreferencesIfHasPrefix(ByVal prefix As String) As Boolean
-End Function
 
 
 
-' multivote.cpp (the lobby's votes: cluster J)
-Public Sub resetLobbyChangeVoteData()
-End Sub
 
-Public Sub resetAllMultiOptionPrefValues()
-End Sub
-
-' multisync.cpp (cluster J): void multiSyncResetAllChallenges()
-Public Sub multiSyncResetAllChallenges()
-End Sub
-
-' multistat.cpp (the identities, EcKey: cluster J): bool generateBlindIdentity()
-Public Function generateBlindIdentity() As Boolean
-    generateBlindIdentity = True
-End Function
-
-' multistat.cpp (the identities: cluster J): void multiStatsSetVerifiedHostIdentityFromJoin(const EcKey::Key &identity),
-' without the identity (hostVerifiedJoinIdentities[NetPlay.hostPlayer])
-Public Sub multiStatsSetVerifiedHostIdentityFromJoin()
-End Sub
-
-' multistat.cpp (the known players' SQLite database, knownPlayers.db: not kept): void initKnownPlayers()
-Public Sub initKnownPlayers()
-End Sub
 

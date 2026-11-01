@@ -42,10 +42,10 @@ Private Function gfx_api_texture_backendInternalValue() As Long
     gfx_api_texture_backendInternalValue = 0
 End Function
 
-Private Function gfx_api_texture_upload(ByVal mip_level As Long, ByVal image As iV_Image) As Boolean
+Private Function gfx_api_texture_upload(ByVal mip_level As Long, ByVal image As iV_BaseImage) As Boolean
     Dim width As Long, height As Long
     If Not (image.data() <> 0) Then ASSERT_FAILURE "image.data() != nullptr", "lib/ivis_opengl/gfx_api_null.cpp:43", "upload", "Attempt to upload image without data": gfx_api_texture_upload = False: Exit Function
-    If Not (image.pixel_format_() = internal_format) Then ASSERT_FAILURE "image.pixel_format() == internal_format", "lib/ivis_opengl/gfx_api_null.cpp:44", "upload", "Uploading image to texture with different format": gfx_api_texture_upload = False: Exit Function
+    If Not (image.pixelFormat() = internal_format) Then ASSERT_FAILURE "image.pixel_format() == internal_format", "lib/ivis_opengl/gfx_api_null.cpp:44", "upload", "Uploading image to texture with different format": gfx_api_texture_upload = False: Exit Function
     width = image.width()
     height = image.height()
     If Not (width > 0 And height > 0) Then ASSERT_FAILURE "width > 0 && height > 0", "lib/ivis_opengl/gfx_api_null.cpp:47", "upload", "Attempt to upload texture with width or height of 0 (width: %zu, height: %zu)", width, height

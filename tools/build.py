@@ -1,6 +1,6 @@
 """
 build.py - builds WarzoneVB with the Visual Basic 6 command line compiler:
-seven ActiveX DLLs, then Warzone.exe, into bin/.
+eight ActiveX DLLs, then Warzone.exe, into bin/.
 
   python -I tools\\build.py [--release] [--break-compat NAME] [--unregister]
 
@@ -26,6 +26,15 @@ seven ActiveX DLLs, then Warzone.exe, into bin/.
 * VB6 reports only the first error, with the file and line. An empty log
   means VB6 stopped without a message: usually the project's name table is
   full (about 32,100 names, see docs/PLAN.md and tools/name_budget.py)
+* an exe (Warzone.exe and the test exes) builds through a drive letter that
+  subst maps to bin/ for the build (the first free one from W down; no
+  administrator rights; removed afterwards, and reused if an interrupted
+  build left it): VB6 puts every module's .OBJ in the output folder and
+  passes all their paths to LINK.EXE on one command line, at most 32,767
+  characters, so X:\\ keeps the line short wherever the tree is (about 28
+  characters a module instead of 65 from this tree's bin/)
+* VB6 is found through %VB6_DIR%, else its setup's registry entry, else
+  C:\\Program Files (x86)\\Microsoft Visual Studio\\VB98
 
 * makes data/ a mirror of ref/warzone2100/data when there is no data/ yet
   (real folders, the files hard links: tools/setup_data.py, which refreshes
@@ -36,8 +45,8 @@ seven ActiveX DLLs, then Warzone.exe, into bin/.
   its own, so every lookup cost about 1.7 times as much
 
 --release removes the array bounds checks.
-WzSound and WzSequence are always optimised for fast code without bounds checks
-(OPTIMISED: their decoders (Vorbis, Opus, Theora), the mixer and the video's colour
+WzSound, WzSequence and WzBasis are always optimised for fast code without bounds checks
+(OPTIMISED: their decoders (Vorbis, Opus, Theora, zstd, Basis Universal), the mixer and the video's colour
 conversion are pure arithmetic, and the game's state does not depend on them); the
 other projects are compiled without optimisation (docs/PLAN.md, "Speed").
 """
@@ -50,8 +59,29 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import typelib  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VB6 = r"C:\Program Files (x86)\Microsoft Visual Studio\VB98\VB6.EXE"
-RC = r"C:\Program Files (x86)\Microsoft Visual Studio\VB98\Wizards\RC.EXE"
+
+
+def vb98_dir():
+    """VB6's folder: %VB6_DIR%, else where its setup recorded it, else its default place."""
+    if os.environ.get("VB6_DIR"):
+        return os.environ["VB6_DIR"]
+    try:
+        import winreg
+        for view in (winreg.KEY_WOW64_32KEY, winreg.KEY_WOW64_64KEY):
+            try:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                                    r"SOFTWARE\Microsoft\VisualStudio\6.0\Setup\Microsoft Visual Basic",
+                                    0, winreg.KEY_READ | view) as k:
+                    return winreg.QueryValueEx(k, "ProductDir")[0]
+            except OSError:
+                pass
+    except ImportError:
+        pass
+    return r"C:\Program Files (x86)\Microsoft Visual Studio\VB98"
+
+
+VB6 = os.path.join(vb98_dir(), "VB6.EXE")
+RC = os.path.join(vb98_dir(), "Wizards", "RC.EXE")
 SRC = os.path.join(ROOT, "src")
 BIN = os.path.join(ROOT, "bin")
 COMPAT = os.path.join(ROOT, "compat")
@@ -62,14 +92,15 @@ PROJECTS = [
     ("WzFramework", "dll", "framework", []),
     ("WzMap", "dll", "map", ["WzFramework"]),
     ("WzSound", "dll", "sound", ["WzFramework"]),
-    ("WzGfx", "dll", "gfx", ["WzFramework"]),
+    ("WzBasis", "dll", "basis", ["WzFramework"]),
+    ("WzGfx", "dll", "gfx", ["WzFramework", "WzBasis"]),
     ("WzNet", "dll", "net", ["WzFramework"]),
     ("WzPlatform", "dll", "platform", ["WzFramework", "WzGfx"]),
     ("WzSequence", "dll", "sequence", ["WzFramework", "WzGfx", "WzSound"]),
-    ("Warzone", "exe", "game", ["WzFramework", "WzMap", "WzSound", "WzGfx", "WzNet", "WzPlatform", "WzSequence"]),
+    ("Warzone", "exe", "game", ["WzFramework", "WzMap", "WzSound", "WzBasis", "WzGfx", "WzNet", "WzPlatform", "WzSequence"]),
 ]
 # Projects optimised for fast code, without array bounds checks (the module docstring)
-OPTIMISED = {"WzSound", "WzSequence"}
+OPTIMISED = {"WzSound", "WzSequence", "WzBasis"}
 # Compiled into every project, like a static C runtime: the C library replacements and
 # small framework modules without state (docs/CONVENTIONS.md, "Structure")
 SHARED = os.path.join(SRC, "shared")
@@ -80,6 +111,12 @@ SHARED_GFX_USERS = ("gfx", "game", "sequence")
 # Compiled into the projects that read Ogg streams (WzSound: opusfile; WzSequence: the videos): libogg
 SHARED_OGG = os.path.join(SHARED, "ogg")
 SHARED_OGG_USERS = ("sound", "sequence")
+# miniz (zlib's inflate and deflate streams: PhysFS's zip archives, the network's compression) and libsodium's
+# primitives with crc.cpp's EcKey and SessionKeys (the identities and the secured messages): cluster J
+SHARED_MINIZ = os.path.join(SHARED, "miniz")
+SHARED_MINIZ_USERS = ("framework", "net")
+SHARED_SODIUM = os.path.join(SHARED, "sodium")
+SHARED_SODIUM_USERS = ("game", "net")
 REF =os.path.join(ROOT, "ref", "warzone2100")
 
 AUTOREVISION = '''Attribute VB_Name = "autorevision_vb"
@@ -126,12 +163,51 @@ def write_autorevision():
 STDOLE = ("Reference=*\\G{00020430-0000-0000-C000-000000000046}#2.0#0#"
           "C:\\Windows\\SysWOW64\\stdole2.tlb#OLE Automation")
 SOURCE_EXT = (".bas", ".cls", ".frm")
-# VB6 compiles each module to <outdir>\<module name>.OBJ (bin\), the project itself to <outdir>\<project>.OBJ, and
-# passes them all, quoted, to LINK.EXE on one command line (CreateProcess: 32,767 characters at most; past it the
-# build fails with "Could not execute LINK.EXE"). Measured (a watcher on LINK.EXE's command line, cluster K's
-# follow-up): 259 characters besides the .OBJ paths, each path len(outdir) + len(name) + 8 with its quotes.
+# VB6 compiles each module to <outdir>\<module name>.OBJ, the project itself to <outdir>\<project>.OBJ, and passes
+# them all, quoted, to LINK.EXE on one command line (CreateProcess: 32,767 characters at most; past it the build
+# fails with "Could not execute LINK.EXE"). Measured (tools/linkwatch.ps1): each path costs len(outdir) + len(name)
+# + 8 with its quotes and space, and the rest of the line 209 + len(outdir) + len(project) (the /OUT path in it).
+# So an exe builds into a drive letter mapped to bin\ (short_drive): "X:\" costs 2 characters a module where the
+# tree's bin\ path costs its length, wherever the tree is.
 LINK_LIMIT = 30000
-LINK_FIXED = 259
+LINK_MAX = 32767
+
+
+def link_estimate(vbp, outdir):
+    """The length of LINK.EXE's command line for the project, built into outdir, and its module count."""
+    folder = os.path.dirname(vbp)
+    out = outdir.rstrip("\\")
+    names = []
+    project = os.path.splitext(os.path.basename(vbp))[0]
+    with open(vbp, encoding="latin-1") as f:
+        lines = f.read().splitlines()
+    for line in lines:
+        if line.startswith(("Module=", "Class=")):
+            names.append(line.split("=", 1)[1].split(";")[0].strip())
+        elif line.startswith("Form="):
+            names.append(vb_name(os.path.join(folder, line.split("=", 1)[1])))
+        elif line.startswith("Name="):
+            project = line.split("=", 1)[1].strip('"')
+    chars = 209 + len(out) + len(project) + len(out) + len(project) + 8
+    chars += sum(len(out) + len(n) + 8 for n in names)
+    return chars, len(names)
+
+
+def short_drive():
+    """A drive letter mapped to bin\\ by subst (per session, no administrator rights), "X:"; a mapping to bin\\
+    left by an interrupted build is reused. None when no letter is free or subst fails."""
+    r = subprocess.run(["subst"], capture_output=True, text=True)
+    for line in r.stdout.splitlines():                  # "W:\: => C:\...\bin"
+        left, _, right = line.partition(" => ")
+        if right.strip().rstrip("\\").lower() == BIN.rstrip("\\").lower():
+            return left[:2]
+    import ctypes
+    used = ctypes.windll.kernel32.GetLogicalDrives()
+    for letter in "WVUTSRQPONMLKJIHGZYX":
+        if not used & (1 << (ord(letter) - ord("A"))):
+            if subprocess.run(["subst", letter + ":", BIN], capture_output=True).returncode == 0:
+                return letter + ":"
+    return None
 
 VBP_TAIL = """Startup="{startup}"
 HelpFile=""
@@ -209,20 +285,19 @@ def write_vbp(name, kind, folder, refs, release, resfile):
         files += [(n, "..\\shared\\gfx\\" + n) for n in sources(SHARED_GFX)]
     if os.path.basename(folder) in SHARED_OGG_USERS:
         files += [(n, "..\\shared\\ogg\\" + n) for n in sources(SHARED_OGG)]
-    link_chars = LINK_FIXED + len(BIN) + len(name) + 8
+    if os.path.basename(folder) in SHARED_MINIZ_USERS:
+        files += [(n, "..\\shared\\miniz\\" + n) for n in sources(SHARED_MINIZ)]
+    if os.path.basename(folder) in SHARED_SODIUM_USERS:
+        files += [(n, "..\\shared\\sodium\\" + n) for n in sources(SHARED_SODIUM)]
     for n, rel in files:
         path = os.path.normpath(os.path.join(folder, rel))
         normalise(path)
-        link_chars += len(BIN) + len(vb_name(path)) + 8
         if n.lower().endswith(".frm"):
             lines.append("Form=" + rel)
         elif n.lower().endswith(".cls"):
             lines.append("Class=%s; %s" % (vb_name(path), rel))
         else:
             lines.append("Module=%s; %s" % (vb_name(path), rel))
-    if link_chars > LINK_LIMIT:
-        print("WARNING: %s: LINK.EXE's command line about %d of its 32,767 characters (%d modules): build to a "
-              "shorter output path (docs/PLAN.md, Risks)" % (name, link_chars, len(files)))
     if resfile:
         lines.append('ResFile32="%s"' % relative(resfile))
     compat = ""
@@ -243,10 +318,28 @@ def write_vbp(name, kind, folder, refs, release, resfile):
 
 
 def make(name, folder, vbp):
+    """VB6 /make of the project into bin\\. An exe builds through short_drive's letter (LINK.EXE's command line,
+    see LINK_LIMIT; the mapping is removed afterwards); a DLL into bin\\ itself (VB6 registers the DLL it builds
+    at that path, which must stay valid; the DLLs are far from the limit)."""
     log = os.path.join(BUILD, name + "_build.log")
     if os.path.exists(log):
         os.remove(log)
-    subprocess.run([VB6, "/make", vbp, "/outdir", BIN, "/out", log], cwd=folder)
+    with open(vbp, encoding="latin-1") as f:
+        is_exe = any(line.strip().lower() == "type=exe" for line in f)
+    drive = short_drive() if is_exe else None
+    if is_exe and drive is None:
+        print("WARNING: %s: no drive letter free for subst: building into bin\\ (a longer LINK.EXE command line)"
+              % name)
+    outdir = drive + "\\" if drive else BIN
+    chars, modules = link_estimate(vbp, outdir)
+    if chars > LINK_LIMIT:
+        print("WARNING: %s: LINK.EXE's command line about %d of its %d characters (%d modules, into %s)"
+              % (name, chars, LINK_MAX, modules, outdir))
+    try:
+        subprocess.run([VB6, "/make", vbp, "/outdir", outdir, "/out", log], cwd=folder)
+    finally:
+        if drive:
+            subprocess.run(["subst", drive, "/D"], capture_output=True)
     text = ""
     if os.path.exists(log):
         with open(log, "r", encoding="latin-1") as f:

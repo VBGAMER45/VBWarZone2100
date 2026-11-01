@@ -1,7 +1,7 @@
 Type=OleDll
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Reference=*\G{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}#1.f#0#..\..\bin\WzFramework.dll#WzFramework
-Reference=*\G{EA8DD5F1-0FE1-412A-8537-B726E4BA8370}#1.2#0#..\..\bin\WzGfx.dll#WzGfx
+Reference=*\G{6082A1A0-BBEF-4C01-8629-362E1BBD72D9}#1.11#0#..\..\bin\WzFramework.dll#WzFramework
+Reference=*\G{2776C689-E3F5-4A46-A528-22FE9AA902EB}#1.0#0#..\..\bin\WzGfx.dll#WzGfx
 Reference=*\G{821C1919-795A-4600-A00C-37C5ED95C4D3}#1.8#0#..\..\bin\WzSound.dll#WzSound
 Class=MemoryBufferVideoProvider; MemoryBufferVideoProvider.cls
 Class=PhysFSVideoProvider; PhysFSVideoProvider.cls

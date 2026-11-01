@@ -1,0 +1,13 @@
+# fork S7 (cluster S): Options > Graphics > Terrain Appearance opened: each quality enabled only when
+# getAvailableTerrainShaderQualityTextures finds its texture pack (Classic: terrain_overrides/classic, Remastered:
+# terrain_overrides/high, a folder or .wz with texpages or tileset; Normal needs none)
+wait 90
+click 512 470
+wait 90
+click 530 87
+wait 60
+shot graphics
+click 700 201
+wait 30
+shot terrain_choices
+quit

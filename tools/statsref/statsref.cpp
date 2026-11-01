@@ -123,7 +123,7 @@
 //
 // The stand-ins (as src/game/stubs_game.bas has them): getViewData gives
 // nullptr; the lightmap, the terrain textures and the danger
-// thread's calls do nothing; wzmaplib's runMapScript fails (as in mapref); the strres grammar (strres_lexer.lpp, strres_parser.ypp: no flex or
+// thread's calls do nothing; wzmaplib's runMapScript is map_script.cpp over QuickJS (as in mapref); the strres grammar (strres_lexer.lpp, strres_parser.ypp: no flex or
 // bison here) is written out again below. imdload.cpp's GPU buffers are
 // RecordingBuffers (the extract calls statsref_create_buffer_object), which
 // keep what is uploaded, as the VB port keeps it in the shape (vbo_*).
@@ -285,13 +285,6 @@ VIEWDATA *getViewData(const WzString &name)
 }
 
 // what map.cpp, random.cpp and gateway.cpp call outside the extracted code
-namespace WzMap {
-std::shared_ptr<Map> runMapScript(const std::vector<char>&, const std::string&, uint32_t, bool, LoggingProtocol*)
-{
-	return nullptr;
-}
-}
-
 void LightMap::reset(size_t width, size_t height)
 {
 }
@@ -548,12 +541,6 @@ void effectGiveAuxVarSec(UDWORD var)
 {
 }
 void console(const char *pFormat, ...)
-{
-}
-void updateMultiStatsDamage(UDWORD attacker, UDWORD defender, UDWORD inflicted)
-{
-}
-void updateMultiStatsKills(BASE_OBJECT *psKilled, UDWORD player)
 {
 }
 bool getCamTweakOption_PS1Modifiers()
@@ -965,8 +952,10 @@ const char *version_getVersionString()
 {
 	return "statsref";
 }
+// qtscript.cpp's trigger events: their stats part (the scripts are not run here)
 bool triggerEventResearched(RESEARCH *psResearch, STRUCTURE *psStruct, int player)
 {
+	updateMultiStatsResearchComplete(psResearch, player);
 	return true;
 }
 bool triggerEventStructureReady(STRUCTURE *psStruct)
@@ -975,13 +964,11 @@ bool triggerEventStructureReady(STRUCTURE *psStruct)
 }
 bool triggerEventDroidBuilt(DROID *psDroid, STRUCTURE *psFactory)
 {
+	if (psFactory != nullptr) // Ignore droids that were gifted or cheated (debug add)
+	{
+		updateMultiStatsBuilt(psDroid);
+	}
 	return true;
-}
-void incrementMultiStatsResearchPerformance(UDWORD player)
-{
-}
-void incrementMultiStatsResearchPotential(UDWORD player)
-{
 }
 void intResearchFinished(STRUCTURE *psBuilding)
 {
@@ -1003,6 +990,10 @@ bool triggerEventDroidIdle(DROID *psDroid)
 }
 bool triggerEventStructBuilt(STRUCTURE *psStruct, DROID *psDroid)
 {
+	if (psDroid != nullptr) // Ignore structures that were gifted or cheated (debug add)
+	{
+		updateMultiStatsBuilt(psStruct);
+	}
 	return true;
 }
 bool triggerEventStructDemolish(STRUCTURE *psStruct, DROID *psDroid)

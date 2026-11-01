@@ -1,7 +1,7 @@
 Attribute VB_Name = "raycast_c"
 ' src/raycast.cpp, raycast.h: Raycasting routine that gives intersection
-' points with map tiles. So far rayCast; getBestPitchToEdgeOfGrid (the
-' camera's) comes with the display's clipXY in cluster C.
+' points with map tiles: rayCast, and the camera's getBestPitchToEdgeOfGrid
+' (with its getTileHeightCallback).
 ' (VB) A RAY_CALLBACK is a number (RAY_CALLBACK_...) and rayCallback's
 ' Select Case; a callback's void *data is its own module's variables, set
 ' before the call. The dist argument (iHypot of the point) is worked out
@@ -11,7 +11,12 @@ Option Explicit
 Public Enum RAY_CALLBACK
     RAY_CALLBACK_MOVE_BLOCKING_TILE = 1         ' move.cpp's moveBlockingTileCallback (dist unused)
     RAY_CALLBACK_LOS                            ' visibility.cpp's rayLOSCallback
+    RAY_CALLBACK_TILE_HEIGHT                    ' getTileHeightCallback (here)
 End Enum
+
+' struct HeightCallbackHelp_t: getBestPitchToEdgeOfGrid's data for getTileHeightCallback
+Private help_height As Long             ' const int height
+Private help_pitch As Long              ' uint16_t pitch
 
 ' (VB) the callback(pos, dist, data) call
 Private Function rayCallback(ByVal callback As RAY_CALLBACK, pos As Vector2i, ByVal withDist As Boolean) As Boolean
@@ -23,6 +28,12 @@ Private Function rayCallback(ByVal callback As RAY_CALLBACK, pos As Vector2i, By
             rayCallback = rayLOSCallback(pos, iHypot(pos.x, pos.y))
         Else
             rayCallback = rayLOSCallback(pos, 0)
+        End If
+    Case RAY_CALLBACK_TILE_HEIGHT
+        If withDist Then
+            rayCallback = getTileHeightCallback(pos, iHypot(pos.x, pos.y))
+        Else
+            rayCallback = getTileHeightCallback(pos, 0)
         End If
     End Select
 End Function
@@ -116,4 +127,64 @@ Public Sub rayCast(src As Vector2i, dst As Vector2i, ByVal callback As RAY_CALLB
         Exit Sub  ' Stop, since reached the edge of the map.
     End If
     rayCallback callback, dst, True
+End Sub
+
+'-----------------------------------------------------------------------------------
+' Will return false when we've hit the edge of the grid
+Private Function getTileHeightCallback(pos As Vector2i, ByVal dist As Long) As Boolean
+    Dim HasTallStructure As Boolean, height As Long, heightDiff As Long, newPitch As Long
+
+    ' Are we still on the grid?
+    If clipXY(pos.x, pos.y) Then
+        HasTallStructure = (blockTile(map_coord(pos.x), map_coord(pos.y), AUX_MAP) And AIR_BLOCKED) <> 0
+
+        If dist > TILE_UNITS Or HasTallStructure Then
+            ' Only do it the current tile is > TILE_UNITS away from the starting tile. Or..
+            ' there is a tall structure  on the current tile and the current tile is not the starting tile.
+            ' Get height at this intersection point
+            height = map_Height(pos.x, pos.y)
+
+            If HasTallStructure Then
+                height = height + TALLOBJECT_ADJUST
+            End If
+
+            If height <= help_height Then
+                heightDiff = 0
+            Else
+                heightDiff = height - help_height
+            End If
+
+            ' Work out the angle to this point from start point
+            newPitch = iAtan2(heightDiff, dist)
+
+            ' Is this the steepest we've found?
+            If angleDelta(newPitch - help_pitch) > 0 Then
+                ' Yes, then keep a record of it
+                help_pitch = newPitch
+            End If
+            '---
+        End If
+
+        ' Not at edge yet - so exit
+        getTileHeightCallback = True
+        Exit Function
+    End If
+
+    ' We've hit edge of grid - so exit!!
+    getTileHeightCallback = False
+End Function
+
+' void getBestPitchToEdgeOfGrid(UDWORD x, UDWORD y, uint16_t direction, uint16_t *pitch)
+Public Sub getBestPitchToEdgeOfGrid(ByVal x As Long, ByVal y As Long, ByVal direction As Long, pitch As Long)
+    Dim src As Vector2i, dst As Vector2i
+    help_height = map_Height(x, y)          ' HeightCallbackHelp_t help = {map_Height(x, y), 0};
+    help_pitch = 0
+
+    src.x = x                               ' Vector3i src(x, y, 0);
+    src.y = y
+    dst.x = x + iSinR(direction, 5430)      ' Vector3i delta(iSinCosR(direction, 5430), 0);
+    dst.y = y + iCosR(direction, 5430)
+    rayCast src, dst, RAY_CALLBACK_TILE_HEIGHT  ' FIXME Magic value
+
+    pitch = help_pitch
 End Sub

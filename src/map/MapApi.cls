@@ -67,6 +67,35 @@ Public Enum MAP_TILESET
     MAP_TILESET_ROCKIES = 2
 End Enum
 
+' map_package.h: enum class LevelFormat
+Public Enum LevelFormat
+    LevelFormat_LEV = 0                 ' the old (classic) .lev file format
+    LevelFormat_JSON = 1                ' the new (in-folder) level.json format
+End Enum
+
+' map_package.h: enum class MapPackage::MapPackageType
+Public Enum MapPackageType
+    MapPackageType_Map_Plain = 0        ' a package that contains only a map
+    MapPackageType_Map_Mod = 1          ' a package that contains a map and (potentially) other modifications to core game files / textures / data (i.e. a "map mod")
+End Enum
+
+' map_package.h: enum MapPackage::ModTypes (flags)
+Public Enum ModTypes
+    ModTypes_GameModels = 1             ' .pie models (for components, features, structs, misc)
+    ModTypes_Effects = 2                ' .pie models (for effects)
+    ModTypes_Shaders = 4                ' shaders
+    ModTypes_Stats = 8                  ' stats modifications
+    ModTypes_Textures = 16              ' texpages
+    ModTypes_Scripts = 32               ' script / rule modifications
+    ModTypes_SkirmishAI = 64            ' skirmish AI modifications
+    ModTypes_Messages = 128             ' messages
+    ModTypes_MiscUI = 256               ' fonts, icons, images
+    ModTypes_Sound = 512                ' audio, sequenceaudio
+    ModTypes_Tilesets = 1024            ' tileset
+    ModTypes_Datasets = 2048            ' wrf
+    ModTypes_LastModType = 2048         ' static constexpr ModTypes LastModType = ModTypes::Datasets
+End Enum
+
 ' map.h: Various defines needed by both maplib and the game's map-handling code
 Public Enum map_h_defines
     MAP_MAXWIDTH = 256
@@ -177,3 +206,26 @@ End Function
 Public Sub trimTechLevelFromMapName(mapName As String)
     map_package_c.trimTechLevelFromMapName mapName
 End Sub
+
+' map_package.h: MapPackage::loadPackage (pMapIO Nothing: a StdIOProvider); Nothing when it fails
+Public Function MapPackage_loadPackage(ByVal pathToMapPackage As String, Optional ByVal logger As LoggingProtocol = Nothing, Optional ByVal pMapIO As IOProvider = Nothing) As MapPackage
+    Set MapPackage_loadPackage = map_package_c.MapPackage_loadPackage(pathToMapPackage, logger, pMapIO)
+End Function
+
+' map_package.h: loadLevelDetails, loadLevelDetails_LEV, loadLevelDetails_JSON (Nothing: nullopt)
+Public Function loadLevelDetails(ByVal levelFile As String, ByVal mapIO As IOProvider, Optional ByVal pCustomLogger As LoggingProtocol = Nothing) As LevelDetails
+    Set loadLevelDetails = map_package_c.loadLevelDetails(levelFile, mapIO, pCustomLogger)
+End Function
+
+Public Function loadLevelDetails_LEV(ByVal levelFile As String, ByVal mapIO As IOProvider, Optional ByVal pCustomLogger As LoggingProtocol = Nothing) As LevelDetails
+    Set loadLevelDetails_LEV = map_package_c.loadLevelDetails_LEV(levelFile, mapIO, pCustomLogger)
+End Function
+
+Public Function loadLevelDetails_JSON(ByVal levelJsonFile As String, ByVal mapIO As IOProvider, Optional ByVal pCustomLogger As LoggingProtocol = Nothing) As LevelDetails
+    Set loadLevelDetails_JSON = map_package_c.loadLevelDetails_JSON(levelJsonFile, mapIO, pCustomLogger)
+End Function
+
+' map_package.h: loadGamFile (Nothing: nullopt)
+Public Function loadGamFile(ByVal gamFile As String, ByVal mapIO As IOProvider, Optional ByVal pCustomLogger As LoggingProtocol = Nothing) As GamInfo
+    Set loadGamFile = map_package_c.loadGamFile(gamFile, mapIO, pCustomLogger)
+End Function

@@ -7,16 +7,19 @@ Attribute VB_Name = "multiplay_c"
 ' recvMessage, HandleBadParam), the research messages (SendResearch,
 ' recvResearch, sendResearchStatus, recvResearchStatus),
 ' findResearchingFacilityByResearchIndex (the list overload is _lists),
-' recvDestroyFeature, NetworkTextMessage (its constructor and enqueue),
-' printInGameTextMessage, the beacons (sendBeacon, CreateBeaconViewData,
+' recvDestroyFeature, NetworkTextMessage (its constructor, enqueue,
+' receive and decode), printInGameTextMessage, the chat messages
+' (sendInGameSystemMessage, receiveInGameTextMessage, recvTextMessageAI,
+' the spectators' messages), the beacons (sendBeacon, CreateBeaconViewData,
 ' findBeaconMsg, addBeaconBlip, sendBeaconToPlayer, recvBeacon),
 ' resetReadyStatus, findPlayerIndexByPosition, makePlayerSpectator,
+' the auto-kick routines (lag, desync, not ready), the win sequence,
+' setPlayerName, setPlayerMuted, the data check 2, the map and mod
+' transfer (sendMap, recvMapFileRequested, recvMapFileData),
 ' multiPlayerLoop and openchannels (multiplay_c_init gives its
-' initialiser). A NETQUEUE is WzNet's Long (NETQUEUE_index, ...).
-' What recvMessage hands on to the chat, lobby, votes, gifts, ... is
-' stubs_game's for now. Its globals (game, ingame, bMultiPlayer,
-' bMultiMessages, ...) are still stubs_game's; the multiplayer code comes
-' with clusters B and J.
+' initialiser). A NETQUEUE is WzNet's Long (NETQUEUE_index, ...). Its
+' globals (game, ingame, bMultiPlayer, bMultiMessages, ...) are still
+' stubs_game's.
 Option Explicit
 
 Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As Currency) As Long
@@ -53,6 +56,27 @@ End Type
 
 Public beaconReceiveMsg(0 To MAX_PLAYERS - 1) As String    ' char[MAX_PLAYERS][MAX_CONSOLE_STRING_LENGTH]: beacon msg for each player
 
+'--------------------------------------------------------------------------
+' Cluster J (fork JL): the network's game side of multiplay.cpp: the auto-kick routines (lag, desync, not ready), the
+' win sequence, setPlayerName, setPlayerMuted, the data check 2, the chat messages' decoding and receiving, the map and
+' mod transfer (the files through NetPlay.players[i].wzFiles, WzNet's). std::chrono::steady_clock::time_points are
+' QueryPerformanceCounter counts (perfFreqJ the frequency).
+
+Private Declare Function QueryPerformanceCounter_J Lib "kernel32" Alias "QueryPerformanceCounter" (lpPerformanceCount As Currency) As Long
+Private Declare Function QueryPerformanceFrequency_J Lib "kernel32" Alias "QueryPerformanceFrequency" (lpFrequency As Currency) As Long
+Private perfFreqJ As Currency
+Private Const MAX_CONNECTED_PLAYERS_J As Long = MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS
+Private Const MAX_NET_TRANSFERRABLE_FILE_SIZE As Long = &H8000000    ' netplay.h
+
+Private Const DATACHECK2_INTERVAL_MS As Long = 10000
+Private Const LAG_INITIAL_LOAD_GRACEPERIOD As Long = 60
+Private Const LAG_CHECK_INTERVAL As Long = 1000
+Private Const DESYNC_CHECK_INTERVAL As Long = 1000
+Private Const NOTREADY_CHECK_INTERVAL As Long = 1000
+
+' multiplayerWinSequence's statics
+Private winSeqPos As Vector3i          ' static Position pos = Position(0, 0, 0);
+Private winSeqLast As Long             ' static UDWORD last = 0;
 
 ' (VB) the C++ initialisers of this module's globals (Sub Main calls it)
 Public Sub multiplay_c_init()
@@ -1518,4 +1542,1042 @@ Public Function multiPlayerLoop() As Boolean
         multiplayerWinSequence False
     End If
     multiPlayerLoop = True
+End Function
+
+' (VB) std::chrono::duration_cast<std::chrono::milliseconds>(a - b).count()
+Private Function steadyMsBetween(ByVal a As Currency, ByVal b As Currency) As Double
+    If perfFreqJ = 0 Then QueryPerformanceFrequency_J perfFreqJ
+    steadyMsBetween = Fix(CDbl(a - b) * 1000# / CDbl(perfFreqJ))
+End Function
+
+' (VB) std::chrono::duration_cast<std::chrono::seconds>(a - b).count()
+Private Function steadySecondsBetween(ByVal a As Currency, ByVal b As Currency) As Double
+    If perfFreqJ = 0 Then QueryPerformanceFrequency_J perfFreqJ
+    steadySecondsBetween = Fix(CDbl(a - b) / CDbl(perfFreqJ))
+End Function
+
+' (VB) base64Encode(identity.toBytes(EcKey::Public))
+Private Function publicKeyB64(identity As EcKey) As String
+    Dim b() As Byte, n As Long
+    n = EcKey_toBytes(identity, EcKey_Public, b)
+    publicKeyB64 = base64Encode(b, n)
+End Function
+
+' ////////////////////////////////////////////////////////////////////////////
+' Auto Bad Connection Kick Handling
+
+Public Sub autoLagKickRoutine(ByVal now_ As Currency)
+    Dim LagAutoKickSeconds As Long, LagKickAggressiveness As Long, isLobby As Boolean, isInitialLoad As Boolean
+    Dim numPlayersLoaded As Long, totalNumPlayers As Long, playerCheckLimit As Long, i As Long, isLagging As Boolean
+    Dim isWaitingForInitialLoad As Boolean, waitingForLoadTime As Double, loadGracePeriod As Long, LagSecondsCount As Long
+    Dim msg As String, identity As EcKey
+    If Not bMultiPlayer Or Not NetPlay_bComms Or Not NetPlay_isHost Then
+        Exit Sub
+    End If
+
+    LagAutoKickSeconds = war_getAutoLagKickSeconds()
+    If LagAutoKickSeconds <= 0 Then
+        Exit Sub
+    End If
+    LagKickAggressiveness = war_getAutoLagKickAggressiveness()
+    If LagKickAggressiveness < 1 Then LagKickAggressiveness = 1
+
+    If steadyMsBetween(now_, ingame.lastLagCheck) < LAG_CHECK_INTERVAL Then
+        Exit Sub
+    End If
+
+    isLobby = ingame.localJoiningInProgress
+    isInitialLoad = Not isLobby And Not ingame.has_TimeEveryoneIsInGame
+    numPlayersLoaded = 0
+    totalNumPlayers = 0
+
+    ingame.lastLagCheck = now_
+    If isLobby Or isInitialLoad Then playerCheckLimit = MAX_CONNECTED_PLAYERS_J Else playerCheckLimit = MAX_PLAYERS
+    For i = 0 To playerCheckLimit - 1
+        If Not isHumanPlayer(i) Or Not NetPlay_players_heartbeat(i) Then
+            GoTo continue_
+        End If
+        If i = NetPlay_hostPlayer Then
+            GoTo continue_
+        End If
+        If i > MAX_PLAYERS And Not gtimeShouldWaitForPlayer(i) Then
+            GoTo continue_
+        End If
+
+        If i < MAX_PLAYERS Then
+            totalNumPlayers = totalNumPlayers + 1
+            If Not ingame.JoiningInProgress(i) Then
+                numPlayersLoaded = numPlayersLoaded + 1
+            End If
+        End If
+
+        isLagging = Not ULT(ingame.PingTimes(i), PING_LIMIT)
+        isWaitingForInitialLoad = isInitialLoad And ingame.JoiningInProgress(i)
+        If isWaitingForInitialLoad Then
+            waitingForLoadTime = steadySecondsBetween(now_, ingame.startTime)
+            loadGracePeriod = LAG_INITIAL_LOAD_GRACEPERIOD
+            If i > MAX_PLAYERS Then
+                ' special handling for spectator slots:
+                ' if all actual players are loaded
+                ' - reduce the grace period for spectators to load
+                ' - reduce the applicable auto lag kick time
+                If totalNumPlayers > 0 And numPlayersLoaded = totalNumPlayers And i <> NetPlay_hostPlayer Then
+                    loadGracePeriod = 0
+                    If LagAutoKickSeconds > 10 Then LagAutoKickSeconds = 10 ' (fine to set this here because any i after this will all be spectators)
+                End If
+            End If
+            If waitingForLoadTime < loadGracePeriod Then
+                ' within grace period for initial load (some machines may take longer to load into the match)
+                isLagging = False
+                isWaitingForInitialLoad = False
+            Else
+                ' exceeded the grace period for initial load, and still waiting on this player to join
+                ' treat them as lagging below
+            End If
+        End If
+
+        If Not isLagging And Not isWaitingForInitialLoad Then
+            If ingame.LagCounter(i) > 0 Then
+                ingame.LagCounter(i) = ingame.LagCounter(i) - 1
+            End If
+            GoTo continue_
+        End If
+
+        If ingame.PendingDisconnect(i) Then
+            ' player already technically left, but we're still in the "pre-game" phase so the GAME_PLAYER_LEFT hasn't been processed yet
+            GoTo continue_
+        End If
+
+        ingame.LagCounter(i) = ingame.LagCounter(i) + LagKickAggressiveness
+        LagSecondsCount = ingame.LagCounter(i) \ LagKickAggressiveness
+        If LagSecondsCount >= LagAutoKickSeconds Then
+            msg = va("Auto-kicking player %u (""%s"") because of ping issues. (Timeout: %u seconds)", i, getPlayerName(i, True), LagAutoKickSeconds)
+            debug_ 224, LOG_INFO, "autoLagKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+            If wz_command_interface_enabled() Then
+                identity = getOutputPlayerIdentity(i)
+                wz_command_interface_output "WZEVENT: lag-kick: %u %s %s" & vbLf, i, NetPlay_players_IPtextAddress(i), publicKeyB64(identity)
+            End If
+            kickPlayer i, "Your connection was too laggy.", ERROR_CONNECTION, False
+            ingame.LagCounter(i) = 0
+        ElseIf LagSecondsCount = (LagAutoKickSeconds - 3) Then
+            msg = va("Auto-kicking player %u (""%s"") in %u seconds. (lag)", i, getPlayerName(i, True), (LagAutoKickSeconds - LagSecondsCount))
+            debug_ 236, LOG_INFO, "autoLagKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+        ElseIf LagSecondsCount Mod 15 = 0 Then ' every 15 seconds
+            msg = va("Auto-kicking player %u (""%s"") in %u seconds. (lag)", i, getPlayerName(i, True), (LagAutoKickSeconds - LagSecondsCount))
+            debug_ 241, LOG_INFO, "autoLagKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+        End If
+continue_:
+    Next
+End Sub
+
+Public Sub autoDesyncKickRoutine(ByVal now_ As Currency)
+    Dim DesyncAutoKickSeconds As Long, playerCheckLimit As Long, i As Long, isDesynced As Boolean, msg As String
+    Dim identity As EcKey
+    If Not bMultiPlayer Or Not NetPlay_bComms Or Not NetPlay_isHost Then
+        Exit Sub
+    End If
+
+    DesyncAutoKickSeconds = war_getAutoDesyncKickSeconds()
+    If DesyncAutoKickSeconds <= 0 Then
+        Exit Sub
+    End If
+
+    If steadyMsBetween(now_, ingame.lastDesyncCheck) < DESYNC_CHECK_INTERVAL Then
+        Exit Sub
+    End If
+
+    If ingame.has_endTime Then
+        ' game ended - skip desync check / kick
+        Exit Sub
+    End If
+
+    ingame.lastDesyncCheck = now_
+    playerCheckLimit = MAX_PLAYERS
+    For i = 0 To playerCheckLimit - 1
+        If Not isHumanPlayer(i) Or Not NetPlay_players_heartbeat(i) Then
+            GoTo continue_
+        End If
+        If i = NetPlay_hostPlayer Then
+            GoTo continue_
+        End If
+        If i > MAX_PLAYERS And Not gtimeShouldWaitForPlayer(i) Then
+            GoTo continue_
+        End If
+
+        isDesynced = NETcheckPlayerConnectionStatus(CONNECTIONSTATUS_DESYNC, i)
+        If Not isDesynced Then
+            ingame.DesyncCounter(i) = 0
+            GoTo continue_
+        End If
+
+        If ingame.PendingDisconnect(i) Then
+            ' player already technically left, but we're still in the "pre-game" phase so the GAME_PLAYER_LEFT hasn't been processed yet
+            GoTo continue_
+        End If
+
+        ingame.DesyncCounter(i) = ingame.DesyncCounter(i) + 1
+
+        If ingame.DesyncCounter(i) >= DesyncAutoKickSeconds Then
+            msg = va("Auto-kicking player %u (""%s"") because of desync. (Timeout: %u seconds)", i, getPlayerName(i, True), DesyncAutoKickSeconds)
+            debug_ 308, LOG_INFO, "autoDesyncKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+            If wz_command_interface_enabled() Then
+                identity = getOutputPlayerIdentity(i)
+                wz_command_interface_output "WZEVENT: desync-kick: %u %s %s" & vbLf, i, NetPlay_players_IPtextAddress(i), publicKeyB64(identity)
+            End If
+            kickPlayer i, "Your game simulation deviated too far from the host - desync.", ERROR_CONNECTION, False
+            ingame.DesyncCounter(i) = 0
+        ElseIf ingame.DesyncCounter(i) >= (DesyncAutoKickSeconds - 3) Then
+            msg = va("Auto-kicking player %u (""%s"") in %u seconds. (desync)", i, getPlayerName(i, True), (DesyncAutoKickSeconds - ingame.DesyncCounter(i)))
+            debug_ 320, LOG_INFO, "autoDesyncKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+        ElseIf ingame.DesyncCounter(i) Mod 2 = 0 Then ' every 2 seconds
+            msg = va("Auto-kicking player %u (""%s"") in %u seconds. (desync)", i, getPlayerName(i, True), (DesyncAutoKickSeconds - ingame.DesyncCounter(i)))
+            debug_ 325, LOG_INFO, "autoDesyncKickRoutine", "%s", msg
+            sendInGameSystemMessage msg
+        End If
+continue_:
+    Next
+End Sub
+
+' ////////////////////////////////////////////////////////////////////////////
+
+' uint64_t calculateSecondsNotReadyForPlayer(size_t i, std::chrono::steady_clock::time_point now) (a Double)
+Public Function calculateSecondsNotReadyForPlayer(ByVal i As Long, ByVal now_ As Currency) As Double
+    Dim totalSecondsNotReady As Double
+    If i >= NetPlay_players_size() Then calculateSecondsNotReadyForPlayer = 0: Exit Function
+    totalSecondsNotReady = ingame.secondsNotReady(i)
+    If ingame.has_lastNotReadyTimes(i) Then
+        ' accumulate time since last not ready
+        totalSecondsNotReady = totalSecondsNotReady + steadySecondsBetween(now_, ingame.lastNotReadyTimes(i))
+    End If
+    calculateSecondsNotReadyForPlayer = totalSecondsNotReady
+End Function
+
+Public Sub autoLobbyNotReadyKickRoutine(ByVal now_ As Currency)
+    Dim isLobby As Boolean, NotReadyAutoKickSeconds As Long, queuedToKickIdx(0 To MAX_PLAYER_SLOTS + MAX_SPECTATOR_SLOTS - 1) As Boolean
+    Dim i As Long, totalSecondsNotReady As Double, msg As String, identity As EcKey
+    If Not bMultiPlayer Or Not NetPlay_bComms Or Not NetPlay_isHost Then
+        Exit Sub
+    End If
+
+    isLobby = ingame.localJoiningInProgress
+    If Not isLobby Then
+        Exit Sub
+    End If
+
+    If Not multiplayPlayersShouldCheckReady() Then
+        ' If players can't check ready, skip
+        Exit Sub
+    End If
+
+    NotReadyAutoKickSeconds = war_getAutoNotReadyKickSeconds()
+    If NotReadyAutoKickSeconds <= 0 Then
+        Exit Sub
+    End If
+
+    If steadyMsBetween(now_, ingame.lastNotReadyCheck) < NOTREADY_CHECK_INTERVAL Then
+        Exit Sub
+    End If
+
+    ingame.lastNotReadyCheck = now_
+
+    For i = 0 To MAX_CONNECTED_PLAYERS_J - 1
+        If Not isHumanPlayer(i) Then
+            GoTo continue_
+        End If
+        If i = NetPlay_hostPlayer Then
+            GoTo continue_
+        End If
+        If i > MAX_PLAYERS And Not gtimeShouldWaitForPlayer(i) Then
+            GoTo continue_
+        End If
+        If ingame.PendingDisconnect(i) Then
+            ' player already technically left, but we're still in the "pre-game" phase so the GAME_PLAYER_LEFT hasn't been processed yet
+            GoTo continue_
+        End If
+
+        totalSecondsNotReady = calculateSecondsNotReadyForPlayer(i, now_)
+        If totalSecondsNotReady >= NotReadyAutoKickSeconds Then
+            ' record that player should be kicked, but wait to kick until after processing all slots
+            queuedToKickIdx(i) = True
+        ElseIf Not NetPlay_players_ready(i) And totalSecondsNotReady >= (NotReadyAutoKickSeconds - 8) Then
+            sendQuickChat_data WzQuickChatMessage_INTERNAL_LOCALIZED_LOBBY_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), _
+                WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_Context_NotReadyKickWarning, i, FromU32(NotReadyAutoKickSeconds - totalSecondsNotReady))
+        End If
+continue_:
+    Next
+
+    ' actually process pending kicks
+    For i = 0 To MAX_CONNECTED_PLAYERS_J - 1
+        If queuedToKickIdx(i) Then
+            msg = va("Auto-kicking player %u (""%s"") because they aren't ready. (Timeout: %u seconds)", i, getPlayerName(i), NotReadyAutoKickSeconds)
+            debug_ 418, LOG_INFO, "autoLobbyNotReadyKickRoutine", "%s", msg
+            sendQuickChat_data WzQuickChatMessage_INTERNAL_LOCALIZED_LOBBY_NOTICE, realSelectedPlayer, WzQuickChatTargeting_targetAll(), _
+                WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_constructMessageData(WzQuickChatDataContexts_INTERNAL_LOCALIZED_LOBBY_NOTICE_Context_NotReadyKicked, i, NotReadyAutoKickSeconds)
+            If wz_command_interface_enabled() Then
+                identity = getOutputPlayerIdentity(i)
+                wz_command_interface_output "WZEVENT: notready-kick: %u %s %s" & vbLf, i, NetPlay_players_IPtextAddress(i), publicKeyB64(identity)
+            End If
+            kickPlayer i, "You have been removed from the room." & vbLf & "You have spent too much time without checking Ready." & vbLf & vbLf & _
+                "In the future, please check Ready and leave it checked, to avoid delaying games for other players.", ERROR_CONNECTION, False
+        End If
+    Next
+End Sub
+
+' ////////////////////////////////////////////////////////////////////////////
+' throw a party when you win!
+Public Function multiplayerWinSequence(ByVal firstCall As Boolean) As Boolean
+    Dim rotAmount As Single, it As Long, psStruct As Long, pos2 As Vector3i
+    If selectedPlayer >= MAX_PLAYERS Then
+        multiplayerWinSequence = False
+        Exit Function
+    End If
+
+    If firstCall Then
+        winSeqPos = cameraToHome(selectedPlayer, True, False) ' pan the camera to home if not already doing so
+        winSeqLast = 0
+
+        ' stop all research
+        CancelAllResearch selectedPlayer
+
+        ' stop all manufacture.
+        it = apsStructLists(selectedPlayer).head
+        Do While it <> 0
+            psStruct = lnObj(it)
+            If psStruct <> 0 And STRUCTURE_isFactory(psStruct) Then
+                If aStruct(psStruct).functionality.factory.psSubject <> 0 Then 'check if active
+                    cancelProduction psStruct, ModeQueue
+                End If
+            End If
+            it = lnNext(it)
+        Loop
+    End If
+
+    ' rotate world
+    If MissionResUp And Not getWarCamStatus() Then
+        rotAmount = graphicsTimeAdjustedIncrement(MAP_SPIN_RATE / 12)
+        playerPos.r.y = CLng(Fix(CSng(playerPos.r.y) + rotAmount))
+    End If
+
+    If ULT(gameTime, winSeqLast) Then
+        winSeqLast = 0
+    End If
+    If ULT(gameTime - winSeqLast, 500) Then         ' only  if not done recently.
+        multiplayerWinSequence = True
+        Exit Function
+    End If
+    winSeqLast = gameTime
+
+    If rand() Mod 3 = 0 Then
+        pos2 = winSeqPos
+        pos2.x = pos2.x + (rand() Mod world_coord(8)) - world_coord(4)
+        pos2.z = pos2.z + (rand() Mod world_coord(8)) - world_coord(4)
+
+        If pos2.x < 0 Then
+            pos2.x = 128
+        End If
+
+        If ULT(world_coord(mapWidth), pos2.x) Then
+            pos2.x = world_coord(mapWidth)
+        End If
+
+        If pos2.z < 0 Then
+            pos2.z = 128
+        End If
+
+        If ULT(world_coord(mapHeight), pos2.z) Then
+            pos2.z = world_coord(mapHeight)
+        End If
+
+        addEffect pos2, EFFECT_FIREWORK, FIREWORK_TYPE_LAUNCHER, False, 0, 0 ' throw up some fire works.
+    End If
+
+    ' show the score..
+
+    multiplayerWinSequence = True
+End Function
+
+Public Function setPlayerName(ByVal player As Long, ByVal sName As String) As Boolean
+    If Not (player < MAX_CONNECTED_PLAYERS_J And player >= 0) Then ASSERT_FAILURE "player < MAX_CONNECTED_PLAYERS && player >= 0", "src/multiplay.cpp:892", "setPlayerName", "Player index (%u) out of range", player: setPlayerName = False: Exit Function
+    NetPlay_players_name(player) = Left$(sName, 64 - 1)    ' sstrcpy(NetPlay.players[player].name, sName) (char name[StringSize])
+    setPlayerName = True
+End Function
+
+Public Sub setPlayerMuted(ByVal playerIdx As Long, ByVal muted As Boolean)
+    Dim trueId As TrueIdentity
+    If Not ULT(playerIdx, MAX_CONNECTED_PLAYERS_J) Then ASSERT_FAILURE "playerIdx < MAX_CONNECTED_PLAYERS", "src/multiplay.cpp:2024", "setPlayerMuted", "Invalid playerIdx: %u", playerIdx: Exit Sub
+    If muted = ingame.muteChat(playerIdx) Then
+        ' no change
+        Exit Sub
+    End If
+    ingame.muteChat(playerIdx) = muted
+    If isHumanPlayer(playerIdx) Then
+        trueId = getTruePlayerIdentity(playerIdx)
+        If Not EcKey_empty(trueId.identity) And (NetPlay_isHost Or Not isBlindPlayerInfoState()) Then
+            storePlayerMuteOption NetPlay_players_name(playerIdx), trueId.identity, muted
+        End If
+    End If
+End Sub
+
+Public Function isPlayerMuted(ByVal sender As Long) As Boolean
+    If Not ULT(sender, MAX_CONNECTED_PLAYERS_J) Then ASSERT_FAILURE "sender < MAX_CONNECTED_PLAYERS", "src/multiplay.cpp:2044", "isPlayerMuted", "Invalid sender: %u", sender: Exit Function
+    isPlayerMuted = ingame.muteChat(sender) Or Not ingame.hostChatPermissions(sender)
+End Function
+
+Public Sub printConsoleNameChange(ByVal oldName As String, ByVal newName As String)
+    If game.blindMode <> BLIND_MODE_NONE Then
+        Exit Sub
+    End If
+    ' ssprintf(msg, "%s \u2192 %s", oldName, newName) into char msg[MAX_CONSOLE_STRING_LENGTH] (the names fit)
+    displayRoomSystemMessage oldName & " " & ChrW$(&H2192) & " " & newName
+End Sub
+
+Public Function getPlayerColourName(ByVal player As Long) As String
+    ' static const char *playerColors[] (N_(): no translations here)
+    ' STATIC_ASSERT(MAX_PLAYERS <= ARRAY_SIZE(playerColors));
+    If Not ULT(player, 16) Then ASSERT_FAILURE "player < ARRAY_SIZE(playerColors)", "src/multiplay.cpp:2730", "getPlayerColourName", "player number (%d) exceeds maximum (%lu)", player, 16
+
+    If Not ULT(player, 16) Then
+        getPlayerColourName = ""
+        Exit Function
+    End If
+
+    Select Case getPlayerColour(player)
+    Case 0: getPlayerColourName = "Green"
+    Case 1: getPlayerColourName = "Orange"
+    Case 2: getPlayerColourName = "Grey"
+    Case 3: getPlayerColourName = "Black"
+    Case 4: getPlayerColourName = "Red"
+    Case 5: getPlayerColourName = "Blue"
+    Case 6: getPlayerColourName = "Pink"
+    Case 7: getPlayerColourName = "Cyan"
+    Case 8: getPlayerColourName = "Yellow"
+    Case 9: getPlayerColourName = "Purple"
+    Case 10: getPlayerColourName = "White"
+    Case 11: getPlayerColourName = "Bright blue"
+    Case 12: getPlayerColourName = "Neon green"
+    Case 13: getPlayerColourName = "Infrared"
+    Case 14: getPlayerColourName = "Ultraviolet"
+    Case 15: getPlayerColourName = "Brown"
+    End Select
+End Function
+
+Public Function shouldSkipReadyResetOnPlayerJoinLeaveEvent() As Boolean
+    ' If a player joins or leaves, do not reset existing player "ready" status if:
+    ' 1. It's a blind simple lobby (i.e. waiting room)
+    ' 2. min_autostart_player_count is set (ex. via the --startplayers= command line option) *and* locked.readybeforefull is false
+    shouldSkipReadyResetOnPlayerJoinLeaveEvent = isBlindSimpleLobby(game.blindMode) Or ((min_autostart_player_count() > 0) And Not getLockedOptions().readybeforefull)
+End Function
+
+' (VB) static inline std::chrono::seconds maxDataCheck2WaitSeconds() (seconds)
+Private Function maxDataCheck2WaitSeconds() As Long
+    maxDataCheck2WaitSeconds = war_getAutoLagKickSeconds() + 3
+    If maxDataCheck2WaitSeconds < 60 Then maxDataCheck2WaitSeconds = 60
+End Function
+
+Public Function sendDataCheck2() As Boolean
+    Dim now_ As Currency, maxWaitSeconds As Long, player As Long, lim As Long, msg As String, w As MessageWriter
+    Dim zOrders() As Long, nZ As Long, layerZ() As Long, layerCount() As Long, nLayers As Long, i As Long, j As Long
+    Dim layersSize As Long, zOrder As Long, cnt As Long, aiIndex As Long, bValue As Boolean, t As Long
+    If NetPlay_isHost Then
+        QueryPerformanceCounter_J now_
+        If steadyMsBetween(now_, ingame.lastPlayerDataCheck2) < DATACHECK2_INTERVAL_MS Then
+            sendDataCheck2 = True
+            Exit Function
+        End If
+
+        ' Send a request to all active players
+        maxWaitSeconds = maxDataCheck2WaitSeconds()
+        lim = game.maxPlayers
+        If lim > MAX_PLAYERS Then lim = MAX_PLAYERS
+        For player = 0 To lim - 1
+            If player = NetPlay_hostPlayer Or Not isHumanPlayer(player) Or NetPlay_players_isSpectator(player) Or Not NetPlay_players_heartbeat(player) Then
+                GoTo continue_
+            End If
+
+            ' Check when the last unanswered request was sent
+            If ingame.has_lastSentPlayerDataCheck2(player) Then
+                If steadySecondsBetween(now_, ingame.lastSentPlayerDataCheck2(player)) >= maxWaitSeconds Then
+                    ' If it's after the allowed time, kick the player
+                    If Not ingame.PendingDisconnect(player) Then
+                        msg = va("%s (%u) has an incompatible mod, and has been kicked.", getPlayerName(player), player)
+                        sendInGameSystemMessage msg
+                        addConsoleMessage msg, LEFT_JUSTIFY, NOTIFY_MESSAGE
+                    End If
+                    kickPlayer player, "Your data doesn't match the host's!", ERROR_WRONGDATA, False
+                    debug_ 1111, LOG_INFO, "sendDataCheck2", "%s (%u) did not respond with a NET_DATA_CHECK2 within the required timeframe (%s seconds), and has been kicked", getPlayerName(player), player, CStr(maxWaitSeconds)
+                    ingame.has_lastSentPlayerDataCheck2(player) = False
+                    GoTo continue_
+                End If
+            End If
+
+            Set w = NETbeginEncode(NETnetQueue(player), NET_DATA_CHECK2)
+            NETuint32_t w, NetPlay_hostPlayer
+            NETend w
+
+            If Not ingame.has_lastSentPlayerDataCheck2(player) Then
+                ingame.lastSentPlayerDataCheck2(player) = now_
+                ingame.has_lastSentPlayerDataCheck2(player) = True
+            End If
+continue_:
+        Next
+        ingame.lastPlayerDataCheck2 = now_
+        sendDataCheck2 = True
+        Exit Function
+    End If
+
+    ' For a player, respond to the host
+    Set w = NETbeginEncode(NETnetQueue(NetPlay_hostPlayer), NET_DATA_CHECK2)     ' only need to send to HOST
+    NETuint32_t w, selectedPlayer
+    NETuint32_t w, realSelectedPlayer
+    ' std::unordered_map<uint16_t, uint32_t> layers (widgForEachOverlayScreen counts each zOrder). (VB) the map's
+    ' iteration order (MSVC's buckets) is not kept: ascending zOrder (the host only looks the counts up)
+    nZ = widgGetOverlayScreenZOrders(zOrders)
+    If nZ > 0 Then
+        ReDim layerZ(0 To nZ - 1): ReDim layerCount(0 To nZ - 1)
+    End If
+    For i = 0 To nZ - 1
+        For j = 0 To nLayers - 1
+            If layerZ(j) = zOrders(i) Then Exit For
+        Next
+        If j = nLayers Then
+            layerZ(nLayers) = zOrders(i)
+            nLayers = nLayers + 1
+        End If
+        layerCount(j) = layerCount(j) + 1
+    Next
+    For i = 0 To nLayers - 2                    ' ascending zOrder
+        For j = i + 1 To nLayers - 1
+            If layerZ(j) < layerZ(i) Then
+                t = layerZ(i): layerZ(i) = layerZ(j): layerZ(j) = t
+                t = layerCount(i): layerCount(i) = layerCount(j): layerCount(j) = t
+            End If
+        Next
+    Next
+    layersSize = nLayers
+    NETuint32_t w, layersSize
+    For i = 0 To nLayers - 1
+        zOrder = layerZ(i)
+        NETuint16_t w, zOrder
+        cnt = layerCount(i)
+        NETuint32_t w, cnt
+    Next
+    For i = 0 To DATA_MAXDATA - 1
+        NETuint32_t w, DataHash(i)
+    Next
+    aiIndex = NetPlay_players_ai(realSelectedPlayer)
+    NETint8_t w, aiIndex
+    bValue = godMode
+    NETbool w, bValue
+    NETend w
+    sendDataCheck2 = True
+End Function
+
+Public Function recvDataCheck2(ByVal queue As Long) As Boolean
+    Dim player As Long, recvSelectedPlayer As Long, recvRealSelectedPlayer As Long, tempBuffer(0 To DATA_MAXDATA - 1) As Long
+    Dim aiIndex As Long, recvGM As Boolean, r As MessageReader, layersSize As Long, zOrder As Long, layerCount As Long, i As Long
+    Dim layerZ() As Long, layerN() As Long, nLayers As Long, k As Long, hasWrongData As Boolean, zCheck As Long, foundIt As Long
+    Dim msg As String, cmpEqual As Boolean
+    player = NETQUEUE_index(queue)
+    recvSelectedPlayer = 0
+    recvRealSelectedPlayer = 0
+    aiIndex = 0
+
+    If Not NetPlay_isHost Then ' the host can send NET_DATA_CHECK2 messages to clients to request a check
+        If Not (NetPlay_hostPlayer = NETQUEUE_index(queue)) Then ASSERT_FAILURE "NetPlay.hostPlayer == queue.index", "src/multiplay.cpp:1169", "recvDataCheck2", "Non-host player (%u) is sending NET_DATA_CHECK2 to us??", NETQUEUE_index(queue): recvDataCheck2 = False: Exit Function
+        Set r = NETbeginDecode(queue, NET_DATA_CHECK2)
+        NETuint32_t r, recvSelectedPlayer
+        NETend r
+        If Not (NetPlay_hostPlayer = recvSelectedPlayer) Then ASSERT_FAILURE "NetPlay.hostPlayer == recvSelectedPlayer", "src/multiplay.cpp:1173", "recvDataCheck2", "Non-host player (selectedPlayer: %u) is sending NET_DATA_CHECK2 to us??", recvSelectedPlayer: recvDataCheck2 = False: Exit Function
+        sendDataCheck2
+        recvDataCheck2 = True
+        Exit Function
+    End If
+
+    Set r = NETbeginDecode(queue, NET_DATA_CHECK2)
+    NETuint32_t r, recvSelectedPlayer
+    NETuint32_t r, recvRealSelectedPlayer
+    layersSize = 0
+    zOrder = 0
+    layerCount = 0
+    NETuint32_t r, layersSize
+    i = 0
+    Do While ULT(i, layersSize)
+        NETuint16_t r, zOrder
+        NETuint32_t r, layerCount
+        ' layers[zOrder] = layerCount;
+        For k = 0 To nLayers - 1
+            If layerZ(k) = zOrder Then Exit For
+        Next
+        If k = nLayers Then
+            ReDim Preserve layerZ(0 To nLayers): ReDim Preserve layerN(0 To nLayers)
+            layerZ(nLayers) = zOrder
+            nLayers = nLayers + 1
+        End If
+        layerN(k) = layerCount
+        i = i + 1
+    Loop
+    For i = 0 To DATA_MAXDATA - 1
+        NETuint32_t r, tempBuffer(i)
+    Next
+    NETint8_t r, aiIndex
+    NETbool r, recvGM
+    NETend r
+
+    If Not ULT(player, MAX_CONNECTED_PLAYERS_J) Then ' invalid player number.
+        debug_ 1201, LOG_ERROR, "recvDataCheck2", "invalid player number (%u) detected.", player
+        recvDataCheck2 = False
+        Exit Function
+    End If
+
+    If whosResponsible(player) <> NETQUEUE_index(queue) Then
+        HandleBadParam "NET_DATA_CHECK2 given incorrect params.", player, NETQUEUE_index(queue)
+        recvDataCheck2 = False
+        Exit Function
+    End If
+
+    If Not ULT(recvRealSelectedPlayer, NetPlay_players_size()) Then
+        HandleBadParam "NET_DATA_CHECK2 given invalid param.", recvRealSelectedPlayer, NETQUEUE_index(queue)
+        recvDataCheck2 = False
+        Exit Function
+    End If
+
+    If Not isHumanPlayer(player) Or Not NetPlay_players_heartbeat(player) Then
+        ' Ignoring
+        recvDataCheck2 = False
+        Exit Function
+    End If
+
+    debug_ 1223, LOG_NET, "recvDataCheck2", "** Received NET_DATA_CHECK2 from player %u", player
+    ingame.has_lastSentPlayerDataCheck2(player) = False
+
+    hasWrongData = False
+
+    If Not NetPlay_players_isSpectator(player) And (recvSelectedPlayer <> player Or recvRealSelectedPlayer <> player) Then
+        debug_ 1230, LOG_INFO, "recvDataCheck2", "%s (%u) has a corrupted player index. (selectedPlayer: %u, realSelectedPlayer: %u)", getPlayerName(player), player, recvSelectedPlayer, recvRealSelectedPlayer
+        hasWrongData = True
+    End If
+
+    If ULT(1024, layersSize) Then
+        debug_ 1236, LOG_INFO, "recvDataCheck2", "%s (%u) has a very high layersSize - something is probably wrong. (layersSize: %u)", getPlayerName(player), player, layersSize
+        hasWrongData = True
+    End If
+    If Not NetPlay_players_isSpectator(player) Then
+        ' for (uint16_t zCheck = 65530; zOrder < std::numeric_limits<uint16_t>::max() - 2; ++zOrder): (the C++ steps zOrder)
+        zCheck = 65530
+        Do While zOrder < 65535 - 2
+            foundIt = layerIndex(layerZ, nLayers, zCheck)
+            If foundIt >= 0 Then
+                debug_ 1247, LOG_INFO, "recvDataCheck2", "%s (%u) has an unexpected display layer. (layer: %u, count: %u)", getPlayerName(player), player, zCheck, layerN(foundIt)
+            End If
+            zOrder = (zOrder + 1) And &HFFFF&
+        Loop
+        zCheck = 65535 - 2
+        If layerIndex(layerZ, nLayers, zCheck) >= 0 And Not DebugInputManager_debugMappingsAllowed() Then
+            debug_ 1253, LOG_INFO, "recvDataCheck2", "%s (%u) has an unexpected display layer (script debugger).", getPlayerName(player), player
+            hasWrongData = True
+        End If
+        zCheck = 65535
+        foundIt = layerIndex(layerZ, nLayers, zCheck)
+        If foundIt >= 0 Then
+            If ULT(1, layerN(foundIt)) Then
+                debug_ 1260, LOG_INFO, "recvDataCheck2", "%s (%u) has an unexpected number of notification layers. (count: %u)", getPlayerName(player), player, layerN(foundIt)
+            End If
+        End If
+    End If
+
+    cmpEqual = True
+    For i = 0 To DATA_MAXDATA - 1
+        If DataHash(i) <> tempBuffer(i) Then cmpEqual = False: Exit For
+    Next
+    If Not cmpEqual Then
+        i = 0
+        Do While DataHash(i) = tempBuffer(i)
+            i = i + 1
+        Loop
+        debug_ 1271, LOG_INFO, "recvDataCheck2", "%s (%u) has an incompatible mod. ([%d] got %x, expected %x)", getPlayerName(player), player, i, tempBuffer(i), DataHash(i)
+        hasWrongData = True
+    End If
+
+    If aiIndex <> NetPlay_players_ai(player) Then
+        debug_ 1277, LOG_INFO, "recvDataCheck2", "%s (%u) has a corrupted player state value. (ai: %i; should be: %i)", getPlayerName(player), player, aiIndex, NetPlay_players_ai(player)
+        hasWrongData = True
+    End If
+
+    If Not NetPlay_players_isSpectator(player) And recvGM Then
+        If recvGM Then msg = "true" Else msg = "false"
+        debug_ 1283, LOG_INFO, "recvDataCheck2", "%s (%u) has a corrupted global state value. (godMode: %s)", getPlayerName(player), player, msg
+        hasWrongData = True
+    End If
+
+    If hasWrongData Then
+        If Not NetPlay_isHost Then
+            ASSERT_FAILURE "false", "src/multiplay.cpp:1289", "recvDataCheck2", "Host only routine detected for client!"
+            recvDataCheck2 = False
+            Exit Function
+        End If
+        msg = va("%s (%u) has an incompatible mod, and has been kicked.", getPlayerName(player), player)
+        sendInGameSystemMessage msg
+        addConsoleMessage msg, LEFT_JUSTIFY, NOTIFY_MESSAGE
+
+        kickPlayer player, "Your data doesn't match the host's!", ERROR_WRONGDATA, False
+        recvDataCheck2 = False
+        Exit Function
+    End If
+
+    recvDataCheck2 = True
+End Function
+
+' (VB) layers.find(zCheck): the index, -1 for end()
+Private Function layerIndex(layerZ() As Long, ByVal nLayers As Long, ByVal zCheck As Long) As Long
+    Dim k As Long
+    For k = 0 To nLayers - 1
+        If layerZ(k) = zCheck Then layerIndex = k: Exit Function
+    Next
+    layerIndex = -1
+End Function
+
+' bool NetworkTextMessage::receive(NETQUEUE queue)
+Public Function NetworkTextMessage_receive(m As NetworkTextMessage, ByVal queue As Long) As Boolean
+    Dim r As MessageReader
+    Set r = NETbeginDecode(queue, NET_TEXTMSG)
+    NetworkTextMessage_receive = NetworkTextMessage_decode(m, r, NETQUEUE_index(queue))
+End Function
+
+' bool NetworkTextMessage::decode(MessageReader& r, uint8_t senderIdx)
+Public Function NetworkTextMessage_decode(m As NetworkTextMessage, ByVal r As MessageReader, ByVal senderIdx As Long) As Boolean
+    m.text = ""                                 ' memset(text, 0x0, sizeof(text));
+
+    If Not (NET_TEXTMSG = MessageReader_msgType(r)) Then ASSERT_FAILURE "NET_TEXTMSG == r.msgType", "src/multiplay.cpp:2079", "decode", "Unexpected message type: %u", MessageReader_msgType(r): NetworkTextMessage_decode = False: Exit Function
+
+    NETint32_t r, m.sender
+    NETbool r, m.teamSpecific
+    NETstring r, m.text, MAX_CONSOLE_STRING_LENGTH
+    NETend r
+
+    If whosResponsible(m.sender) <> senderIdx Then
+        m.sender = senderIdx  ' Fix corrupted sender.
+    End If
+
+    If m.sender >= MAX_CONNECTED_PLAYERS_J Then
+        NetworkTextMessage_decode = False
+        Exit Function
+    End If
+    If m.sender >= 0 Then
+        If Not NetPlay_players_allocated(m.sender) And NetPlay_players_ai(m.sender) = AI_OPEN Then
+            NetworkTextMessage_decode = False
+            Exit Function
+        End If
+    End If
+
+    NetworkTextMessage_decode = True
+End Function
+
+Public Sub sendInGameSystemMessage(ByVal text As String)
+    Dim message As NetworkTextMessage
+    message = NetworkTextMessage_new(SYSTEM_MESSAGE, text)
+    printInGameTextMessage message
+    If NetPlay_isHost Or Not NetPlay_players_isSpectator(selectedPlayer) Or GetGameMode() <> GS_NORMAL Then
+        ' host + players can broadcast these at any time
+        ' spectators can only broadcast in-game system messages before the game has started (i.e. in lobby)
+        NetworkTextMessage_enqueue message, NETbroadcastQueue()
+    End If
+End Sub
+
+'
+' Read a message from the queue, and write it to the console.
+'
+' This message can be:
+' - In game chat message
+' - In game system message (player got kicked, player used cheat, etc.)
+'
+Public Function receiveInGameTextMessage(ByVal queue As Long) As Boolean
+    Dim message As NetworkTextMessage, mutedUntil As Currency
+    If Not NetworkTextMessage_receive(message, queue) Then
+        receiveInGameTextMessage = False
+        Exit Function
+    End If
+
+    If message.sender >= 0 Then
+        If isPlayerMuted(message.sender) Then
+            receiveInGameTextMessage = False
+            Exit Function
+        End If
+    End If
+
+    If message.sender >= 0 Then
+        If playerSpamMutedUntil(message.sender, mutedUntil) Then
+            ' discard messages from sender while spam-muted
+            receiveInGameTextMessage = False
+            Exit Function
+        End If
+        recordPlayerMessageSent message.sender
+    End If
+
+    printInGameTextMessage message
+    cmdInterfaceLogChatMsg message, "WZCHATGAM"
+
+    ' make some noise!
+    If GetGameMode() <> GS_NORMAL Then
+        audio_PlayTrack FE_AUDIO_MESSAGEEND
+    ElseIf Not ingame.localJoiningInProgress Then
+        audio_PlayTrack ID_SOUND_MESSAGEEND
+    End If
+
+    receiveInGameTextMessage = True
+End Function
+
+'AI multiplayer message - received message for AI (for hosted scripts)
+Public Function recvTextMessageAI(ByVal queue As Long) As Boolean
+    Dim sender As Long, receiver As Long, newmsg As String, r As MessageReader
+    Set r = NETbeginDecode(queue, NET_AITEXTMSG)
+    NETuint32_t r, sender           'in-game player index ('normal' one)
+    NETuint32_t r, receiver         'in-game player index
+    NETstring r, newmsg, MAX_CONSOLE_STRING_LENGTH
+    NETend r
+
+    If whosResponsible(sender) <> NETQUEUE_index(queue) Then
+        sender = NETQUEUE_index(queue)  ' Fix corrupted sender.
+    End If
+
+    If isPlayerMuted(sender) Then
+        recvTextMessageAI = False
+        Exit Function
+    End If
+
+    triggerEventChat sender, receiver, newmsg
+
+    recvTextMessageAI = True
+End Function
+
+' optional<NetworkTextMessage> decodeSpecInGameTextMessage(MessageReader& r, uint8_t senderIdx): False for nullopt
+Public Function decodeSpecInGameTextMessage(ByVal r As MessageReader, ByVal senderIdx As Long, result As NetworkTextMessage) As Boolean
+    Dim sender As Long, newmsg As String
+    If Not (NET_SPECTEXTMSG = MessageReader_msgType(r)) Then ASSERT_FAILURE "NET_SPECTEXTMSG == r.msgType", "src/multiplay.cpp:2248", "decodeSpecInGameTextMessage", "Unexpected message type: %u", MessageReader_msgType(r): decodeSpecInGameTextMessage = False: Exit Function
+
+    NETuint32_t r, sender           'in-game player index ('normal' one)
+    NETstring r, newmsg, MAX_CONSOLE_STRING_LENGTH
+    NETend r
+
+    If whosResponsible(sender) <> senderIdx Then
+        sender = senderIdx  ' Fix corrupted sender.
+    End If
+
+    If Not ULT(sender, MAX_CONNECTED_PLAYERS_J) Then
+        decodeSpecInGameTextMessage = False
+        Exit Function
+    End If
+    If Not NetPlay_players_allocated(sender) And NetPlay_players_ai(sender) = AI_OPEN Then
+        decodeSpecInGameTextMessage = False
+        Exit Function
+    End If
+
+    If Not NetPlay_players_isSpectator(selectedPlayer) Then
+        decodeSpecInGameTextMessage = False ' ignore
+        Exit Function
+    End If
+
+    result = NetworkTextMessage_new(sender, newmsg)
+    decodeSpecInGameTextMessage = True
+End Function
+
+Public Function recvSpecInGameTextMessage(ByVal queue As Long) As Boolean
+    Dim r As MessageReader, message As NetworkTextMessage, mutedUntil As Currency
+    Set r = NETbeginDecode(queue, NET_SPECTEXTMSG)
+    If Not decodeSpecInGameTextMessage(r, NETQUEUE_index(queue), message) Then
+        recvSpecInGameTextMessage = False
+        Exit Function
+    End If
+
+    If isPlayerMuted(message.sender) Then
+        recvSpecInGameTextMessage = False
+        Exit Function
+    End If
+
+    If message.sender >= 0 Then
+        If playerSpamMutedUntil(message.sender, mutedUntil) Then
+            ' discard messages from sender while spam-muted
+            recvSpecInGameTextMessage = False
+            Exit Function
+        End If
+        recordPlayerMessageSent message.sender
+    End If
+
+    printInGameTextMessage message
+    cmdInterfaceLogChatMsg message, "WZCHATSPC"
+
+    ' make some noise!
+    If GetGameMode() <> GS_NORMAL Then
+        audio_PlayTrack FE_AUDIO_MESSAGEEND
+    ElseIf Not ingame.localJoiningInProgress Then
+        audio_PlayTrack ID_SOUND_MESSAGEEND
+    End If
+
+    recvSpecInGameTextMessage = True
+End Function
+
+' ////////////////////////////////////////////////////////////////////////////
+' Network File packet processor.
+Public Function recvMapFileRequested(ByVal queue As Long) As Boolean
+    Dim player As Long, hash As Sha256, r As MessageReader, b() As Byte, i As Long, filename As String, mapData As LEVEL_DATASET
+    Dim mods() As WzMods_LoadedMod
+    Dim pFileHandle As Long, fileSize_64 As Double, fileSize_u32 As Long, w As MessageWriter
+    If Not NetPlay_isHost Then ASSERT_FAILURE "NetPlay.isHost", "src/multiplay.cpp:2357", "recvMapFileRequested", "Host only routine detected for client!": recvMapFileRequested = False: Exit Function
+    player = NETQUEUE_index(queue)
+    Sha256_setZero hash
+
+    Set r = NETbeginDecode(queue, NET_FILE_REQUESTED)
+    ReDim b(0 To 31)
+    NETbin r, b, 32
+    For i = 0 To 31: hash.bytes(i) = b(i): Next
+    NETend r
+
+    ' (ASSERT_OR_RETURN(false, files != nullptr, ...): WzNet's wzFiles is always made)
+    If NetPlay_players_wzFiles_hasHash(player, hash.bytes) Then
+        recvMapFileRequested = True  ' Already sending this file, do nothing.
+        Exit Function
+    End If
+
+    netPlayersUpdated = True  ' Show download icon on player.
+
+    If Sha256_equals(hash, game.hash) Then
+        addConsoleMessage "Map was requested: SENDING MAP!", DEFAULT_JUSTIFY, SYSTEM_MESSAGE
+
+        Set mapData = levFindDataSet_hash(game.map, game.hash, True)
+        If mapData Is Nothing Then ASSERT_FAILURE "mapData", "src/multiplay.cpp:2382", "recvMapFileRequested", "levFindDataSet failed for game.map: %s", game.map: recvMapFileRequested = False: Exit Function
+        If StrPtr(mapData.realFileName) = 0 Then ASSERT_FAILURE "mapData->realFileName != nullptr", "src/multiplay.cpp:2383", "recvMapFileRequested", "levFindDataSet found game.map: %s; but realFileName is empty - requesting a built-in map??", game.map: recvMapFileRequested = False: Exit Function
+        filename = mapData.realFileName
+        If Len(filename) = 0 Then
+            debug_ 2387, LOG_INFO, "recvMapFileRequested", "Unknown map requested by %u.", player
+            recvMapFileRequested = False
+            Exit Function
+        End If
+        debug_ 2390, LOG_INFO, "recvMapFileRequested", "Map was requested. Looking for %s", filename
+    Else
+        filename = getModFilename(hash)
+        If Len(filename) = 0 Then
+            debug_ 2397, LOG_INFO, "recvMapFileRequested", "Unknown file requested by %u. (Hash: %s, loadedMods: %zu)", player, Sha256_toString(hash), getLoadedMods(mods)
+            recvMapFileRequested = False
+            Exit Function
+        End If
+
+        addConsoleMessage "Mod was requested: SENDING MOD!", DEFAULT_JUSTIFY, SYSTEM_MESSAGE
+    End If
+
+    ' Checking to see if file is available...
+    pFileHandle = PHYSFS_openRead(filename)
+    If pFileHandle = 0 Then
+        debug_ 2408, LOG_ERROR, "recvMapFileRequested", "Failed to open %s for reading: %s", filename, WZ_PHYSFS_getLastError()
+        debug_ 2409, LOG_FATAL, "recvMapFileRequested", "You have a map (%s) that can't be located." & vbLf & vbLf & "Make sure it is in the correct directory and or format! (No map packs!)", filename
+        ' NOTE: if we get here, then the game is basically over, The host can't send the file for whatever reason...
+        ' Which also means, that we can't continue.
+        debug_ 2412, LOG_NET, "recvMapFileRequested", "***Host has a file issue, and is being forced to quit!***"
+        Set w = NETbeginEncode(NETbroadcastQueue(), NET_HOST_DROPPED)
+        NETend w
+        exit_ 3                 ' abort()
+    End If
+
+    fileSize_64 = PHYSFS_fileLength(pFileHandle)
+    If Not (fileSize_64 <= 4294967295#) Then ASSERT_FAILURE "fileSize_64 <= 0xFFFFFFFF", "src/multiplay.cpp:2419", "recvMapFileRequested", "File is too big!": recvMapFileRequested = False: Exit Function
+    If Not (fileSize_64 >= 0) Then ASSERT_FAILURE "fileSize_64 >= 0", "src/multiplay.cpp:2420", "recvMapFileRequested", "Filesize < 0; can't be determined": recvMapFileRequested = False: Exit Function
+    fileSize_u32 = FromU32(fileSize_64)
+    If ULT(MAX_NET_TRANSFERRABLE_FILE_SIZE, fileSize_u32) Then ASSERT_FAILURE "fileSize_u32 <= MAX_NET_TRANSFERRABLE_FILE_SIZE", "src/multiplay.cpp:2422", "recvMapFileRequested", "Filesize is too large; (size: %u)", fileSize_u32: recvMapFileRequested = False: Exit Function
+
+    ' Schedule file to be sent.
+    debug_ 2425, LOG_INFO, "recvMapFileRequested", "File is valid, sending [directory: %s] %s to client %u", PHYSFS_getRealDir(filename), filename, player
+    NetPlay_players_wzFiles_emplace_back player, pFileHandle, filename, hash.bytes, fileSize_u32
+
+    recvMapFileRequested = True
+End Function
+
+' Continue sending maps and mods.
+Public Sub sendMap()
+    Const maxMicroSecondsPerSendMapCall As Double = (4 * 1000)
+    Dim totalFilesToSend As Double, maxMicroSecondsPerFile As Double, i As Long, f As Long, done As Long
+    Dim file_startTime As Currency, now_ As Currency, file_currentDuration As Double
+    ' maximum "budget" in time per call to sendMap
+    ' (at 60fps, total frame budget is ~16ms - allocate 4ms max for each call to sendMap)
+
+    ' calculate the time budget per file
+    totalFilesToSend = 0
+    For i = 0 To MAX_CONNECTED_PLAYERS_J - 1
+        totalFilesToSend = totalFilesToSend + NetPlay_players_wzFiles_size(i)
+    Next
+    If totalFilesToSend < 1 Then
+        maxMicroSecondsPerFile = Fix(maxMicroSecondsPerSendMapCall / 1)
+    Else
+        maxMicroSecondsPerFile = Fix(maxMicroSecondsPerSendMapCall / totalFilesToSend)
+    End If
+
+    If perfFreqJ = 0 Then QueryPerformanceFrequency_J perfFreqJ
+    For i = 0 To MAX_CONNECTED_PLAYERS_J - 1
+        If NetPlay_players_wzFiles_size(i) = 0 Then GoTo continue_   ' (pFiles == nullptr: an empty list does nothing either)
+        For f = 0 To NetPlay_players_wzFiles_size(i) - 1
+            done = 0
+            QueryPerformanceCounter_J file_startTime
+            Do
+                done = NETsendFile_idx(i, f)
+                QueryPerformanceCounter_J now_
+                file_currentDuration = Fix(CDbl(now_ - file_startTime) * 1000000# / CDbl(perfFreqJ))
+            Loop While done < 100 And (file_currentDuration < maxMicroSecondsPerFile)
+            If done = 100 Then
+                netPlayersUpdated = True  ' Remove download icon from player.
+                addConsoleMessage "FILE SENT!", DEFAULT_JUSTIFY, SYSTEM_MESSAGE
+                debug_ 2472, LOG_INFO, "sendMap", "=== File has been sent to player %d ===", i
+            End If
+        Next
+        NetPlay_players_wzFiles_eraseClosed i
+continue_:
+    Next
+End Sub
+
+' Another player is broadcasting a map, recv a chunk. Returns false if not yet done.
+Public Function recvMapFileData(ByVal queue As Long) As Boolean
+    Dim targeting As WzQuickChatTargeting, mapData As LEVEL_DATASET, buf As String
+    NETrecvFile queue
+    If NET_getDownloadingWzFiles_empty() Then
+        netPlayersUpdated = True  ' Remove download icon from ourselves.
+        addConsoleMessage "MAP DOWNLOADED!", DEFAULT_JUSTIFY, SYSTEM_MESSAGE
+        targeting.all_ = True
+        sendQuickChat WzQuickChatMessage_INTERNAL_LOBBY_NOTICE_MAP_DOWNLOADED, selectedPlayer, targeting
+        debug_ 2492, LOG_INFO, "recvMapFileData", "=== File has been received. ==="
+
+        ' clear out the old level list.
+        levShutDown
+        levInitialise
+        rebuildSearchPath mod_multiplay, True  ' MUST rebuild search path for the new maps we just got!
+        pal_Init 'Update palettes.
+        If Not buildMapList() Then
+            recvMapFileData = False
+            Exit Function
+        End If
+
+        Set mapData = levFindDataSet_hash(game.map, game.hash, True)
+        If Not mapData Is Nothing Then
+            If CheckForMod(mapData.realFileName) Then
+                If game.isMapMod Then
+                    buf = "Warning, this is a map-mod, it could alter normal gameplay."
+                Else
+                    buf = "Warning, HOST has altered the game code, and can't be trusted!"
+                End If
+                addConsoleMessage buf, DEFAULT_JUSTIFY, NOTIFY_MESSAGE
+                game.isMapMod = True
+            End If
+        End If
+        If Not mapData Is Nothing Then
+            If CheckForRandom(mapData.realFileName, mapData.apDataFiles(0)) Then
+                game.isRandom = True
+            End If
+        End If
+
+        loadMapPreview False
+        recvMapFileData = True
+        Exit Function
+    End If
+
+    recvMapFileData = False
 End Function

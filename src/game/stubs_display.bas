@@ -97,38 +97,7 @@ End Function
 
 
 
-'--------------------------------------------------------------------------
-' multistat.cpp:1219 uint32_t getSelectedPlayerUnitsKilled(): the multiplayer kill count outside the campaign
-' (getMultiPlayUnitsKilled: multistat.cpp's per-player counts, not ported yet). Stand-in: missionData's.
-Public Function getSelectedPlayerUnitsKilled() As Long
-    getSelectedPlayerUnitsKilled = missionData.unitsKilled
-End Function
 
-
-' init.cpp: std::vector<TerrainShaderQuality> getAvailableTerrainShaderQualityTextures() (init_c has no
-' port of it yet: it needs init_c's searchPathRegistry). Stand-in: every quality, as the data folder
-' ships both texture packs (data/terrain_overrides/classic and high). The values in result (0-based),
-' their number returned.
-Public Function getAvailableTerrainShaderQualityTextures(result() As Long) As Long
-    ReDim result(0 To 2)
-    result(0) = CLASSIC
-    result(1) = MEDIUM
-    result(2) = NORMAL_MAPPING
-    getAvailableTerrainShaderQualityTextures = 3
-End Function
-
-' lib/framework/wzapp.h, lib/sdl/main_sdl.cpp: uint64_t wzGetCurrentSystemRAM() // gets the system RAM in MiB
-' (SDL_GetSystemRAM; WzPlatform's when it gets it). A uint64_t is a Double.
-Public Function wzGetCurrentSystemRAM() As Double
-    Dim m As MEMORYSTATUSEX_
-    m.dwLength = LenB(m)
-    If GlobalMemoryStatusEx(m) = 0 Then
-        wzGetCurrentSystemRAM = 0
-        Exit Function
-    End If
-    ' ullTotalPhys in bytes (a Currency holds the 64 bits scaled by 10000)
-    wzGetCurrentSystemRAM = Fix(CDbl(m.ullTotalPhys) * 10000# / 1048576#)
-End Function
 
 ' src/wzcrashhandlingproviders.h (the crash handler is not ported): no provider takes the tag
 Public Function crashHandlingProviderSetTag(ByVal key As String, ByVal value As String) As Boolean
@@ -286,11 +255,6 @@ End Function
 
 
 
-' src/raycast.cpp: void getBestPitchToEdgeOfGrid(UDWORD x, UDWORD y, uint16_t direction, uint16_t *pitch) (S: the
-' camera's pitch is 0 until raycast_c gets the getTileHeightCallback ray (a RAY_CALLBACK number))
-Public Sub getBestPitchToEdgeOfGrid(ByVal x As Long, ByVal y As Long, ByVal direction As Long, pitch As Long)
-    pitch = 0
-End Sub
 
 ' src/oprint.cpp: void printDroidInfo(const DROID *psDroid) (S)
 Public Sub printDroidInfo(ByVal psDroid As Long)

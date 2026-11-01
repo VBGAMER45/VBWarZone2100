@@ -1,6 +1,6 @@
 """
 zip_test.py - cluster K's test of the ported PhysFS archives (WzFramework's physfs_win.bas, physfs_zip_c.bas,
-physfs_miniz_c.bas: PhysFS 3.2.0's archiver dispatch, zip archiver and miniz inflate): builds bin/ZipTests.exe
+src/shared/miniz: PhysFS 3.2.0's archiver dispatch, zip archiver and miniz inflate): builds bin/ZipTests.exe
 (src/ziptests + those three modules + src/shared's math_vb and utf8_vb, no DLL; compiled as WzFramework is:
 no optimisation, bounds checks), runs it on a command file and checks its results against Python's zipfile:
 
@@ -42,7 +42,9 @@ import build  # noqa: E402
 FOLDER = os.path.join(ROOT, "src", "ziptests")
 WORK = os.path.join(ROOT, "build", "zip_test")
 PORTED = [("physfs_win", r"..\framework\physfs_win.bas"), ("physfs_zip_c", r"..\framework\physfs_zip_c.bas"),
-          ("physfs_miniz_c", r"..\framework\physfs_miniz_c.bas"), ("math_vb", r"..\shared\math_vb.bas"),
+          ("miniz_h", r"..\shared\miniz\miniz_h.bas"), ("miniz_tinfl_c", r"..\shared\miniz\miniz_tinfl_c.bas"),
+          ("miniz_tdefl_c", r"..\shared\miniz\miniz_tdefl_c.bas"), ("miniz_c", r"..\shared\miniz\miniz_c.bas"),
+          ("math_vb", r"..\shared\math_vb.bas"),
           ("utf8_vb", r"..\shared\utf8_vb.bas")]
 MODS = ["fractured_kingdom.wz", "reclamation.wz", "wz2100_camclassic.wz", "wz2100_campumpkin.wz"]
 

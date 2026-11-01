@@ -11,7 +11,7 @@ wait 900
 shot loaded
 click 988 33
 wait 60
-click 511 409
+click 511 418
 wait 90
 click 327 295
 wait 30

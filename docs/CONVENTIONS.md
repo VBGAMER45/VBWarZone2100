@@ -22,10 +22,13 @@ setting them up. Items marked *(decide in cluster N)* are still open.
   framework modules without state (`wztime_c`). Each project gets its own
   copy, so their state (stdio's open files) never crosses a project, and
   their names cost nothing at the DLL interfaces. Keep it small: each name
-  in it counts in all eight projects. Its subfolders are compiled only into
+  in it counts in all nine projects. Its subfolders are compiled only into
   their users (tools/build.py): `src/shared/gfx` (glm's types, gfx_api.h's
   constant buffers) into WzGfx, the exe and WzSequence; `src/shared/ogg`
-  (libogg) into WzSound and WzSequence.
+  (libogg) into WzSound and WzSequence; `src/shared/miniz` (miniz v1.11's
+  inflate and deflate with zlib's stream API) into WzFramework and WzNet;
+  `src/shared/sodium` (crc.cpp's EcKey, SessionKeys, sha256Sum, base64 over
+  libsodium's primitives) into the exe and WzNet.
 * Each module starts with a comment naming its C++ source and, for a
   partial port, what is still missing.
 * A function needed before its cluster is ported gets a stand-in in the
@@ -45,14 +48,15 @@ setting them up. Items marked *(decide in cluster N)* are still open.
 
 | Project | C++ | Uses |
 |---|---|---|
-| `WzFramework.dll` | `lib/framework`, the window-free part of `wzapp.h` (ticks, dialogs, threads), `src/wzjsonhelpers`; PhysFS 3.2.0 with its zip archiver and miniz's inflate | - |
-| `WzMap.dll` | `lib/wzmaplib` | - |
+| `WzFramework.dll` | `lib/framework`, the window-free part of `wzapp.h` (ticks, dialogs, threads), `src/wzjsonhelpers`; PhysFS 3.2.0 with its zip archiver (miniz: src/shared/miniz) | - |
+| `WzMap.dll` | `lib/wzmaplib`; script-generated maps (map_script.cpp) over chakra.dll, as the exe's scripts | - |
 | `WzSound.dll` | `lib/sound`; the decoders stb_vorbis (with libvorbis's packet API), libopus 1.5.2 (CELT, SILK), opusfile; libogg | WzFramework |
-| `WzGfx.dll` | `lib/ivis_opengl` | WzFramework |
-| `WzNet.dll` | `lib/netplay` | WzFramework |
-| `WzPlatform.dll` | `lib/sdl` (window, input, event loop, GL backend) | WzFramework, WzGfx |
+| `WzBasis.dll` | Basis Universal's transcoder at 4.7.0's commit (`basisu_transcoder.cpp`: KTX2 files of UASTC LDR 4x4 data), zstd 1.4.9's decoder (`zstddeclib.c`) | WzFramework |
+| `WzGfx.dll` | `lib/ivis_opengl` | WzFramework, WzBasis |
+| `WzNet.dll` | `lib/netplay`: the connections over Winsock, zlib streams (src/shared/miniz), the crypto (src/shared/sodium), port mapping (libplum at 4.7.0's commit), the HTTP transfers under the exe's urlrequest (`urltransfer_c`: curl's part, over Schannel); the lobby server's code is the exe's (WzNet's netlobby_c forwards to it) | WzFramework |
+| `WzPlatform.dll` | `lib/sdl` (window, input, event loop, GL backend; display modes, fullscreen, display and cursor scale, the cursors, clipboard, system information: SDL's Windows behaviour over Win32) | WzFramework, WzGfx |
 | `WzSequence.dll` | `lib/sequence` (the videos); libtheora 1.2.0's decoder; libogg | WzFramework, WzGfx, WzSound |
-| `Warzone.exe` | `src`, `lib/gamelib`, `lib/widget` | all |
+| `Warzone.exe` | `src`, `lib/gamelib`, `lib/widget`, `lib/netplay/netlobby.cpp` (it needs src/'s urlrequest and lib/widget's verifyprompt) | all |
 
 A project only calls the projects it uses. Calls the other way go through
 a callback interface (below).
@@ -417,7 +421,10 @@ QuakeVB's numeric helpers named here (`ToInt`, `SAR`, `SHL`, `SHRU`,
 * `/` is floating point; C's integer `/` is `\` (truncates like C).
 * Shifts: `x >> n` on a possibly negative value is `SAR(x, n)`; `1 << n`
   is `BIT_(n)`.
-* `Not` is bitwise: for a Long used as a boolean write `x = 0`.
+* `Not` is bitwise: for a Long used as a boolean write `x = 0`. (C's
+  `!PHYSFS_eof(f)` ported as `Not PHYSFS_eof(f)` is -2, true, at the end
+  of the file: every received map or mod failed its check and was deleted
+  until cluster S.)
 * C `(int)` truncates, VB `CLng` rounds to even: use `ToInt` (`Fix` with
   C's out-of-range result); C `floor` is `Int`.
 * A float to Long conversion out of range raises error 6; a NaN poisons the
@@ -643,6 +650,19 @@ QuakeVB's numeric helpers named here (`ToInt`, `SAR`, `SHL`, `SHRU`,
   `jsNativeFunction`): Chakra runs the scripts' floating point on the
   same thread, and a NaN a script makes would make VB's next float to
   integer conversion anywhere an overflow (error 6).
+* The x87's precision control is 64 bits in a VB process (VB's own
+  conversions set it), where the official build's scripts run at 53:
+  WzMap's map scripts set 53 bits whenever control returns to a script,
+  and then match QuickJS and ucrtbase bit for bit (Math.sqrt and pow were
+  1 ulp off otherwise). The exe's game scripts do not yet (open: rare
+  roundings could differ from the official build's).
+* `_controlfp` and other cdecl functions cannot be VB Declares (the
+  caller does not pop the arguments; a small procedure calling one
+  crashes): call them through `DispCallFunc` with CC_CDECL.
+* The exe creates its Chakra runtimes without the background JIT and GC
+  threads; WzMap's map scripts let Chakra keep them (they never run VB
+  code), and run about 14 times faster for it (0.4 s for WaterLoop). The
+  game scripts may pay the same cost (open).
 * TimerFunc (`std::function`) is the interface `ITimerFunc`
   (`ChakraTimerFunc` implements it); a timerAdditionalData is an Object;
   a uniqueTimerID (uint64_t) a Double.
@@ -690,7 +710,8 @@ QuakeVB's numeric helpers named here (`ToInt`, `SAR`, `SHL`, `SHRU`,
   `gfx_api_buffer` (no underscores in their methods: `uploadSub`); C++'s
   delete is the last reference going. An `IMAGEFILE *` is a Long handle, an
   `AtlasImageDef *` `file * &H10000 + index + 1`; a texture page is tex_c's
-  index; `iV_Image` is a public creatable class (`New iV_Image`). A PIELIGHT
+  index; `iV_Image` is a public creatable class (`New iV_Image`) implementing
+  the interface `iV_BaseImage` (see the KTX2 section). A PIELIGHT
   is a Long (r in the low byte); `WZCOL_X` is `psPalette(WZCOL_X)`.
 * **GL calls** are `gl_win`'s (generated by `tools/gen_gl.py`; never edit
   it): GL 1.0/1.1 functions are opengl32.dll's `Declare`s, later ones
@@ -728,6 +749,10 @@ every inherited method) would pass VB's limits, so:
   (Nothing = nullptr). VB's reference count is shared_ptr's; a weak pointer
   is an address (`WIDGET_fromPtr`, `W_SCREEN_fromPtr`) cleared by the
   object when it dies, or a widgweak_vb serial (`WeakWidget_lock`).
+* **A widget has its final kind while WIDGET's constructor runs**: a virtual call made there (calcLayout's
+  setGeometry calling geometryChanged) reaches the most derived class, where C++ reaches WIDGET's own; an
+  override that reads its class's fields guards against them not being made yet (the joining screen and
+  the pre-game screen do; the library fix is open: docs/PLAN.md section 37).
 * **A class's own fields** are a data class (a .cls whose header has
   `' (VB) data of widget class <Class>`), one object per level of the chain
   that has fields, read with the generated accessor `<Class>_(w).field`.
@@ -881,6 +906,126 @@ every inherited method) would pass VB's limits, so:
   `<TYPE>_from_json j, x` in the module of its C++ file (j ByRef: to_json
   makes it a new object).
 
+## The connections and the crypto (cluster J)
+
+* WzNet's connection classes (IClientConnection, IListenSocket, IConnectionPollGroup, IConnectionAddress,
+  WzConnectionProvider, OpenConnectionResult) are public, PublicNotCreatable: the joining screen (the exe)
+  opens its connection itself. `close` is `close_` (a VB keyword); the exe implements
+  IOpenConnectionCallback for the async connect's lambda.
+* No threads: PendingWritesManager's thread loop is `PendingWritesManager_pollAll` (one pass, a zero select
+  timeout), run after each write and from NETrecvNet, NETrecvGame and NETflush; openClientConnectionAsync
+  connects inside the call and calls back before returning (the callback defers with
+  wzAsyncExecOnMainThread, as 4.7.0's does).
+* A `std::error_code` is a Long: the category in the high byte (std::errc with MSVC's values, Winsock /
+  Win32, ...), the value in the low 24 bits; `net_errorMessage(ec)` is message() with MSVC's strings,
+  `net_errorEqualsErrc(ec, errc)` is `ec == std::errc::x`. `net::result<T>` returns T and sets a ByRef ec.
+* **VB clears the last error before every declared call**: GetLastError or WSAGetLastError through a
+  Declare is always 0. Read `Err.LastDllError` right after the call (WzNet wraps each Winsock call).
+* EcKey and SessionKeys are UDTs (C++'s copies are values; objects would alias), in src/shared/sodium;
+  they cross between the exe and WzNet as bytes (EcKey_toBytes / fromBytes, a SessionKeys as its two
+  keys), and so does a Sha256 (its 32 bytes). crc.cpp's thrown invalid_argument is SessionKeys_init's False
+  with `SessionKeys_lastError`. The crypto's output arrays must be dynamic (`Dim x() As Byte`): they are
+  ReDimmed. libsodium's primitives are TweetNaCl-style code (ed25519 and X25519 on 16-bit limbs in Doubles,
+  exact: products stay below 2^45) checked bit for bit against libsodium through PyNaCl.
+* zlib's streams are miniz's (v1.11), with zlib's names (`deflate`, `inflate`, `z_stream` whose next_in /
+  next_out are offsets into the arrays passed on each call). `inflate` loops as zlib's does until the input
+  or the room runs out (miniz's returns early; the network's compression adapter relies on zlib's).
+
+## The lobby, its transfers and port mapping (cluster J part 2)
+
+* netlobby.cpp, urlrequest.cpp and verifyprompt.cpp are the exe's (they need src/ and lib/widget). netplay's
+  calls to the hosting handler keep their names in WzNet's `netlobby_c`, which forwards them through
+  INetGame's `lobbyHost*` methods; the handler's events come back through NetApi
+  (`NETlobbyGameCreatedCallback`, `...Published...`, `...Gone...`, `NETtempSocketHandleLobbyJoinCheckResult`).
+  The host's identity crosses as the player index (the private key stays in the exe), GameDetails as JSON
+  text in netlobby.cpp's own to_json format.
+* curl's part of urlrequest is WzNet's `urltransfer_c` (HTTP/1.1 over Winsock, TLS over Schannel through
+  SSPI), reached through NetApi's `NETurlTransfer*` and polled from mainLoop every frame (`urlRequestPoll`).
+  It honours CURLOPT_IPRESOLVE: 4.7.0 sends the listing's requests over IPv4 and each connection's
+  registration over its own family, and the lobby takes the host's address from the request, so a transport
+  that cannot choose the family (WinHttpRequest) registers the wrong address on a machine with IPv6.
+  Certificates are Schannel's checks (chain, host name, revocation, as curl's defaults); never turn them off.
+  getaddrinfo and the revocation check block the frame; one connection per request (no reuse).
+* No threads here either: libplum's client thread is `plum_poll`. Each wait is a zero-timeout WSAPoll that
+  returns PLUM_PENDING; the waiting function keeps its locals in module variables with a resume point, and
+  the next pass jumps back in. PortMappingManager's monitor runs one pass every 50 ms. Both run from
+  `NetApi.NETflush`; a shutdown runs passes until libplum's client ends (it blocks as 4.7.0's join does).
+* Tests never touch the real router or the real lobby: configs get `portMapping=0` and a lobbyserver where
+  nothing answers, or a local mock (`tools/lobby_test.py`). Port mapping is tested against a fake router
+  through the TEST-ONLY variables `WZ_TEST_PORTMAPPING_GATEWAY` (a 127.x address, nothing else accepted) and
+  `WZ_TEST_PORTMAPPING_SSDP_PORT` (`tools/portmap_test.py`).
+* libplum's bugs are ported as they are (the PCP lifetime's byte order, the NAT-PMP epoch check: what the
+  official build does); the one deviation is no jitter where its C divides by zero. libplum is MPL 2.0: its
+  ported modules keep its copyright and notice.
+
+## The screens of cluster S (notifications, the guide, the display)
+
+* Notifications (`notifications_c`) keep the stand-ins' record: WZ_Notification's earlier fields in their
+  order, the new ones after; a callback's args(0) is the request, args(1) the dismissal reason. Preferences
+  ("seen", "do not show again") are `notifications.json` in the config folder, as 4.7.0's.
+* The Game Guide's read state lives in 4.7.0's activity database (SQLite), not ported: every game shows its
+  topics as new; the pop-ups (SHOWTOPIC_FIRSTADD) are unaffected. A pop-up pauses the game and swallows input:
+  UI scripts close it with `closeguide` (tools/make_campaign_walk.py emits it after each wait for videos and
+  before typing, embarking and clicking).
+* SQLite's other tables (the known players, the stored mute options) are `knownPlayers.json` in the config
+  folder, the same tables as JSON (multistat_c).
+* WzPlatform follows SDL's Windows behaviour over Win32: fullscreen as SDL's desktop mode (borderless) or a
+  display mode set with ChangeDisplaySettingsEx and restored on leaving, minimising and at exit; the 28
+  cursors (monochrome from `tools/gen_cursors.py`, coloured from their PNGs). Tests that could touch the
+  desktop set the TEST-ONLY `WZ_TEST_NO_DESKTOP_EFFECTS`: display-mode changes and entering fullscreen are
+  refused and logged, the cursor clip, links and folders logged, the clipboard the game's own. Set to
+  `borderless`, it makes a borderless ("Desktop Full") fullscreen window, which changes no display mode, and logs
+  the rest; only with the user's go-ahead, since the window covers the screen.
+* Map packages (a .wz of a map in maps\ or a download): libzip is not ported; `WzMapZipIO` (wzmaplib's
+  IOProvider) mounts the .wz with PhysFS's zip reader under a made-up name and a private mount point (so
+  rebuildSearchPath does not unmount it by its path), read-only as 4.7.0 opens it; `PHYSFS_mountHandle` is
+  WzFramework's. WzMap has map_package.cpp's read side (LevelDetails, GamInfo, MapPackage) and
+  map_levparse.cpp; not ported: the export, the .gam writers, map stats, the in-memory archive of replays.
+
+## KTX2 textures and the Remastered terrain (WzBasis, cluster T)
+
+* WzBasis is compiled optimised without bounds checks, as WzSound; its tests build its modules into test
+  exes twice, with bounds checks and optimised (`src/zstdtests`: tools/zstd_test.py).
+* zstd (`zstd_*` modules) follows zstddeclib.c as 4.7.0's 32-bit builds compile it: size_t and the bit
+  container are 32 bits, the reloads and the split long-offset reads are `MEM_32bits()`'s, window log 31 is
+  refused, and huf_decompress.c's 4-stream X2 loop is the `#else` branch (gcc's and MSVC's, not clang's).
+  The copies write only the regenerated bytes (C's wildcopies overrun and leave garbage past the result).
+  The decompression context is module state: `ZSTD_decompress` is not re-entrant. Error names are
+  "Error strings stripped" (ZSTD_STRIP_ERROR_STRINGS). Not ported: streaming, dictionaries, legacy frames.
+  zstd is BSD and Basis Universal Apache 2.0: tools/package.py ships both licences.
+* The transcoder (`basisu_transcoder_c`, `basisu_uastc_c`, the classes `ktx2_transcoder`, `ktx2_image_level_info`;
+  `BasisApi` forwards to the modules, whose helpers end in `_` where the API has the plain name) handles KTX2 files
+  of UASTC LDR 4x4 data to RGBA32, RGB565, BGR565, RGBA4444, ASTC 4x4, BC7, BC1, BC3, BC4 and BC5, byte for byte
+  as the C. Not ported, and `basis_is_format_supported` says false for them: ETC1/ETC2/EAC, PVRTC, ATC, FXT1 and the
+  HDR targets; ETC1S (BasisLZ) and UASTC HDR inputs; .basis files. 4.7.0's quality orders never reach the missing
+  targets on desktop GL. `basisu_tables_vb` is generated by tools/gen_basisu_tables.py (never edit it).
+  `ktx2_transcoder` keeps a copy of the file; the per-block scratch is module state (not re-entrant, as zstd).
+* **Floats in WzBasis**: storing a Single in a scalar variable does not round it in this build when the stored
+  value is reused at once (the compiler keeps the x87 register): `s = a * b: f = s` can return the unrounded
+  product. The transcoder's float helpers pass each result through a ByVal Single parameter (`r32_`). float_vb's
+  `F32` (through an array element) rounds correctly: a probe of `Fix(F32(d))`, `F32(d) = x` and `fmul` in both
+  build modes gave the float results.
+* The WZ side (`gfx_api_image_basis_priv_c`, gfx_api.cpp's BASIS_ENABLED branches in `gfx_api_c`): `iV_BaseImage`
+  is pietypes.h's base class as an interface (PublicNotCreatable), implemented by `iV_Image` and the private
+  `iV_CompressedImage`; VB refuses an implemented member with an underscore, so the interface's `pixel_format()`
+  and `data_size()` are `pixelFormat` and `dataSize` (iV_Image keeps its own names). The textures' `upload` /
+  `uploadLayer` take an iV_BaseImage; `asIV_Image` is the `dynamic_cast<iV_Image*>`. The transcoder writes into
+  the image's own array (`swapBmpBuffer`, `swapData` lend it and take it back).
+* **data\ follows 4.7.0's packaged base.wz for the textures its build converts**: data/CMakeLists.txt ships the
+  30 ground pages (page-80..109, resized to 1024) and the 9 backdrops as KTX2 and leaves their PNGs out.
+  tools/setup_data.py extracts those 39 .ktx2 from the official base.wz into ref\warzone2100\data and leaves the
+  39 source PNGs out of data\. It matters: a .png anywhere in the search path is taken before a .ktx2
+  (gfx_api.cpp's imageLoadFilenameFromInputFilename), so the source tree's 2048 pages hid high.wz's pages of the
+  same names (Remastered drew the brighter Normal pages; Arizona mixed PNG and KTX2 in one array and drew no
+  ground). Normal quality draws the 1024 KTX2 pages too, as the official build does.
+* `data\terrain_overrides\high.wz` comes from the official build (tools/setup_data.py). The source tree's empty
+  `data\terrain_overrides\high` folder also mounts as the pack: a pack elsewhere loses to it when data\ comes
+  first in the search order (a `--datadir` run), as in 4.7.0; the tests give a private exe a data mirror instead.
+* TEST-ONLY `WZ_TEST_KTX2_DUMP=<folder>` writes each level the transcoder returns (tools/ktx2_game_test.py's
+  `dump` compares them with the C). Tests: tools/zstd_test.py, tools/ktx2_test.py (BasisTests, bounds-checked and
+  optimised, against the C built with -DNDEBUG), tools/ktx2_game_test.py (the game: regress, options, switch,
+  tilesets against the official build, dump, perf).
+
 ## Tests of game state (vbtest_vb, statsref)
 
 * A test that needs fresh objects on a map it used before loads the map
@@ -900,6 +1045,11 @@ every inherited method) would pass VB's limits, so:
   stubs_game's return (`tools/statsref/statsref_render.cpp`), or put the
   VB side in the state the stand-in implies (`vbtest_vb` calls
   prepareScripts with no script loaded).
+* The map blocks run one after another in one process, and state carries
+  over (the levelled ground, the players' templates): a map one side
+  loads and the other cannot changes every later block. When the port
+  first generated the script maps, 38 of 90 outputs differed until mapref
+  and statsref linked map_script.cpp with QuickJS too.
 
 ## Generated lexers and parsers (flex, bison)
 

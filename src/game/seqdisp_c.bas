@@ -3,8 +3,8 @@ Attribute VB_Name = "seqdisp_c"
 ' intelligence screen's videos. The video player is lib/sequence's (WzSequence's SequenceApi: seq_Play,
 ' seq_Update, seq_Shutdown, seq_GetFrameTime, seq_SetDisplaySize, makeVideoProvider_file / _data); a
 ' std::shared_ptr<VideoProvider> is its VideoProvider (Nothing = nullptr). The on-demand downloader's URL
-' requests (curl, urlrequest.cpp) are not ported: urlRequestData (stubs_campaign) returns no handle, so a
-' request fails as when it cannot be made, and no response data is kept. std::vector<WzText>
+' request (urlrequest_c's urlRequestData with its onResponse keeping the data) is not ported: no request is
+' made (as when urlRequestData returns no handle), so a request fails, and no response data is kept. std::vector<WzText>
 ' wzCachedSeqText is a Collection of WzText.
 '
 ' Functions for the display of the Escape Sequences (FMV).
@@ -188,9 +188,9 @@ Private Function OnDemandVideoDownloader_requestVideoData(ByVal videoName As Str
     End If
 
     url = baseURLPath & urlEncodeVideoPathComponents(videoName)
-    ' (urlRequest.onResponse, onFailure, progressCallback and maxDownloadSizeLimit = 200 MB: the URL requests
-    ' are not ported, urlRequestData returns no handle)
-    requestHandle = urlRequestData(url)
+    ' (urlRequest.onResponse, onFailure, progressCallback and maxDownloadSizeLimit = 200 MB: this request is not
+    ' ported, as if urlRequestData returned no handle)
+    requestHandle = 0
     If requestHandle = 0 Then
         debug_ 278, LOG_ERROR, "requestVideoData", "Failed to request data: %s", url
         rd_status(requestDetails) = RequestStatus_Failure

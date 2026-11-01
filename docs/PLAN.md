@@ -293,7 +293,8 @@ Findings:
   saved as `shadows=0`, `sound=0`, `portMapping=0`, `hostingChatDefault=0`.
 * The user folders are made as in 4.7.0 (`autohost`, `mods/4.7.0/global`,
   `savegames/campaign/auto`, `replay/multiplay`, ...).
-* The data: `build.py` makes `data/` a junction to `ref/warzone2100/data`,
+* The data: `build.py` makes `data/` a mirror of `ref/warzone2100/data`
+  (real folders, the files hard links; a junction until section 35),
   so `scanDataDirs` finds it as `<prefix>\data` (priority 3). The search
   path comes out as Warzone's: the write dir, then `data\mp`, `data\`,
   `data\base`; "gamedesc.lev found at ...\data\base". `--datadir` is
@@ -1564,7 +1565,414 @@ Findings:
   intelligence screen's small video (sequence.cpp's 240x180 path) seen once only; the chat options form (a
   hosted network game: cluster J); team strategy (J); the lookups over folders are about 1.8 times slower
   with PhysFS's per-element checks (startup not measured yet); translations.
-* Next: cluster J (network).
+* Next: cluster J (network). (First: section 35.)
+
+### 35. Cluster K's open items: the Music Manager, the videos' display, file lookups, the build limit
+
+* The user's request (2026-10-31): section 34's open music, video and lookup items, and what LINK.EXE's
+  command-line limit means for the next clusters.
+* The Music Manager (fork M; scratchpad k2_M_report.md): musicmanager.cpp and titleui/musicmanagertitleui.cpp
+  whole (`musicmanager_c`, `musicmanagertitleui_c`, `WzMusicManagerTitleUI`, `MusicManager_CDAudioEventSink`
+  implementing WzSound's ICDAudioEventSink, 4 widget classes: about 1,100 lines); SoundApi's
+  PlayList_GetCurrentMusicMode and sound_srand. Found:
+  * the first in-game track was the same in every run: each project has its own rand() state and nothing
+    seeded WzSound's (PlayList_RandomizeCurrentSong is its one draw): main_c seeds it with main.cpp's time
+    seed (`sound_srand`);
+  * table.cpp:689's assert on every Music Manager open: relayoutColumns runs at the new table's 1-pixel width,
+    where 4.7.0's 32-bit size_t wraps (1 - 135 = 4294967162) and takes the expand branch; table_c compared
+    signed. Now unsigned (ULT, udiv32): the columns 215/164 as 4.7.0's (chatoptions' table is made the same way).
+  Checked (tools/ui_tests music_manager.txt, music_manager_check.txt, music_ingame.txt; --sound --debug=sound):
+  the 39 tracks of the 4 albums with the mode columns; a mode unticked, saved to music.json and still unticked
+  after a restart; a track played from the manager is what is heard (correlation 0.9998 to 1.0000 with
+  ffmpeg's decode, gain 0.499); in a skirmish only the skirmish column enabled, the first track a random one of
+  them; **the OST's last track (track3, 299 s) ended and the next album's first started** ("Now playing
+  music/albums/aftermath_soundtrack/menu_enhanced.opus (was playing .../original_soundtrack/track3.opus)"),
+  the open form following it.
+* The videos' display (`tools/video_display_test.py`, new): a model of sequence.cpp's display (the official
+  libtheoradec.dll's frames at the maximum post-processing level, video_write's integer YUV -> RGB with its
+  scanline rows, the texture's top left of a black 1024x1024, VideoPSO's bilinear quad) against screenshots of
+  `--game=CAM_2A`'s opening video (cam2/c002.ogg) in the 9 pairs of video size (1x, 2x, full screen) and
+  scanlines (off, 50%, black), and of the intelligence screen's research film (a topic finished with "work
+  harder", its message opened: res_weapons.ogg). The port: 1x and the intelligence screen exactly the model;
+  2x and full screen within 0.6 of a level (of 255) at the 99th percentile with scanlines off, 1.8 with them
+  (the GPU's bilinear weights where the rows alternate); scanlines off at 1x and in the intelligence screen as
+  sequence.cpp's rule says. **The official 4.7.0 build, captured from outside (PrintWindow) with the same
+  configs: the same model, the same numbers.** (Its intelligence screen is not run: SDL3 takes a click's
+  position from the real cursor, and posted messages do not move it.) Frame counts the same in both builds
+  (c002 1064, cam2ap 177, cam2acol 201, res_weapons 157; none dropped). Learnt on the way (the model's, not
+  the port's): the legacy theora.h API's ti.frame_width x frame_height is the picture size (192x168 in a
+  192x176 frame), read from the frame's top left; a research film ends on an empty view (seq_Shutdown releases
+  the texture; VIDEO_HOLD_LAST_FRAME only stops a restart), 4.7.0's code; a screenshot every 15 frames makes
+  the film drop frames (34 of 157: the PNG writes; none without them).
+* File lookups. An instrumented WzFramework (scratchpad prof_physfs.py: each PhysFS function timed; the
+  top-level time is the game's time in PhysFS) under the frozen exe: to the main menu 362 ms of 3.2 s in
+  PhysFS (739 files opened, 5,804 GetFileAttributesExW), a campaign start 2.2 s, a skirmish start 3.9 s
+  (73,733 stat calls, 6,584 PHYSFS_exists); PhysFS's own VB code about 5% of it, the rest the system calls.
+  **The cause was the data/ junction**, not the port: Windows re-parses a junction on every file call
+  (GetFileAttributesExW 53 us through it, 30 us on the folder itself), and PhysFS's per-element checks (4.7.0
+  forbids symbolic links: main.cpp's PHYSFS_permitSymbolicLinks(0)) make several calls per lookup. `data/` is
+  now a mirror of ref/warzone2100/data: real folders, its 4,584 files hard links (`tools/setup_data.py`;
+  build.py makes it when data/ is missing or still a junction). Medians of 3, the final exe (the old layout
+  reproduced with a junction in build/; 4.7.0's release layout, the official base.wz and mp.wz, beside):
+
+  | | mirror (now) | junction (before) | .wz (release layout) |
+  |---|---|---|---|
+  | to the main menu | 3.38 s | 3.51 s | 3.61 s |
+  | a campaign start (CAM_1A, its video skipped) | 25.3 s | 25.7 s | 23.8 s |
+  | a skirmish start (4c-rush) | 30.8 s | 33.2 s | 30.9 s |
+  | in PhysFS (menu / campaign / skirmish) | 0.26 / 1.49 / 2.49 s | 0.36 / 2.18 / 3.90 s | |
+
+  The rest of a level start is the game's own code (not profiled yet); the release layout's in-memory lookups
+  are paid back by inflating at 25 MB/s (WzFramework unoptimised).
+* The build limit (measured: tools/linkwatch.ps1 records LINK.EXE's command lines): VB6 compiles each
+  module to bin\<module>.OBJ and passes all of them, quoted, to LINK.EXE on one command line, which
+  CreateProcess caps at 32,767 characters; past it VB6 says "Could not execute LINK.EXE" (feasibility probe 1).
+  The exe after the Music Manager: **30,145 characters, 456 .OBJ files** (65 characters each, 44 of them
+  `C:\Users\Owner\desktop\websites\warzone\bin\`): 2,622 left, about 40 modules. build.py's estimate counted
+  the source folders' paths (31,704); it now counts bin\'s (30,145, exact) and warns past 30,000. The exe's
+  other ceilings: 456 of about 850 modules, about 25,200 of about 32,100 names (the distinct identifiers of
+  its sources: an estimate). The cure for the command line is a shorter output folder (the .OBJ files go to
+  /outdir), e.g. build.py building into a `subst` drive mapped to bin\ (`W:\<module>.OBJ`: about 28 characters
+  a module, room past the 850-module ceiling); the 850 modules and the names have no such cure (a project
+  split).
+* Tests: the static checks 0 problems; the full suite over the data mirror: 3362 of 3362, 90 of 90, the official replay's 120 of 120 ticks, 560 of 560 sounds, the mixer's 66 of 66, --media (zip 109 of 109, CELT 27 of 27, SILK/Opus 50 of 50, opusfile 24 of 24, Theora 25 of 25 at both levels, video audio 168 of 168); video_display_test as above.
+* Open: a level start's time outside PhysFS (about 28 s of a skirmish start, not profiled); translations; the
+  chat options form and team strategy (cluster J). (LINK.EXE's command line: section 36.)
+* Next: cluster J (network). (First: section 36.)
+
+### 36. The build through a short drive; cluster J's scope (2026-10-31)
+
+* The user's decisions on section 35's build limit and cluster J: build the exe from a short path (option 1);
+  keep J to what its milestone needs and leave the optional network features as stand-ins (option 3); J's
+  plumbing in WzNet, only the screens that use the widget library in the exe (option 4); a new DLL subsystem
+  to ease the per-project limits later. The goal behind it: **the build and the game on other people's
+  computers**.
+* `build.py` builds every exe (Warzone.exe and the test exes) through a drive letter that `subst` maps to bin\
+  for the build (the first free one from W down; no administrator rights; removed afterwards, a mapping an
+  interrupted build left is reused). VB6 writes the .OBJ files to that folder and passes `"W:\<module>.OBJ"`
+  to LINK.EXE: **the exe's command line went from 30,145 to 11,408 characters** (456 modules, measured with
+  tools/linkwatch.ps1, now a WMI creation event: its polling loop missed short links), about 25 characters a
+  module, so the 850-module ceiling now comes first; and the line no longer depends on where the tree is (a
+  deeper checkout on another computer would have been over the limit already). The DLLs still build into
+  bin\ itself (VB6 registers each DLL it builds at its output path, which must stay valid; the largest DLL's
+  line is 7,644 characters). build.py's estimate (`link_estimate`) is the measured formula and is printed past
+  30,000. VB6 is found through %VB6_DIR%, else its setup's registry entry (ProductDir), else its default
+  folder. Checked: two full builds, the main menu test, the mixer test's exe (66 of 66), the leftover-mapping
+  reuse; no mapping left behind.
+* Cluster J's scope (the estimate: scratchpad j_budget.py, the exe's names and modules against the C++ files):
+  * WzNet: the rest of lib/netplay for direct-IP play: tcp/ (netsocket, the TCP connection provider, client
+    connection, listen socket, poll group, address resolver), client_connection, connection_provider_registry,
+    wz_connection_provider, pending_writes_manager(_map), polling_util, error_categories, ip_helpers,
+    netpermissions, netjoin, zlib_compression_adapter and wz_compression_provider (needs a deflate: miniz's,
+    beside WzFramework's inflate), the connection parts of netplay.cpp still standing in (about 3,500 lines of
+    C++ besides netplay.cpp's);
+  * the exe: multisync.cpp, multivote.cpp, multijoin_helpers.cpp, screens/joiningscreen.cpp,
+    screens/netpregamescreen.cpp, hci/teamstrategy.cpp (about 7,000 lines; about 27 modules with their
+    widget data classes, about 860 new names: the exe to about 482 modules and 26,000 to 27,000 names), and
+    the network stand-ins in multiint, multiplay and stubs_*;
+  * stand-ins, as Vulkan and Discord are: the internet lobby (netlobby.cpp, titleui/gamebrowser.cpp,
+    widgets/gamebrowserform.cpp), the blind waiting room, the spectator widgets, the lobby's slash commands
+    (multilobbycommands.cpp), the command interface (stdinreader.cpp), port mapping (UPnP: miniupnpc,
+    libplum), GameNetworkingSockets. About 35 exe modules and 1,400 names not spent; they can come later.
+* A DLL split, later: with the command line out of the way, the exe's binding limits are about 850 modules
+  (456 now, about 482 after J) and about 32,100 names (about 25,200 now, 26,000 to 27,000 after J). Before
+  either gets near, a self-contained part of the exe moves into a new DLL; the DLL's names the exe calls
+  still count in the exe's table (feasibility probe 4), so the candidate must have a narrow interface, and
+  its widgets come along with lib/widget or not at all. To be studied with a measurement of each candidate's
+  interface (the exe's calls into it and its calls back), not before cluster J.
+* Other computers (to do when the game is shared): bin\ runs without installing (the exe's reg-free COM
+  manifest; MSVBVM60.DLL ships with Windows; OpenGL 3.3); data\ is this tree's hard-link mirror and must be
+  copied as files (or 4.7.0's base.wz and mp.wz used); no path of this computer is compiled into the game
+  (checked: the sources name none). **`tools/package.py`** makes the shareable copy: dist\WarzoneVB-<date>\
+  with bin\ (the exe and the seven DLLs only), data\ as real files (`--wz`: 4.7.0's base.wz and mp.wz),
+  Play.cmd (the game with `--configdir=<the folder>\userdata`, made first: the game stops at once when that
+  folder is missing, as 4.7.0 does; without it the port shares %APPDATA%\Warzone 2100 Project with an
+  installed official 4.7.0), README.txt, 4.7.0's licences and AUTHORS, and source\WarzoneVB-source.zip (src,
+  tools, docs: the GPL's corresponding source); `--zip` zips it. Checked: 560 MB, the packaged exe reaches
+  the main menu, Play.cmd from a folder with spaces. Found on the way: data\'s mirror lacked 4.7.0's five
+  empty folders (terrain_overrides\classic and \high, two campaign mod folders): setup_data.py makes them.
+* Next: cluster J (network), in that scope. (Done: section 37.)
+
+### 37. The network (cluster J): cluster J's milestone
+
+* The user's request (2026-10-31): "lets do it" (cluster J in section 36's scope). One addition, told to the
+  user: the game browser form (titleui/gamebrowser.cpp, widgets/gamebrowserform.cpp), whose "GameID or IP:port"
+  box is 4.7.0's only way to join by IP from the menus; its games list shows 4.7.0's "Failed to connect to lobby
+  server" (the lobby server is a stand-in).
+* Found before the split: 4.7.0's network signs and encrypts with libsodium (the joining handshake's identity
+  challenge: ed25519; the secured messages: X25519 session keys and XChaCha20-Poly1305), compresses its streams
+  with zlib, and writes from a background thread; the joining screen (the exe) opens its connection itself, so
+  the connection classes are WzNet's public classes.
+* The contract (scratchpad J_DESIGN.md: zlib streams, crypto, the connection classes, NetApi and INetGame) and
+  **private builds**: each fork staged its files in its own folder and built private copies (projects from src\
+  plus its stage, private type libraries, the exe through a subst drive) with scratchpad j_build.py (now
+  `tools/private_build.py`), so no fork saw another's half-done work. Six forks, about 37,000 lines of VB:
+  * JZ: miniz v1.11's deflate (tdefl) and its zlib-style streams beside the inflate, in **src/shared/miniz**
+    (WzFramework, WzNet; physfs_miniz_c moved there): 5,200 lines with its tests;
+  * JS: crc.cpp's sha256Sum, EcKey, SessionKeys, base64 and genSecRandomBytes over SHA-256/512, BLAKE2b,
+    ChaCha20/HChaCha20, Poly1305, XChaCha20-Poly1305, X25519 and ed25519 (TweetNaCl-style, 16-bit limbs in
+    Doubles: products bounded at 2^44.5, measured 2^43.1) with libsodium 1.0.20's acceptance rules, crypto_kx,
+    RtlGenRandom, in **src/shared/sodium** (the exe, WzNet): 2,800 lines;
+  * JT: lib/netplay's connection layer over Winsock (the client connection with its zlib compression, the
+    pending writes, the provider registry, the error codes, select descriptor sets, tcp/*): 4,000 lines;
+  * JN: the rest of netplay.cpp (hosting, NETallowJoining, the connections, system messages, player slots and
+    spectators, file transfer), netjoin, netpermissions, wzfile, netlog; nettypes' session keys and secured
+    messages; the NETPLAY struct for real (stubs_net gone); INetGame whole (62 methods) and NetGame.cls; NetApi
+    +117 members; netlobby and port mapping as unreachable: 9,900 lines;
+  * JJ: joiningscreen.cpp, gamebrowser.cpp, gamebrowserform.cpp, multijoin_helpers.cpp: 6,000 lines;
+  * JL: netpregamescreen.cpp, multisync.cpp, multivote.cpp, teamstrategy.cpp, multistat.cpp rewritten
+    (identities, session keys, stats messages), the network parts of multiplay, multijoin and multiopt: 9,400
+    lines; 75 stand-ins replaced.
+* The forks' rule for threads, as the project's: the pending-writes thread is `PendingWritesManager_pollAll`
+  (a pass with a zero select timeout, run after each write and from NETrecvNet, NETrecvGame, NETflush); the
+  async connect runs inside the call and calls back before it returns (a host that never answers holds the
+  joining screen up to its 15 s timeout). Keys and session keys cross between the exe and WzNet as bytes, a
+  Sha256 as its 32 bytes; std::error_code is a Long (category in the high byte), net::result's error a ByRef.
+* The merge (scratchpad j_merge1-3.py): the six stages copied in, 126 stand-ins removed by name (each with its
+  comment lines) and the forks' own stand-ins reconciled through check_names (48 duplicates); what stays is
+  `stubs_lobby` (the lobby server, the activity sinks, the update check, the kick redirect) and four permanent
+  stand-ins in stubs_game; findHashOfFile real (`frame_hash_c`: SHA-256 is the exe's, not WzFramework's);
+  build.py's shared folders; `--break-compat WzNet`. **Built at the first try**; the static checks 0 problems.
+  The exe: 500 modules, its LINK.EXE line 12,696 characters through the subst drive (33,278 from bin\: over
+  the limit), about 26,800 names.
+* Found by the forks and the merge:
+  * miniz's mz_inflate returns after copying out its dictionary with input and room left; zlib's inflate goes
+    on, and 4.7.0's ZlibCompressionAdapter relies on it: every compressed stream corrupted after about 32 KB
+    (JT's test; JZ's fix loops as zlib does; zlib_test checks the receive pattern against libzlib1.dll);
+  * VB clears the last error before every declared call: GetLastError / WSAGetLastError through a Declare is
+    always 0 (`Err.LastDllError`; JT wraps each Winsock call);
+  * a local `ipv6_v6only` is the constant IPV6_V6ONLY in VB's case-insensitive names (the dual-stack socket
+    fell back to two): check_names caught it;
+  * a widget's virtual calls made inside WIDGET's constructor reach the most derived class (C++ reaches
+    WIDGET's own): two screens failed with error 91 before their fields existed (JJ, JL guard their overrides;
+    the library fix, WIDGET_construct setting the base kind until the derived constructor runs, is open);
+  * stand-in signatures that were wrong (the join challenge sizes 32/32 for 128/64, NETrecvFile's type);
+  * the UI scripts found their window by class name: with two copies, one script drove the other's window
+    (drawtest_vb: the window of its own process now);
+  * run_tests' C++ reference (statsref) stood in for code the port now runs (the stats outputs fell to 75 of
+    90): it extracts multistat.cpp's score updates (its stand-ins of qtscript.cpp's trigger events update the
+    stats as 4.7.0's do) and multijoin.cpp's sendDataCheck ("sent hash to host").
+* Tests: zlib_test 235 of 235 (deflate byte-identical to miniz v1.11, read by Python's zlib and libzlib1.dll;
+  inflate as zlib's on 71 streams; the network's receive pattern), crypto_test 1206 of 1206 (against libsodium
+  through PyNaCl, hashlib, cryptography and crc.cpp's own texts), net_test 66 of 66 (loopback and a Python peer,
+  plain and compressed, the error texts, the async callback, 8 MB of pending writes against a full socket); the
+  full suite 3362 of 3362, the stats, models and maps' 90 of 90, the replay's 120 of 120 ticks, the sounds, the mixer and every media test.
+* **The milestone: two copies play a multiplayer skirmish together** (`tools/lan_test.py`): the host started
+  with --autohost (Sk-Rush, an open slot, two NullBots), the client through Multi Player > Join Game > the
+  browser's IP box > the joining screen's handshake (the identity challenge signed, the session keys agreed) >
+  the lobby > Ready; NET_FIREUP, both load and play, the AIs' orders reaching the client over the network:
+  11 of 11 checks, **131.6 s of game time together, no desync** (gtime's checkDebugSync compares every
+  player's game state CRC each tick). Hosting by mouse (lan_host.txt: Host Game, Start Hosting, Ready) works
+  too. **With the official 4.7.0 build as the host** (its autohost, its NullBots) and the port joining through
+  its browser: the handshake passes, they play **135.9 s of game time together with no desync on either side**
+  (scratchpad j_interop.py): the port's protocol, crypto and simulation are 4.7.0's.
+* Open: the official build as the client (its SDL3 takes clicks only from the real mouse: not run; done in
+  section 38); the widget constructor's fix; untested paths: map and mod downloads, spectator moves, kick
+  redirects (a stand-in), the vote widgets (notifications are a stand-in); the lobby server and port mapping
+  (done in section 38), GameNetworkingSockets, the command interface (stand-ins by scope); a DLL split before
+  the exe's 850 modules or names get near.
+* Next: the user's choice (the remaining optional items of cluster K, the DLL split, or a shared build).
+
+### 38. The internet lobby and port mapping (cluster J part 2)
+
+* The user's request (2026-10-31): "lets try this Official build as client ... and Still stand-ins by design:
+  the internet lobby server, UPnP port mapping". The user's choices: port libplum (4.7.0's first port-mapping
+  library; miniupnpc, its fallback, stays out); one short hosting test on the real lobby at the merge; port
+  mapping tested against a simulated router only.
+* **The official 4.7.0 build as the client** (`--join=127.0.0.1`; its Ready box clicked with the real mouse,
+  the user's approval): the port hosting (autohost, two NullBots) and the official client played about three
+  minutes with no desync on either side (scratchpad j_interop2.py). Interop holds both ways.
+* Found meanwhile: section 37's official-host test ran with 4.7.0's defaults, so the official build tried to
+  map port 2100 on the router (it failed: no UPnP there; nothing changed) and registered a game ID with the real
+  lobby ("awaiting publish"). Since then every test config has `portMapping=0` and a lobbyserver where nothing
+  answers (`tools/ui_test.py`; `--real-network` leaves 4.7.0's defaults).
+* Three forks (scratchpad L_DESIGN.md), private builds as in section 37:
+  * LB: lib/netplay/netlobby.cpp, src/urlrequest.cpp and lib/widget/verifyprompt.cpp (the captcha and slide
+    prompts) in the exe, about 4,000 lines; JPEG over GDI+ in WzGfx; WzNet's netlobby_c forwards netplay's calls
+    through 14 INetGame methods, the events come back through 4 NetApi members; stubs_lobby's netlobby part,
+    urlRequestData, urlRequestSetCancelFlag and urlRequestShutdown replaced;
+  * PM: libplum at 4.7.0's commit 47be21b (ref/libplum, MPL 2.0) in 19 modules, port_mapping_manager and its
+    libplum implementation (miniupnpc's slot a stand-in whose init fails), netplay's NETaddRedirects,
+    NETremRedirects, NETinitPortMapping and NEThostGame's mapping branch as 4.7.0's; libplum's client thread
+    and the manager's monitor are polls run from NETflush (PLUM_PENDING waits that resume on the next pass);
+  * LT: LB's transport was WinHttp.WinHttpRequest, which cannot choose the address family. This machine has
+    global IPv6 and the lobby (Cloudflare) has A and AAAA records, so the requests 4.7.0 sends over IPv4 (the
+    listing, the tcp:ip4 registration) would have gone over IPv6 and the lobby would record the wrong address.
+    curl's part on Windows is now WzNet's `urltransfer_c` (HTTP/1.1 over Winsock, Schannel through SSPI, curl
+    8's defaults: certificate, name and revocation checks, TLS 1.2 at least, ALPN http/1.1, happy eyeballs for
+    IP_ANY, gzip/deflate, redirects, MAXFILESIZE, low-speed limit), 1,900 lines, 7 NetApi members.
+* Found by the forks: crc_sodium_c's base64Decode left a padded result one byte long, so every lobby join failed
+  with "Invalid host identity" (fixed as the C++ resizes); netlobby's isResolvableLobbyError keys on the error
+  code, not the data; GameDetails dropped the mods. In libplum, ported as they are (the official build does the
+  same): the PCP lifetime written little-endian, the NAT-PMP epoch check comparing the new epoch with itself
+  (leaving drops the mapping without unmapping it), PCP's epoch check never armed, a use after free (the port
+  returns the text); the one deviation: no jitter where C divides by zero. private_build.py now compiles
+  src\shared's miniz and sodium (forks had to pass them).
+* The merge (scratchpad m_stage.py, m_stage2.py): LB's stage, PM's files and its edit scripts run over LB's
+  netplay files (the diffs add up line for line), LT's files over both, the header comments; built with
+  `--break-compat WzNet` (WzGfx 1.2 -> 1.3: one method more). The exe: 512 modules, the link line about 13,000
+  characters through the subst drive, about 27,800 names.
+* Tests: static checks 0 problems (5,035 log calls); run_tests 3362 of 3362, the stats 90 of 90, the replay 120 of
+  120, sounds, mixer, every media test, http_test 46 of 46 (47 with the 60 s low-speed case); lan_test 11 of 11
+  (131.3 s together, no desync); lobby_test 21 of 21 against the mock on 127.0.0.1 and ::1 (create, heartbeats,
+  DELETE and request-join over IPv4, the tcp:ip6 registration over ::1, the lobby's connection check answered
+  on both families, the captcha prompt, the join token checked by the host), `down` 1 of 1 (4.7.0's "Error
+  connecting to the lobby server"); portmap_test's six scenarios 0 failed (PCP, NAT-PMP and UPnP mapping and
+  unmapping with the fake's external address in the lobby's chat, no router, the 10 s timeout, port mapping off).
+  External, read-only: the real lobby's games list over forced IPv4 and IPv6 (Cloudflare's challenge page at
+  first, for curl.exe too, then the list), badssl.com's expired, wrong-host and self-signed certificates refused.
+* **The one real-lobby hosting test** (scratchpad m_real_lobby.py; bin\Warzone.exe, 4.7.0's default lobby,
+  `portMapping=0`, autohost Sk-Rush as "WarzoneVB test - please ignore" with a random password, 167 s): the
+  create request over IPv4 got a game ID ("awaiting publish"), the tcp:ip4 registration went over IPv4 and the
+  tcp:ip6 one over IPv6, heartbeats over IPv4 (TLS 1.2 each). The lobby's connection check could not reach port
+  2100 (no mapping, the router's NAT and firewall), so the lobby answered HOST_NOT_ACCESSIBLE and dropped the
+  listing itself; the game showed 4.7.0's texts ("Game not listed in the lobby." ... "Make sure port 2100 can
+  receive incoming connections. If you're using a router, configure it to enable UPnP/NAT-PMP/PCP or to forward
+  the port to your system."). The game was never listed publicly; with the listing gone, quitting sent nothing
+  (the DELETE at quit is lobby_test's). What it shows: the real lobby accepts the port's create request,
+  registrations and heartbeats over the families 4.7.0 uses.
+* Open: a real router (never tested, the user's choice); a game the real lobby can reach (its connection check
+  and the signed LobbyConnectCheckResponse ran only against the mock); TLS 1.3 (Windows 11), renegotiation; the
+  slide and drag prompts and JPEG captchas at run time; DNS and the revocation check block a frame; miniupnpc;
+  the video downloader (seqdisp's urlRequestData) and the activity sinks stay stand-ins.
+* Next: the user's choice.
+
+### 39. The screens and gameplay still standing in (cluster S)
+
+* The user's request (2026-10-31): "work on 3. Gameplay and screens that are still stand-ins" (the in-game
+  multiplayer menu, the limits screen, the Game Guide, notifications and overlays, player management, display
+  settings, visual details, script-generated maps, the multiplayer paths never run); then "You can use the DLL
+  split if needed to seperate a part out" (not needed: below).
+* Budget first (scratchpad m3_budget.py): about 56 exe modules and 1,100 C++ names; the merge would split a DLL
+  if the exe neared 31,000 names. Eight forks (scratchpad S_DESIGN.md: file ownership, the stand-ins'
+  signatures as the contract, edits to shared files as exact pairs that stack, WzFunc id ranges, no side
+  effects on the desktop):
+  * S1: multimenu.cpp (the in-game multiplayer menu: players, scores, alliances, gifts), multilimit.cpp (the
+    structure limits screen), lib/widget/resize.cpp; 15 checks;
+  * S2: multilobbycommands.cpp (slash commands, admin identities), the kick reason popup and kick redirects,
+    mute, colour names, the known players and stored mute options (4.7.0's SQLite tables as knownPlayers.json);
+    34 checks with two copies; 4.7.0's mute time stored in 100 ns units and read as seconds, kept;
+  * S3: guidescreen.cpp (the Game Guide: 13 widget classes, topics from data/base/guidetopics, the pop-ups that
+    pause a campaign, save/load of the topics); the read state needs 4.7.0's activity database (not ported):
+    every game shows the topics as new; 12 checks;
+  * S4: notifications.cpp (in-game notifications, "do not show again" in notifications.json, the vote
+    notifications), helpscreen.cpp (the help overlay: "help" in the chat), the overlays' z-orders; three
+    notifications earlier code left as comments restored; 29 checks;
+  * S5: spectatorwidgets.cpp (the stats overlay), hci.cpp's replay controller, blindwaitingroom.cpp; found:
+    recvSwapPlayerIndexes stopped half-ported (a spectator moving to a player slot was kicked) and
+    getModFilename was a stand-in (a host could never send a mod); 21 checks;
+  * S6: lib/sdl's display functions in WzPlatform (resolutions as 4.7.0 filters them, both fullscreen kinds,
+    display and cursor scale, the 28 cursors, mouse grab, minimize on focus loss, clipboard), urlhelpers.cpp;
+    tested through the TEST-ONLY WZ_TEST_NO_DESKTOP_EFFECTS (nothing on the desktop changes); 4.7.0 never caps
+    a new window to the work area (an SDL3 result tested the wrong way round): ported as it is; 38 checks;
+  * S7: the droid death animations, the tracking camera's pitch at the map's edge, the terrain qualities
+    offered as 4.7.0 offers them (Classic and Remastered need their packs: setup_data now places the official
+    classic.wz; Remastered's high.wz is KTX2, not ported, so it stays greyed out), the research model;
+  * S8: map_script.cpp (script-generated maps: 10c-WaterLoop, the DustyMazes, 6c-Entropy) in WzMap over
+    chakra.dll; byte-identical to 4.7.0's own map_script.cpp with its pinned QuickJS (ref/quickjs-wz, built
+    with g++) over 32 seeds each; found: the VB process runs the x87 at 64-bit precision (Math.sqrt was 1 ulp
+    off: WzMap sets 53 bits whenever control returns to a script), cdecl functions cannot be Declares
+    (DispCallFunc), and Chakra without its background threads ran the maps 14 times slower.
+* The merge (scratchpad s_merge.py): each fork's edit scripts first rerun on a pristine src to check they
+  reproduce its stage (all did; S5's hand-edited stubs removed by name), then stacked fork after fork on one
+  tree (every old text found once; the shared files' diffs add up line for line), the widget classes
+  regenerated, `--break-compat WzPlatform` (WzFramework 1.15 -> 1.16). The first build stopped at WzNet with
+  an empty VB6 log (no fork changed WzNet); the same build again succeeded: a one-off VB6 crash. The exe:
+  563 modules, about 29,200 names (no DLL split needed yet), its link line about 14,400 characters.
+* Found at the merge: run_tests' stats, models and maps fell to 52 of 90. The map blocks run one after another
+  in one process; the port now generated and played the script maps while statsref (and mapref) could not load
+  them, so every later block started from other leftovers (the players' templates). mapref and statsref now
+  link map_script.cpp with QuickJS: 90 of 90, WzTests 3437 of 3437. notifications_test's "videos missing"
+  runs used bin\Warzone.exe, whose ..\data has the videos (the game searches the data beside its bin, as
+  4.7.0): it runs a copy of the exe now.
+* Tests on bin\: run_tests whole (3437 of 3437; 90 of 90; the replay 120 of 120; sounds, mixer, media, zlib,
+  crypto, net, http, the script maps 68 of 68); sS1 15, lobby_commands 34, guide 12, notifications 29, s5 21,
+  s6_display 38, the S7 and S8 UI scripts, save_menu / save_load (with closeguide), lan_test 11 of 11
+  (130 s together, no desync), lobby_test 21 of 21 and down, portmap_test 0 failed. Campaign 1 walked from the menu to its end (19 levels, 1,406 s, no error), the
+  guide's pop-ups closed by the walk (make_campaign_walk.py's closeguide).
+* Open: the guide's sidebar toggle icon draws no pixels (at 100% display scale 4.7.0's own: section 40); the
+  Team Strategy tab, completed alliances and the research/radar/droid gifts not run; the kick redirect's host
+  side (only the command interface sends one); modal notifications; real fullscreen, mode switches, the real
+  clipboard, links and the cursor clip never exercised (the no-desktop rule); Remastered terrain (KTX2: section
+  40); the
+  game scripts' x87 precision and Chakra's background threads in the exe; a map script that never ends hangs
+  the load (4.7.0 stops it after 30 s); a map package in level.json's format, a map-mod package and a downloaded
+  mod mounted in a started game not run; the map export, .gam writers, map stats and replays' embedded maps.
+* Fork S9, after the merge (S5's open items): **downloads work**. Every received map or mod had failed its check
+  at the last chunk and been deleted: validateReceivedFile's C `!PHYSFS_eof(...)` was ported as
+  `Not PHYSFS_eof(...)`, and VB's bitwise Not of 1 is -2, true. Map packages: wzphysfszipioprovider.cpp and
+  `WzMapZipIO` (libzip's role taken by PhysFS's zip reader, mounted under a private name), map_package.cpp's
+  read side and map_levparse.cpp in WzMap, PHYSFS_mountHandle, levParse_JSON, levAddWzMap, buildMapList's
+  CheckInMap: a host serves a map pack from maps\ and the client downloads it byte for byte and plays it. The
+  missing Ready box was 4.7.0's own: autohost's readybeforefull defaults to true, which hides the boxes while a
+  slot is open. s5_test 43 of 43 (download 10, mod 4, ready 8, the rest 21); run_tests whole again (3437, 90,
+  120, the media), lan_test 11 of 11. The exe: 567 modules, about 29,200 names, its link line 14,553.
+* Next: the user's choice (from the list given 2026-10-31: sharing the build and testing it on another PC,
+  the DLL split, performance).
+
+### 40. The guide icon, the Remastered terrain (KTX2, cluster T) and fullscreen
+
+* The user's request (2026-11-01): "Guide icon: the guide's sidebar toggle icon draws nothing, though the
+  button works. and Remastered terrain: it needs KTX2 textures, which aren't ported." Then: "Also has full
+  screen mode been tested?" (answered: never for real; the user allowed desktop fullscreen only).
+* **The guide icon is 4.7.0's own.** The official build, run test-safe into CAM_1A where the guide pops up,
+  draws no icon either at 100% display scale: image_sidebar_list.png (64x64, three 4-pixel lines) is drawn
+  12x12 from the UI atlas, which has no mipmaps, with bilinear sampling, and every sample falls between the
+  lines. At 150% both builds draw it, pixel for pixel the same. Not changed.
+* **KTX2 is ported** in a new optimised DLL, WzBasis (src\basis; references WzFramework; WzGfx and the exe
+  reference it). high.wz is 579 KTX2 files of UASTC LDR 4x4 data in zstd 1.4.9 frames; 4.7.0 transcodes them at
+  load to the GPU's best format (BC7 on this RTX 3080; single-channel maps R8, normal maps RGBA32 then RGB8).
+  Contract first (scratchpad T_DESIGN.md: WzBasis's skeleton classes BasisApi, ktx2_transcoder,
+  ktx2_image_level_info), the reference `tools/ktx2ref.cpp` (g++ over ref/basis_universal at df079ec, the
+  commit 4.7.0 pins), three forks:
+  * T1: zstddeclib.c (zstd 1.4.9's decoder) as 4.7.0's 32-bit builds compile it; identical to that C built
+    32-bit on 1,401 generated frames (526 of them errors) and on all 5,391 frames of high.wz, about 120 MB/s
+    optimised (the C 680). Found: huf_decompress.c's 4-stream X2 loop has clang's branch and gcc/MSVC's `#else`;
+    the port takes `#else` (clang's failed 51 frames).
+  * T2: basisu_transcoder.cpp's KTX2 container and UASTC LDR transcoder to RGBA32, RGB565, BGR565, RGBA4444,
+    ASTC 4x4, BC7, BC1, BC3, BC4, BC5: every level of the 618 KTX2 files of high.wz and base.wz byte-identical
+    to the C (built -DNDEBUG, as 4.7.0's release; the assert build aborts on two broken files), 31 broken files
+    accepted and refused as the C does; 3-5x the C's time (BC7 about 100 ms for a 1024 page with its mips).
+    Found: a Single stored in a scalar variable and reused at once keeps the x87's precision in this build
+    (`Fix` of a product exactly 1024.0f gave 1023): the transcoder's float helpers pass results through a ByVal
+    Single. float_vb's F32 (an array store) was probed in both build modes and rounds correctly.
+  * T3: the WZ side: gfx_api_image_basis_priv.cpp whole, gfx_api.cpp's BASIS_ENABLED branches, iV_BaseImage
+    as an interface (iV_Image and iV_CompressedImage implement it), the textures' uploads taking it,
+    GFX::loadTexture's .ktx2, setup_data placing the official high.wz. The game side was KTX2-aware already.
+* The merge (scratchpad t_merge.py: each fork's pairs rerun on src first) built with `--break-compat WzGfx`
+  (WzBasis 1.0 -> 1.1 for ktx2_transcoder.find_key). Remastered then drew wrong with the real data: Urban and
+  Rockies far too bright, Arizona's ground black (gfx_api.cpp:1073's assert). T3 again (T3b) found the cause in
+  the data: 4.7.0's build ships base.wz's 30 ground pages (resized to 1024) and 9 backdrops as KTX2 without
+  their PNGs, and a .png anywhere in the search path is taken before a .ktx2, so the source tree's 2048 PNGs hid
+  high.wz's pages of the same names. setup_data now extracts the official base.wz's 39 .ktx2 into
+  ref\warzone2100\data and leaves the 39 PNGs out of data\ (Normal quality draws the 1024 KTX2 pages too, as the
+  official build; peak memory in CAM_1A 330-384 MB -> 154-174 MB).
+* Tests on bin\: zstd_test and ktx2_test (both in `run_tests.py --media`); ktx2_game_test: regress (skirmish,
+  campaign with its video, save/load), the options offering Remastered with high.wz, switching to it,
+  `tilesets` against the official build's captures (mean difference per channel over the view: CAM_1A 0.72 /
+  0.97, CAM_2A 5.18 / 5.11, CAM_3A 2.48 / 2.94 at quality 512 / 1024: moving units and effects), `normaltilesets`
+  (0.43-5.59), `dump` (every level the game transcodes, 3,610 per compression setting, identical to ktx2ref, and
+  every image handed to an upload identical to 4.7.0's conversion: BC7, RGB8, R8, RGBA8), `perf` (.gam load to
+  level running: Normal 10.3 s, Remastered 11.1 s at 512, 11.3 s at 1024). The default stays Normal, as 4.7.0's
+  32-bit builds have it.
+* **Desktop fullscreen tested for real** (the user's go-ahead for that kind only; no display mode change): the
+  TEST-ONLY `WZ_TEST_NO_DESKTOP_EFFECTS=borderless` makes only the borderless window, the config asks for Desktop
+  Full (fullscreenWidth/Height 0: 4.7.0 then never sets a mode), and scratchpad fs_test.py read every display's
+  mode every 0.25 s (unchanged throughout). The port starts in it (a 1920x1080 popup over the primary display,
+  "Changing fullscreen mode to Desktop Full" as 4.7.0 logs it), Alt+Enter goes to the 1024x768 window and back,
+  the setting is saved, a level draws at 1920x1080, and a switch in the middle of a level and back draws on. The
+  official build's window takes the same rect and the same popup style (but for WS_CLIPCHILDREN, SDL's). A black
+  view in the first level runs of both builds was edge scrolling: the real pointer rested on the display's top
+  row. Outside resizes in a level (1280x960, 1600x900, 1920x1061) draw on in both builds. Exclusive fullscreen
+  (a display mode change) remains untested.
+* Side findings:
+  * tools/draw_test/drawtest.png is out of date (the title menu and the build date are in today's shot, and the
+    backdrop is KTX2 now); the primitives it draws are unchanged.
+  * CAM_x started with `--game` gets random starting unit designs in both builds (the official build's differed
+    between its own runs): 4.7.0's.
+  * A window taller than the screen is clamped by Windows in the port (1061 rows) but not by SDL3 (1152); a new
+    window's client area is centred 11 rows lower than SDL3 centres it. Open.
+* Open: exclusive fullscreen; the ETC/PVRTC targets (desktop GL never needs them).
 
 ## Architecture decisions
 
@@ -1661,18 +2069,25 @@ libopus.dll; tools/setup_data.py puts the official music in data/music.
 
 ### What is not ported
 
-Vulkan and the null backend, Discord, curl (news, updates, downloads),
-GameNetworkingSockets, UPnP, the crash handler, autohost/stdin, the script
-debugger (perhaps later), SQLite player statistics (a JSON file instead),
-basis/KTX2 textures, the JPEG encoder, Emscripten, libsodium player
-identity (only for official lobbies), translations (later).
+Vulkan and the null backend, Discord, curl's other uses (news, updates,
+video downloads: the lobby's requests are ported over WzNet's own
+transfers, section 38), GameNetworkingSockets, miniupnpc (libplum is
+ported, section 38), the crash handler, stdin, the script debugger
+(perhaps later), SQLite player statistics (a JSON file instead),
+Basis Universal's ETC1/ETC2/EAC, PVRTC, ATC, FXT1 and HDR targets and its
+ETC1S and HDR inputs (KTX2 files of UASTC data are ported, section 40),
+the JPEG encoder, Emscripten, translations (later).
+(Planned out at first and ported since: libsodium's identities and
+session keys, autohost, the internet lobby: sections 37 and 38.)
 
 ### Multiplayer
 
-The goal is VB to VB over TCP (LAN or direct IP). Play against official
-builds would need a bit-exact simulation, the same protocol and version
-string, and libsodium signatures: not promised. The replay tests will show
-how close the port gets.
+The goal was VB to VB over TCP (LAN or direct IP). Play against official
+builds needs a bit-exact simulation, the same protocol and version
+string, and libsodium signatures; it was not promised, and it works: the
+port plays with the official 4.7.0 build as host and as client with no
+desync (sections 37 and 38), and registers its games with the internet
+lobby (listed once the lobby can reach the host's port).
 
 ## Testing: replays and syncDebug
 
@@ -1706,8 +2121,10 @@ before it had a renderer.
 | G In-game UI | hci, intdisplay, intorder, design, intelmap, console, chat, in-game options, load/save screens. **Done:** hci, intdisplay, the object and stats forms, edit3d, design, the input manager and key bindings, selection, console, intorder, the in-game options, intelmap (load/save screens: cluster I; the chat: J). **Cluster G's milestone is reached.** | **play a skirmish against AI from the menu** |
 | H Sound | mixer, stb_vorbis port, audio, track, audio_id. **Done:** stb_vorbis, an OpenAL subset mixed over waveOut, openal_track, audio, track, cdaudio, playlist, the game's side (see "The sound"). **Cluster H's milestone is reached.** | sound effects in game |
 | I Campaign | levels, mission (off-world), transporter, campaign scripts, save/load (`game.cpp`), briefings without video. **Done:** game.cpp's save and load, mission, transporter, the campaign selector, seqdisp, scores, loadsave, challenge, message, cheat, the chat screen (see "The campaign, save and load"). **Cluster I's milestone is reached.** | campaign 1 from start to finish; save/load round trip |
-| J Network | the rest of netplay in WzNet (connections over Winsock TCP, zlib streams, sessions) with the full `INetGame`; direct-IP joining; the multiplayer parts of multiint | two copies play a skirmish over LAN |
-| K Optional | `.wz` archives (zip, inflate) for maps and mods, music, translations, shadows and other effects, videos, interop with official builds. **Done:** PhysFS's zip archives, the campaign mods, the music (opusfile, libopus), the videos (libtheora, lib/sequence in WzSequence), quick chat and chat options; campaigns 2 and 3 walked (see "Archives, mods, music, videos, quick chat"). Left: translations, shadows and the other effects, interop | |
+| J Network | the rest of netplay in WzNet (connections over Winsock TCP, zlib streams, sessions) with the full `INetGame`; direct-IP joining; the multiplayer parts of multiint. Scope (the user's, section 36): what the milestone needs (in the exe multisync, multivote, multijoin_helpers, the joining and pre-game screens, team strategy); the internet lobby and game browser, blind waiting room, spectator widgets, lobby commands, stdinreader, port mapping and GNS stay stand-ins. **Done** (section 37): WzNet's connections, zlib streams, crypto, netplay whole but the lobby server and port mapping; the joining screen and the game browser's IP box; the pre-game screen, sync, votes, team strategy; two copies play over the network, and the port plays with an official 4.7.0 host. **Cluster J's milestone is reached.** Part 2 (section 38): the official build as the client; the internet lobby (netlobby, urlrequest over WzNet's Winsock + Schannel transfers, the verify prompts) and port mapping (libplum) ported, tested against a mock lobby and a fake router, and once on the real lobby | two copies play a skirmish over LAN |
+| K Optional | `.wz` archives (zip, inflate) for maps and mods, music, translations, shadows and other effects, videos, interop with official builds. **Done:** PhysFS's zip archives, the campaign mods, the music (opusfile, libopus), the videos (libtheora, lib/sequence in WzSequence), quick chat and chat options; campaigns 2 and 3 walked (see "Archives, mods, music, videos, quick chat"); the Music Manager, the videos' display checked against 4.7.0's in every size and scanline mode, data/ a mirror (see "Cluster K's open items"). Left: translations, shadows and the other effects, interop | |
+| S Stand-ins of screens and gameplay | what the earlier clusters left standing in that a player meets: the in-game multiplayer menu, the limits screen, the Game Guide, notifications, the help overlay, player management and lobby commands, the spectator and replay overlays, the blind waiting room, the display settings, death animations, the camera's edge pitch, the terrain qualities, script-generated maps, map and mod downloads. **Done** (section 39) | every screen 4.7.0 shows a player is real |
+| T Textures | KTX2 (Basis Universal's UASTC transcoder, zstd's decoder) in a new DLL WzBasis, the WZ side in WzGfx, the data laid out as 4.7.0's base.wz; the Remastered terrain. **Done** (section 40) | Remastered terrain drawn as the official build draws it |
 
 ## Risks
 
@@ -1728,9 +2145,13 @@ before it had a renderer.
 5. **OpenGL 3.3** is required, as for Warzone itself. It was tested here
    only on NVIDIA; Intel and AMD drivers are still to check.
 6. **VB6 build limits:** 850 modules and about 32,100 names per project,
-   and a LINK.EXE command-line limit; `build.py` reports each. After cluster K
-   the exe's .OBJ paths take 31,097 of LINK.EXE's 32,767 characters: build
-   from a shorter path (`subst`) before it grows much more.
+   and LINK.EXE's 32,767-character command line (each module's quoted
+   <outdir>\<module>.OBJ); `build.py` reports each. The exes build
+   through a `subst` drive (section 36): after cluster S the exe's line is
+   about 14,400 characters for 563 modules (37,600 from bin\: over), so
+   the 850 modules and the names come first: about 29,200 names of 32,100
+   (src/shared/sodium counted). A DLL split (section 36; approved by the
+   user, 2026-10-31) when the exe nears 31,000 names.
 
 ## Tools
 
@@ -1762,7 +2183,24 @@ before it had a renderer.
 | `python -I tools\check_redim.py [project]` | a fixed-size array passed to a procedure that ReDims or Erases that parameter (VB's run-time error 10) |
 | `python -I tools\save_test.py [level] [--keep]` | cluster I's save round trip: a level saved at its start (`--saveandquit`), loaded and saved again, the two saves compared (but for what 4.7.0 changes too, each named with its C++ line) |
 | `python -I tools\ui_test.py campaign_walk.txt 1800` | campaign 1 from the main menu to CAM_1END (cheats and transporter launches; `tools\make_campaign_walk.py` writes the script); `save_menu.txt`, then `save_load.txt --config-of=save_menu`: a mid-mission save from the in-game menu, loaded and saved again |
-| `python -I tools\setup_data.py [--check]` | puts the data 4.7.0's source tree lacks where 4.7.0 looks for it: the official build's music and campaign mods, the videos (ref/videos) |
+| `python -I tools\setup_data.py [--check]` | puts the data 4.7.0's source tree lacks where 4.7.0 looks for it: the official build's music and campaign mods, the videos (ref/videos); then mirrors ref/warzone2100/data as data/ (real folders, hard links: no junction); the official terrain_overrides\classic.wz and high.wz |
+| `python -I tools\zstd_test.py [--quick] [--no-ktx2]` | zstd's decoder (WzBasis) against zstddeclib.c built 32-bit and the 64-bit library: generated frames and every frame of high.wz's KTX2 files, ZstdTests (bounds-checked) and ZstdTestsFast (optimised); in `run_tests.py --media` |
+| `python -I tools\ktx2_test.py [--no-bounds] [--formats 13,6,...] [--raw]` | the KTX2/UASTC transcoder (WzBasis) against Basis Universal's C (-DNDEBUG, as 4.7.0's release): every level of the official high.wz and base.wz KTX2 files in 14 formats (4 must fail: not ported), 31 broken files; in `run_tests.py --media` (`--no-bounds`) |
+| `python -I tools\ktx2_game_test.py [--exe PATH] regress options switch tilesets dump perf` | the Remastered terrain in the game: regressions, the options offering it, switching to it, three tilesets against the official build's captures, every transcoded level the game loads against the C (`WZ_TEST_KTX2_DUMP`), load time and memory |
+| `python -I tools\gen_basisu_tables.py` | writes `src/basis/basisu_tables_vb.bas` from basisu_transcoder's tables |
+| `build\ktx2ref\ktx2ref.exe <format> <outdir> <files>` | Basis Universal's transcoder as 4.7.0 builds it (`tools/ktx2ref.cpp`, g++): each file's levels in a format, their FNV-1a hashes |
+| `python -I tools\lan_test.py [--no-ai]` | cluster J's milestone: two Warzone.exe on 127.0.0.1, the host (--autohost, two NullBots) and the client joining through the game browser's IP box; the checks and the game time played together, no desync |
+| `python -I tools\zlib_test.py`, `crypto_test.py`, `net_test.py`, `http_test.py` | miniz's streams against zlib, the crypto against libsodium (PyNaCl), WzNet's connections (loopback, a Python peer), urltransfer_c against a local HTTP server on 127.0.0.1 and ::1 (the address family, curl's request bytes, bodies, redirects, limits, failures); in `run_tests.py --media`. `http_test.py --external`: a few read-only HTTPS GETs (the real lobby's games list per family, badssl.com's bad certificates refused) |
+| `python -I tools\lobby_test.py [--exe PATH] [host] [join] [down] [real]` | the internet lobby against a local mock lobby (127.0.0.1 and ::1): a host's listing through its lifecycle, a client joining through the browser and a captcha, each request over the family 4.7.0 forces; `down`: the lobby unreachable; `real`: one read of the real lobby's games list (nothing hosted) |
+| `python -I tools\portmap_test.py [--exe PATH] [pcp natpmp upnp fail timeout off]` | port mapping (libplum) against a fake router on 127.0.0.1 only (the TEST-ONLY gateway override; the run is refused without it): mapping, unmapping, 4.7.0's failure and timeout messages |
+| `python -I tools\sS1_test.py`, `lobby_commands_test.py`, `guide_test.py`, `notifications_test.py`, `s5_test.py`, `s6_display_test.py` | cluster S's screens on bin\ (section 39): the in-game multiplayer menu and the limits screen; lobby slash commands, admins, kicks, mute, known players (two copies); the Game Guide (skirmish, campaign pop-up, save/load); notifications, "do not show again", votes, the help overlay; the replay controller, spectators, the blind waiting room, `download`, `mod` and `ready` (a map pack and a mod downloaded by a second copy, the Ready box); the display options with the TEST-ONLY `WZ_TEST_NO_DESKTOP_EFFECTS` (nothing on the desktop changes) |
+| `python -I tools\map_script_test.py` | script-generated maps (WzMap's map_script_c over chakra.dll) against 4.7.0's map_script.cpp with its pinned QuickJS (g++, ref/quickjs-wz): the maps' data byte for byte over seeds, the scripts' Math against ucrtbase; in `run_tests.py --media`. mapref and statsref link the same QuickJS |
+| `python -I tools\gen_cursors.py` | writes `src/platform/cursors_win_data.bas`, the monochrome cursors of lib/sdl/cursors_sdl.cpp |
+| `python -I tools\private_build.py <name> <projects> --stage DIR [--with DIR:users] [--run ARGS]` | a build of src\ plus a staged folder into build\j_<name>\bin, private type libraries, nothing of the tree touched: parallel forks' builds (section 37); src\shared's folders compiled as build.py does, the stage's files in them |
+| `python -I tools\package.py [--zip] [--wz] [--no-source]` | the game to give to other people: dist\WarzoneVB-<date>\ (bin, data, Play.cmd keeping the settings beside the game, README, licences, the source zip); checks that the copy reaches the main menu |
+| `python -I tools\video_display_test.py [--official]` | the videos' display against a model of sequence.cpp's: 9 video sizes and scanline modes and the intelligence screen's research film (about 12 minutes); `--official` the official build's captures too |
+| `python -I tools\ui_test.py music_ingame.txt 420 --sound --debug=sound` | the Music Manager over a skirmish, the OST's last track played to its end (the next album's first follows); music_manager.txt and music_manager_check.txt (`--config-of=music_manager`): the title screen's, a mode unticked and kept |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File tools\linkwatch.ps1 [-hours 1]` | records the command line of each LINK.EXE that starts meanwhile (a WMI creation event) (build/linkwatch/: its length against 32,767, its .OBJ count) |
 | `python -I tools\run_tests.py --media [--keep]` | cluster K's tests: zip_test, celt_test, silk_test (src/silktests), opus_test, theora_test, video_audio_test (each also alone: `python -I tools\<name>.py`) |
 | `python -I tools\ui_test.py campaign2_walk.txt 3000` | campaign 2 (and campaign3_walk.txt: 3) from the selector's Start at to its end, videos waited out (`tools\make_campaign_walk.py 2`); campaign_mods.txt: Reclamation from its .wz; quickchat.txt (`--debug=console`) |
 | `python -I tools\statsref_stubs.py` | statsref's own stand-ins whose VB port is now real and not skipped in the vbtest runs (`vbDisplayOff`): what to gate when statsref's outputs stop matching after a cluster ports such a function |

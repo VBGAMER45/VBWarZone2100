@@ -10,10 +10,10 @@ Attribute VB_Name = "init_c"
 ' CheckForMod, CheckForRandom, buildMapList), systemInitialise,
 ' systemShutdown. WZ_Maps (std::unordered_map<std::string, WZmapInfo>) is a
 ' Scripting.Dictionary of name -> Array(isMapMod, isRandom).
-' Missing: the in-memory map archive, the map packages that buildMapList
-' reads from maps/*.wz (zip and wzmaplib's map_package: their stand-ins
-' fail, so each is reported and skipped), loadLevFile_JSON,
-' getAvailableTerrainShaderQualityTextures. Also ported: InitialiseGlobals,
+' buildMapList reads the map packages in maps/*.wz (WzMapZipIO, wzmaplib's
+' MapPackage). Missing: the in-memory map archive, loadLevFile_JSON (no
+' caller). Also ported:
+' getAvailableTerrainShaderQualityTextures (with its cache), InitialiseGlobals,
 ' frontendInitialise, frontendShutdown, the three stages' initialisation and
 ' shutdown (stageOneInitialise ... stageThreeShutDown, displayLoadingErrors),
 ' campaignReset, saveGameReset and initMiscVars; their calls into the
@@ -55,6 +55,11 @@ End Type
 Private searchPathRegistry() As wzSearchPath
 Private searchPathRegistrySize As Long
 Private searchPathMountErrors As StringVector
+
+' static optional<std::vector<TerrainShaderQuality>> cachedAvailableTerrainShaderQualityTextures
+Private cachedAvailableTerrainShaderQualityTextures() As Long
+Private cachedAvailableTerrainShaderQualityTexturesSize As Long
+Private cachedAvailableTerrainShaderQualityTexturesHasValue As Boolean
 
 ' RebuildSearchPathCommand
 Private Type RebuildSearchPathCommand
@@ -135,7 +140,7 @@ End Function
 Private Sub cleanSearchPath()
     searchPathRegistrySize = 0
     Erase searchPathRegistry
-    ' (cachedAvailableTerrainShaderQualityTextures: not ported)
+    cachedAvailableTerrainShaderQualityTexturesHasValue = False    ' .reset()
 End Sub
 
 '!
@@ -174,6 +179,8 @@ Public Sub registerSearchPath(ByVal newPath As String, ByVal priority As Long)
     Next
     searchPathRegistry(insert_pos) = tmpSearchPath
     searchPathRegistrySize = searchPathRegistrySize + 1
+
+    cachedAvailableTerrainShaderQualityTexturesHasValue = False    ' .reset()
 End Sub
 
 Public Sub unregisterSearchPath(ByVal path As String)
@@ -190,6 +197,8 @@ Public Sub unregisterSearchPath(ByVal path As String)
             i = i + 1
         End If
     Loop
+
+    cachedAvailableTerrainShaderQualityTexturesHasValue = False    ' .reset()
 End Sub
 
 ' C: std::list<std::string> getPhysFSSearchPathsAsStr(): the paths in results(0 ..), and their count
@@ -309,6 +318,109 @@ End Function
 
 Public Function getCurrentTerrainOverrideBaseSourcePath(path As String) As Boolean
     getCurrentTerrainOverrideBaseSourcePath = getTerrainOverrideBaseSourcePath(getTerrainShaderQuality(), path)
+End Function
+
+' getAvailableTerrainShaderQualityTextures's checkValidTerrainOverridesPath lambda
+Private Function checkValidTerrainOverridesPath(ByVal terrainOverridesPlatformDependentPath As String) As Boolean
+    Dim mountPoint As String, actualMountPoint As String, validTerrainOverridesPackage As Boolean, checkFolder As String
+    If PHYSFS_mount(terrainOverridesPlatformDependentPath, "WZTerrainOverrideTest", PHYSFS_APPEND) = 0 Then
+        checkValidTerrainOverridesPath = False
+        Exit Function
+    End If
+
+    ' Get the actual mount point for this archive
+    ' (Why? Because it could have been mounted *before* this check at a different location, if it's the currently-selected terrain override pack and is present...)
+    mountPoint = PHYSFS_getMountPoint(terrainOverridesPlatformDependentPath)
+    If StrPtr(mountPoint) <> 0 Then actualMountPoint = mountPoint Else actualMountPoint = "WZTerrainOverrideTest"
+    If Not strEndsWith(actualMountPoint, "/") Then
+        actualMountPoint = actualMountPoint & "/"
+    End If
+
+    validTerrainOverridesPackage = False
+
+    ' Sanity check: For texpages and/or tileset folder(s)
+    checkFolder = actualMountPoint & "texpages"
+    If WZ_PHYSFS_isDirectory(checkFolder) <> 0 Then
+        validTerrainOverridesPackage = True
+    End If
+    checkFolder = actualMountPoint & "tileset"
+    If Not validTerrainOverridesPackage And WZ_PHYSFS_isDirectory(checkFolder) <> 0 Then
+        validTerrainOverridesPackage = True
+    End If
+
+    If PHYSFS_unmount(terrainOverridesPlatformDependentPath) = 0 Then     ' WZ_PHYSFS_unmount
+        debug_ 507, LOG_WZ, "getAvailableTerrainShaderQualityTextures", "* Failed to remove path %s again", terrainOverridesPlatformDependentPath
+    End If
+
+    checkValidTerrainOverridesPath = validTerrainOverridesPackage
+End Function
+
+' std::vector<TerrainShaderQuality> getAvailableTerrainShaderQualityTextures(): the values in result (0-based), their
+' number returned
+Public Function getAvailableTerrainShaderQualityTextures(result() As Long) As Long
+    Dim allQualities() As Long, allQualities_size As Long, q As Long, i As Long, n As Long, tmpstr As String
+    Dim textureOverrideBaseSourcePath As String, foundTexturePack As Boolean
+
+    ' Cached result, which is invalidated with any calls to: cleanSearchPath / registerSearchPath / unregisterSearchPath
+    If cachedAvailableTerrainShaderQualityTexturesHasValue Then
+        n = cachedAvailableTerrainShaderQualityTexturesSize
+        If n > 0 Then
+            ReDim result(0 To n - 1)
+            For i = 0 To n - 1
+                result(i) = cachedAvailableTerrainShaderQualityTextures(i)
+            Next
+        Else
+            Erase result
+        End If
+        getAvailableTerrainShaderQualityTextures = n
+        Exit Function
+    End If
+
+    allQualities_size = getAllTerrainShaderQualityOptions(allQualities)
+    Erase result
+    n = 0
+
+    For q = 0 To allQualities_size - 1
+        foundTexturePack = False
+        If getTerrainOverrideBaseSourcePath(allQualities(q), textureOverrideBaseSourcePath) Then
+            ' Check all search paths for this folder or .wz file
+            For i = 0 To searchPathRegistrySize - 1
+                ' Check <path> (folder)
+                tmpstr = searchPathRegistry(i).path & textureOverrideBaseSourcePath
+                If checkValidTerrainOverridesPath(tmpstr) Then
+                    foundTexturePack = True
+                    Exit For
+                End If
+
+                ' Check <path>.wz
+                tmpstr = tmpstr & ".wz"
+                If checkValidTerrainOverridesPath(tmpstr) Then
+                    foundTexturePack = True
+                    Exit For
+                End If
+            Next
+        Else
+            ' quality doesn't need a separate texture pack - always available
+            foundTexturePack = True
+        End If
+
+        If foundTexturePack Then
+            If n = 0 Then ReDim result(0 To 0) Else ReDim Preserve result(0 To n)
+            result(n) = allQualities(q)
+            n = n + 1
+        End If
+    Next
+
+    cachedAvailableTerrainShaderQualityTexturesSize = n
+    If n > 0 Then
+        ReDim cachedAvailableTerrainShaderQualityTextures(0 To n - 1)
+        For i = 0 To n - 1
+            cachedAvailableTerrainShaderQualityTextures(i) = result(i)
+        Next
+    End If
+    cachedAvailableTerrainShaderQualityTexturesHasValue = True
+
+    getAvailableTerrainShaderQualityTextures = n
 End Function
 
 '!
@@ -625,9 +737,19 @@ Public Function CheckForRandom(ByVal mapFile As String, ByVal mapDataFile0 As St
     CheckForRandom = False
 End Function
 
+' static inline WZmapInfo CheckInMap(WzMap::MapPackage& mapPackage): Array(isMapMod, isRandom)
+Private Function CheckInMap(ByVal mapPackage_ As MapPackage) As Variant
+    Dim mapmod As Boolean, isRandom As Boolean
+    mapmod = mapPackage_.packageType() = MapPackageType_Map_Mod
+    isRandom = mapPackage_.isScriptGeneratedMap()
+    CheckInMap = Array(mapmod, isRandom)
+End Function
+
 Public Function buildMapList(Optional ByVal campaignOnly As Boolean = False) As Boolean
     Dim realFileNames() As MapFileListPath, n As Long, i As Long, pRealDirStr As String
-    Dim realFilePathAndName As String, zipReadSource As Object
+    Dim realFilePathAndName As String, zipReadSource As WzZipIOPHYSFSSourceReadProvider
+    Dim debugLoggerInstance As WzMapLoadDebugLogger, mapZipIO As WzMapZipIO, mapPackage_ As MapPackage
+    Dim WZmapInfoResult As Variant
     InitWZMaps
     If Not loadLevFile("gamedesc.lev", mod_campaign, False, vbNullString) Then
         buildMapList = False
@@ -643,6 +765,7 @@ Public Function buildMapList(Optional ByVal campaignOnly As Boolean = False) As 
         Exit Function
     End If
     n = listMapFiles(realFileNames)
+    Set debugLoggerInstance = New WzMapLoadDebugLogger
     For i = 0 To n - 1
         pRealDirStr = PHYSFS_getRealDir(realFileNames(i).platformIndependent)
         If StrPtr(pRealDirStr) = 0 Then
@@ -656,8 +779,33 @@ Public Function buildMapList(Optional ByVal campaignOnly As Boolean = False) As 
             debug_ 1019, LOG_ERROR, "buildMapList", "Failed to open: %s", realFileNames(i).platformIndependent
             GoTo continue_
         End If
-        ' (WzMapZipIO::openZipArchiveReadIOProvider, MapPackage::loadPackage, levAddWzMap: the map packages, later)
+
+        debugLoggerInstance.setLogErrors True
+        Set mapZipIO = WzMapZipIO_openZipArchiveReadIOProvider(zipReadSource, debugLoggerInstance)
+        If mapZipIO Is Nothing Then
+            debug_ 1027, LOG_INFO, "buildMapList", "Failed to open archive: %s." & vbLf & "Please delete or move the file specified.", realFilePathAndName
+            GoTo continue_
+        End If
+        debugLoggerInstance.setLogErrors False
+        Set mapPackage_ = MapPackage_loadPackage("", debugLoggerInstance, mapZipIO)
+        If mapPackage_ Is Nothing Then
+            debug_ 1034, LOG_INFO, "buildMapList", "Failed to load %s." & vbLf & "Please delete or move the file specified.", realFilePathAndName
+            GoTo continue_
+        End If
+
+        If Not levAddWzMap(mapPackage_.levelDetails(), mod_multiplay, realFileNames(i).platformIndependent) Then
+            debug_ 1040, LOG_ERROR, "buildMapList", "Corrupt / invalid map file: %s", realFilePathAndName
+            GoTo continue_
+        End If
+
+        WZmapInfoResult = CheckInMap(mapPackage_)
+        If Not WZ_Maps.Exists(realFileNames(i).platformIndependent) Then           ' std::map::insert keeps an existing key
+            WZ_Maps.Add realFileNames(i).platformIndependent, WZmapInfoResult
+        End If
 continue_:
+        Set mapPackage_ = Nothing
+        Set mapZipIO = Nothing                  ' (VB) the archive unmounted
+        Set zipReadSource = Nothing
     Next
 
     buildMapList = True

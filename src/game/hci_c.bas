@@ -8,8 +8,8 @@ Attribute VB_Name = "hci_c"
 ' widget screen psWScreen.
 ' The panels (build, manufacture, research, commander, groups) are the controllers of
 ' src/hci/*.cpp (objects_stats_c's BaseObjectsController: interfaceController); the
-' replay controller overlay (ReplayControllerWidget) is not ported:
-' createReplayControllerOverlay is a stand-in, so replayOverlayScreen stays Nothing.
+' replay controller overlay (ReplayControllerWidget, createReplayControllerOverlay and
+' replayOverlayScreen) is hci_replay_c's.
 ' std::list<DROID_TEMPLATE> localTemplates holds template_c pool handles, each its own
 ' copy, with the count localTemplates_size. std::vector<DROID_TEMPLATE *> apsTemplateList
 ' is the array of pool handles with apsTemplateList_size (apsTemplateList_clear,
@@ -344,7 +344,7 @@ Private Type RETBUTSTATS_
 End Type
 Private retbutstats(0 To NUMRETBUTS - 1) As RETBUTSTATS_
 
-Private replayOverlayScreen As W_SCREEN ' static std::shared_ptr<W_SCREEN> (VB: the replay controller is a stand-in)
+' (static std::shared_ptr<W_SCREEN> replayOverlayScreen: hci_replay_c's)
 
 Private IntRefreshPending As Boolean    ' = false
 Private IntGroupsRefreshPending As Boolean ' = false
@@ -1722,7 +1722,6 @@ Public Sub intShowWidgetHelp()
             WzFunc_new(FN_helpOverlayClosed) _
         )
         ' close handler
-        If psUIHelpOverlayScreen Is Nothing Then Exit Sub ' (VB) the help overlay is a stand-in
     End If
 
     If Not bMultiPlayer Or Not NetPlay_bComms Then

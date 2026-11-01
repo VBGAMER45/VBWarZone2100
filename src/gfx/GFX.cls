@@ -39,7 +39,7 @@ Public Sub loadTexture(ByVal filename As String, ByVal textureType As texture_ty
     If Not (mType = GFX_TEXTURE) Then ASSERT_FAILURE "mType == GFX_TEXTURE", "lib/ivis_opengl/pieblitfunc.cpp:80", "loadTexture", "Wrong GFX type"
     p = InStrRev(filename, ".")             ' determine the filetype
     If p > 0 Then extension = Mid$(filename, p)
-    If p = 0 Or (extension <> ".png") Then
+    If p = 0 Or (extension <> ".png" And extension <> ".ktx2") Then ' (BASIS_ENABLED: .ktx2 too)
         debug_ 88, LOG_ERROR, "loadTexture", "Bad image filename: %s", filename
         Exit Sub
     End If

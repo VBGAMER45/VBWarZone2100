@@ -26,32 +26,6 @@ Option Explicit
 
 
 
-' lib/netplay (cluster J): NetPlay.scriptSetPlayerDataStrings[idx] = <the object's std::unordered_map<std::string, std::string>>
-' (the scripts' player data strings are not kept before cluster J)
-Public Sub NetPlay_scriptSetPlayerDataStrings_assign(ByVal idx As Long, ByVal obj As nlohmann_json)
-End Sub
-
-' src/screens/guidescreen.cpp: std::vector<std::string> saveLoadedGuideTopics() (S: no topics loaded)
-' (VB) the topics in topicIds(0 .. n - 1); returns n
-Public Function saveLoadedGuideTopics(topicIds() As String) As Long
-    saveLoadedGuideTopics = 0
-End Function
-
-' src/screens/guidescreen.cpp: bool restoreLoadedGuideTopics(const std::vector<std::string>& topicIds) (S)
-' (VB) topicIds(0 .. n - 1)
-Public Function restoreLoadedGuideTopics(topicIds() As String, ByVal n As Long) As Boolean
-    restoreLoadedGuideTopics = True
-End Function
-
-' src/screens/guidescreen.cpp: bool getGameGuideDisableTopicPopups() (S: the popups are enabled)
-Public Function getGameGuideDisableTopicPopups() As Boolean
-    getGameGuideDisableTopicPopups = False
-End Function
-
-' src/screens/guidescreen.cpp: void setGameGuideDisableTopicPopups(bool disablePopups) (S)
-Public Sub setGameGuideDisableTopicPopups(ByVal disablePopups As Boolean)
-End Sub
-
 ' activity.cpp (the activity sinks, cluster J): ActivityManager::instance().cheatUsed(cheat_name)
 Public Sub ActivityManager_cheatUsed(ByVal cheatName As String)
 End Sub
@@ -141,12 +115,4 @@ Public Sub wzAsyncExecOnMainThread_runPending()
     Loop
 End Sub
 
-' --- src/urlrequest.h (curl: not ported) ---
-' AsyncURLRequestHandle urlRequestData(const URLDataRequest& request) (the request's url only): no handle
-Public Function urlRequestData(ByVal url As String) As Long
-    urlRequestData = 0
-End Function
-
-' void urlRequestSetCancelFlag(AsyncURLRequestHandle requestHandle)
-Public Sub urlRequestSetCancelFlag(ByVal requestHandle As Long)
-End Sub
+' (src/urlrequest.h: urlrequest_c, cluster J part 2)

@@ -80,7 +80,12 @@ MAPREF_SRC = os.path.join(ROOT, "tools", "mapref.cpp")
 MAPREF_EXE = os.path.join(build.BUILD, "mapref.exe")
 WZMAPLIB = os.path.join(build.REF, "lib", "wzmaplib")
 WZMAPLIB_SOURCES = ["map.cpp", "map_io.cpp", "map_terrain_types.cpp", "map_crc.cpp", "map_internal.cpp",
-                    "map_debug.cpp", "map_jsonhelpers.cpp", "map_version.cpp"]
+                    "map_debug.cpp", "map_jsonhelpers.cpp", "map_version.cpp", "map_script.cpp"]
+# map_script.cpp's QuickJS: quickjs-wz at the commit 4.7.0 pins (ref/quickjs-wz, MIT), compiled with gcc as its
+# CMakeLists.txt does (tools/map_script_test.py's reference the same way); mapref and statsref link it
+QJS = os.path.join(build.ROOT, "ref", "quickjs-wz")
+QJS_SOURCES = ["cutils.c", "dtoa.c", "libregexp.c", "libunicode.c", "quickjs.c"]
+QJS_INCLUDES = ["-I", os.path.join(QJS, "quickjs"), "-I", os.path.join(QJS, "quickjs-wz-extensions")]
 OPTIONAL_INCLUDE = os.path.join(build.REF, "3rdparty", "optional-lite", "include")
 # lib/wzmaplib/CMakeLists.txt's version, as CMake writes it into map_config_internal.h.in
 MAP_CONFIG_H = """#pragma once
@@ -185,6 +190,8 @@ STATSREF_EXTRACTS = [
     # recvResearchStatus; recvDestroyFeature
     ("src/multiplay.cpp", [(27, 93), (114, 114), (430, 441), (529, 638), (645, 793), (853, 889), (899, 913), (916, 949), (951, 961),
                            (1020, 1073), (1302, 2020), (2321, 2351)]),
+    # sendDataCheck (multiPlayerLoop's: the port runs it since cluster J)
+    ("src/multijoin.cpp", [(626, 638)]),
     ("src/multibot.cpp", [(26, 848)]),
     # the gifts, the alliances, the artefacts (C2: multigifts_c whole)
     ("src/multigifts.cpp", [(20, 879)]),
@@ -200,9 +207,10 @@ STATSREF_EXTRACTS = [
     ("lib/netplay/netreplay.cpp", [(20, 484)]),
     # the JSON of the replay options (Sha256 .. PLAYER, DataHashToJSON) and WZGameReplayOptionsHandler
     ("src/multiint.cpp", [(150, 150), (237, 237), (1005, 1019), (7538, 8149)]),
-    # playerStats, zeroStats, hostVerifiedJoinIdentities; getMultiStats; getVerifiedJoinIdentity; EcKey's and PLAYERSTATS's
-    # JSON .. updateMultiStatsIdentitiesInJSON
-    ("src/multistat.cpp", [(53, 55), (58, 58), (63, 66), (95, 113), (1323, 1460)]),
+    # playerStats, zeroStats, hostVerifiedJoinIdentities; getMultiStats; getVerifiedJoinIdentity; the score updates
+    # (updateMultiStatsDamage .. updateMultiStatsResearchComplete: the port runs them since cluster J); EcKey's and
+    # PLAYERSTATS's JSON .. updateMultiStatsIdentitiesInJSON
+    ("src/multistat.cpp", [(53, 55), (58, 58), (63, 66), (95, 113), (690, 859), (1323, 1460)]),
     ("src/ai.cpp", [(20, 1380)]),
     # the start and derrick positions, scriptInit, getPlayerStartPosition
     ("src/qtscript.cpp", [(285, 322)]),
@@ -330,6 +338,7 @@ STATSREF_PRELUDES = {
     "src/mission.cpp": ['#include "lib/framework/frame.h"', '#include "src/mission.h"', '#include "src/missiondef.h"', '#include "src/levels.h"',
                         '#include "src/order.h"', '#include "src/action.h"', '#include "src/droid.h"', '#include "src/objmem.h"',
                         '#include "src/qtscript.h"', '#include "src/wzapi.h"'],
+    "src/multijoin.cpp": ['#include "lib/framework/frame.h"', '#include "lib/netplay/netplay.h"', '#include "src/multijoin.h"', '#include "src/data.h"'],
     "src/multiplay.cpp": ['#include "lib/netplay/nettypes.h"', "bool statsref_recvBeacon(NETQUEUE queue);",
                           "bool statsref_recvDataCheck2(NETQUEUE queue);", "bool statsref_debugMappingsAllowed();",
                           "bool statsref_sendDataCheck2();",
@@ -349,7 +358,7 @@ STATSREF_PRELUDES = {
                          "ActivitySink::GameMode statsref_currentGameMode();"],
     "src/multistat.cpp": ["#include <nlohmann/json.hpp>", '#include "lib/framework/frame.h"', '#include "lib/framework/crc.h"',
                           '#include "lib/netplay/netplay.h"', '#include "src/multistat.h"', '#include "src/multiplay.h"',
-                          '#include "src/multiint.h"'],
+                          '#include "src/multiint.h"', '#include "src/droid.h"', '#include "src/objmem.h"'],
     "src/qtscript.cpp": ['#include "lib/framework/frame.h"', '#include "src/qtscript.h"', '#include "src/map.h"',
                          "#include <unordered_set>"],
     "src/intdisplay.cpp": ['#include "lib/framework/frame.h"', '#include "src/intdisplay.h"'],
@@ -668,17 +677,40 @@ def sound_tests(keep):
     return passed
 
 
+def build_quickjs():
+    """QuickJS's objects in build/quickjs (rebuilt when a source is newer); None when gcc fails."""
+    out = os.path.join(build.BUILD, "quickjs")
+    os.makedirs(out, exist_ok=True)
+    version = open(os.path.join(QJS, "quickjs", "VERSION.txt")).read().strip()
+    objs = []
+    for n in QJS_SOURCES:
+        src = os.path.join(QJS, "quickjs", n)
+        o = os.path.join(out, n[:-2] + ".o")
+        if not (os.path.exists(o) and os.path.getmtime(o) >= os.path.getmtime(src)):
+            # quickjs-wz's CMakeLists.txt: _GNU_SOURCE, QJS_DISABLE_ATOMICS, WIN32_LEAN_AND_MEAN, _WIN32_WINNT, CONFIG_VERSION
+            if not run([GCC, "-c", "-O2", "-w", "-D_GNU_SOURCE", "-DQJS_DISABLE_ATOMICS", "-DWIN32_LEAN_AND_MEAN",
+                        "-D_WIN32_WINNT=0x0601", '-DCONFIG_VERSION="%s"' % version, "-DQUICKJS_HAVE_SYS_TIME_H"]
+                       + QJS_INCLUDES + ["-o", o, src]):
+                return None
+        objs.append(o)
+    return objs
+
+
 def build_mapref():
     sources = [os.path.join(WZMAPLIB, "src", n) for n in WZMAPLIB_SOURCES]
-    if os.path.exists(MAPREF_EXE) and os.path.getmtime(MAPREF_EXE) >= max(os.path.getmtime(p) for p in sources + [MAPREF_SRC]):
+    qjs = build_quickjs()
+    if qjs is None:
+        return False
+    if os.path.exists(MAPREF_EXE) and os.path.getmtime(MAPREF_EXE) >= max(os.path.getmtime(p) for p in sources + [MAPREF_SRC] + qjs):
         return True
-    print("building mapref.exe (g++, lib/wzmaplib from ref/warzone2100) ...")
+    print("building mapref.exe (g++, lib/wzmaplib from ref/warzone2100, map_script.cpp over QuickJS) ...")
     config_dir = os.path.join(build.BUILD, "mapref_include")
     os.makedirs(os.path.join(config_dir, "wzmaplib_internal"), exist_ok=True)
     with open(os.path.join(config_dir, "wzmaplib_internal", "map_config_internal.h"), "w", newline="\n") as f:
         f.write(MAP_CONFIG_H)
     return run([GXX, "-std=c++17", "-O1", "-static", "-I", JSON_INCLUDE, "-I", OPTIONAL_INCLUDE, "-I", config_dir,
-                "-I", os.path.join(WZMAPLIB, "include"), "-o", MAPREF_EXE, MAPREF_SRC] + sources)
+                "-I", os.path.join(WZMAPLIB, "include")] + QJS_INCLUDES + ["-o", MAPREF_EXE, MAPREF_SRC] + sources + qjs
+               + ["-lpthread"])
 
 
 def statsref_extract(rel, ranges):
@@ -701,7 +733,10 @@ def build_statsref():
     tool_files = [os.path.join(STATSREF_DIR, n) for n in os.listdir(STATSREF_DIR) if n.endswith((".cpp", ".h"))]
     inputs = ([os.path.join(build.REF, r) for r, _ in STATSREF_EXTRACTS] + [os.path.join(build.REF, s) for s in STATSREF_SOURCES]
               + tool_files + [os.path.abspath(__file__)])
-    if os.path.exists(STATSREF_EXE) and os.path.getmtime(STATSREF_EXE) >= max(os.path.getmtime(p) for p in inputs):
+    qjs = build_quickjs()
+    if qjs is None:
+        return False
+    if os.path.exists(STATSREF_EXE) and os.path.getmtime(STATSREF_EXE) >= max(os.path.getmtime(p) for p in inputs + qjs):
         return True
     print("building statsref.exe (g++, the stats loaders from ref/warzone2100) ...")
     os.makedirs(STATSREF_GEN, exist_ok=True)
@@ -726,10 +761,10 @@ def build_statsref():
     includes = ["-I", STATSREF_GEN] + [a for d in STATSREF_INCLUDES for a in ("-I", d)]
     # -DNDEBUG: a release build's assert()s (none)
     return run([GXX, "-std=c++17", "-O1", "-static", "-w", "-DNDEBUG", "-D__STDC_FORMAT_MACROS", "-D__STDC_LIMIT_MACROS", "-DUTF8PROC_STATIC", "-D_USE_MATH_DEFINES",
-                "-include", "mutex"] + includes + ["-o", STATSREF_EXE] + extracts + STATSREF_SOURCES
+                "-include", "mutex"] + includes + QJS_INCLUDES + ["-o", STATSREF_EXE] + extracts + STATSREF_SOURCES
                + [os.path.join(STATSREF_DIR, "statsref.cpp"), os.path.join(STATSREF_DIR, "statsref_physfs.cpp"),
-                  os.path.join(STATSREF_DIR, "statsref_render.cpp"), utf8proc_o]
-               + ["-lws2_32"],                                         # byteorder_funcs_wrapper.cpp's htonl
+                  os.path.join(STATSREF_DIR, "statsref_render.cpp"), utf8proc_o] + qjs
+               + ["-lws2_32", "-lpthread"],                            # byteorder_funcs_wrapper.cpp's htonl
                cwd=build.REF)
 
 
@@ -1274,7 +1309,9 @@ def doubles_file(path):
     return len(values)
 
 
-MEDIA_TESTS = ("zip_test", "celt_test", "silk_test", "opus_test", "theora_test", "video_audio_test")
+MEDIA_TESTS = ("zip_test", "celt_test", "silk_test", "opus_test", "theora_test", "video_audio_test",
+               "zlib_test", "crypto_test", "net_test", "http_test", "map_script_test", "zstd_test",
+               "ktx2_test")
 # where they are: tools/, or beside their test exe's sources (silk_test.py in src/silktests)
 MEDIA_TEST_DIRS = (os.path.join(ROOT, "tools"), os.path.join(ROOT, "src", "silktests"))
 

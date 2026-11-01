@@ -1,0 +1,13 @@
+# LAN test with AIs (cluster J), the host: started with --autohost=lan_ai.json (Sk-Rush: the host, an open slot
+# for lan_join.txt's client, two NullBots), so the game starts once the client is ready; three minutes of play
+wait 1800
+shot ha_lobby
+wait 3600
+shot ha_game1
+wait 3600
+shot ha_game2
+wait 3600
+shot ha_game3
+log done
+wait 5
+quit

@@ -5,14 +5,15 @@ Attribute VB_Name = "gfx_api_c"
 ' lib/ivis_opengl/gfx_api_image_compress_priv.cpp's real-time compression
 ' choices, as built without ETCPAK_ENABLED (no built-in compressor: every
 ' texture stays uncompressed; compressImage fails). gfx_api.cpp is ported as
-' built without BASIS_ENABLED (there are no .ktx2 files in the data), except
-' imageLoadFilenameFromInputFilename, ported as built with it (as for the
-' official builds; the .png files take precedence, so the result is the same).
+' built with BASIS_ENABLED, as the official builds: the KTX2 files' images and
+' textures go through gfx_api_image_basis_priv_c (WzBasis's transcoder); a .png
+' file takes precedence over a .ktx2 file of the same name.
 ' context::get() is the backend chosen in current_backend_context
 ' (gfx_api_context_vb); the context's non-virtual members are
 ' gfx_api_context_<name>, the namespace's functions gfx_api_<name>.
 ' std::unique_ptr<iV_Image> / gfx_api::texture * results are objects (Nothing
-' = nullptr); a std::vector of images is an array of iV_Image and a count.
+' = nullptr); a std::vector of images is an array of iV_Image (or of
+' iV_BaseImage, as the C++'s) and a count.
 ' The GenerateDefaultTextureFunc and progress callbacks the game passes to
 ' loadTextureArrayFromFiles are numbers (GfxApi's GenerateDefaultTextureFunc,
 ' ProgressCallbackFunc): the lambdas of terrain.cpp and texture.cpp, run here.
@@ -102,6 +103,10 @@ Public Function gfx_api_context_initialize(ByVal impl As Object, ByVal antialias
 
     ' Calculate the best available run-time compression formats
     gfx_api_initBestRealTimeCompressionFormats
+
+    ' (#if defined(BASIS_ENABLED))
+    ' Init basis transcoder
+    gfx_api_initBasisTranscoder
 
     gfx_api_context_initialize = result
 End Function
@@ -305,7 +310,10 @@ Public Function gfx_api_context_loadTextureFromFile(ByVal filename As String, By
     Dim imageLoadFilename As String
     imageLoadFilename = gfx_api_imageLoadFilenameFromInputFilename(filename)
 
-    If strEndsWith(imageLoadFilename, ".png") Then
+    ' (#if defined(BASIS_ENABLED))
+    If strEndsWith(imageLoadFilename, ".ktx2") Then
+        Set gfx_api_context_loadTextureFromFile = gfx_api_loadImageTextureFromFile_KTX2(imageLoadFilename, textureType, maxWidth, maxHeight)
+    ElseIf strEndsWith(imageLoadFilename, ".png") Then
         Set gfx_api_context_loadTextureFromFile = loadImageTextureFromFile_PNG(imageLoadFilename, textureType, maxWidth, maxHeight, quiet)
     Else
         debug_ 336, LOG_ERROR, "loadTextureFromFile", "Unable to load image file: %s", filename
@@ -424,7 +432,7 @@ Public Function gfx_api_context_loadTextureFromUncompressedImage(ByVal image As 
     Dim imgScaleResult As Boolean, mipmap_levels As Long, channels As Long, closestSupportedChannels As Long, i As Long
     Dim expandResult As Boolean, uploadFormat As pixel_format, bestAvailableCompressedFormat As pixel_format
     Dim has_maxLevel As Boolean, maxLevel As max_texture_compression_level
-    Dim pTexture As gfx_api_texture, uploadResult As Boolean, compressedImage As iV_Image
+    Dim pTexture As gfx_api_texture, uploadResult As Boolean, compressedImage As iV_BaseImage
     Dim has_alphaChannelOverride As Boolean, alphaChannelOverride As Long
     Dim output_w As Long, output_h As Long, resizeResult As Boolean
 
@@ -512,7 +520,17 @@ Public Function gfx_api_loadUncompressedImageFromFile(ByVal filename As String, 
     Dim imageLoadFilename As String, loadedUncompressedImage As iV_Image
     imageLoadFilename = gfx_api_imageLoadFilenameFromInputFilename(filename)
 
-    If strEndsWith(imageLoadFilename, ".png") Then
+    ' (#if defined(BASIS_ENABLED))
+    If strEndsWith(imageLoadFilename, ".ktx2") Then
+        Set loadedUncompressedImage = gfx_api_loadUncompressedImageFromFile_KTX2(imageLoadFilename, textureType, target, maxWidth, maxHeight)
+        If loadedUncompressedImage Is Nothing Then
+            ' Failed to load the image
+            Exit Function
+        End If
+        If forceRGBA8 Then
+            loadedUncompressedImage.convert_to_rgba
+        End If
+    ElseIf strEndsWith(imageLoadFilename, ".png") Then
         ' Load the PNG into an iV_Image
         Set loadedUncompressedImage = New iV_Image
         If Not iV_loadImage_PNG2(imageLoadFilename, loadedUncompressedImage, forceRGBA8) Then
@@ -767,7 +785,7 @@ End Function
 
 ' the lambda uploadMipLevel of loadTextureArrayLayerFromUncompressedImage
 Private Function uploadMipLevel(ByVal array_ As gfx_api_texture_array, ByVal layer As Long, ByVal uploadFormat As pixel_format, ByVal image As iV_Image, ByVal level As Long) As Boolean
-    Dim uploadResult As Boolean, compressedImage As iV_Image
+    Dim uploadResult As Boolean, compressedImage As iV_BaseImage
     If uploadFormat = image.pixel_format_() Then
         uploadResult = array_.uploadLayer(layer, level, image)
         If Not (uploadResult) Then ASSERT_FAILURE "uploadResult", "lib/ivis_opengl/gfx_api.cpp:825", "loadTextureArrayLayerFromUncompressedImage", "Failed to upload buffer to image": Exit Function
@@ -783,11 +801,12 @@ End Function
 
 ' used to load basis mip levels (already encoded in the desired target format) into a texture array
 ' (images: images_size levels, 0-based)
-Public Function gfx_api_context_loadTextureArrayLayerFromBaseImages(ByVal array_ As gfx_api_texture_array, ByVal layer As Long, images() As iV_Image, ByVal images_size As Long, ByVal filename As String, Optional ByVal maxWidth As Long = -1, Optional ByVal maxHeight As Long = -1) As Boolean
-    Dim level As Long, pMipLevelImage As iV_Image, uploadSuccess As Boolean
+Public Function gfx_api_context_loadTextureArrayLayerFromBaseImages(ByVal array_ As gfx_api_texture_array, ByVal layer As Long, images() As iV_BaseImage, ByVal images_size As Long, ByVal filename As String, Optional ByVal maxWidth As Long = -1, Optional ByVal maxHeight As Long = -1) As Boolean
+    Dim level As Long, pMipLevelImage As iV_BaseImage, uploadSuccess As Boolean
     For level = 0 To images_size - 1
         Set pMipLevelImage = images(level)
         If Not (Not pMipLevelImage Is Nothing) Then ASSERT_FAILURE "pMipLevelImage != nullptr", "lib/ivis_opengl/gfx_api.cpp:863", "loadTextureArrayLayerFromBaseImages", "Null image for level: %zu", level: Exit Function
+        testDumpUpload filename, level, pMipLevelImage    ' (VB) TEST-ONLY (gfx_api_image_basis_priv_c)
         uploadSuccess = array_.uploadLayer(layer, level, pMipLevelImage)
         If Not (uploadSuccess) Then ASSERT_FAILURE "uploadSuccess", "lib/ivis_opengl/gfx_api.cpp:865", "loadTextureArrayLayerFromBaseImages", "Failed to upload image for level: %zu", level: Exit Function
     Next level
@@ -796,9 +815,33 @@ Public Function gfx_api_context_loadTextureArrayLayerFromBaseImages(ByVal array_
 End Function
 
 ' std::vector<std::unique_ptr<iV_BaseImage>>: the images in results (0-based), their number returned
-Private Function loadUncompressedImageWithMips(ByVal imageLoadFilename As String, ByVal textureType As texture_type, ByVal maxWidth As Long, ByVal maxHeight As Long, ByVal forceRGBA8 As Boolean, results() As iV_Image) As Long
+Private Function loadUncompressedImageWithMips(ByVal imageLoadFilename As String, ByVal textureType As texture_type, ByVal maxWidth As Long, ByVal maxHeight As Long, ByVal forceRGBA8 As Boolean, results() As iV_BaseImage) As Long
     Dim pCurrentImage As iV_Image, mipmap_levels As Long, miplevels() As iV_Image, miplevels_size As Long, i As Long
-    If strEndsWith(imageLoadFilename, ".png") Then
+    Dim results_size As Long, desiredFormat As pixel_format, pLoadedUncompressedImage As iV_Image
+    ' (#if defined(BASIS_ENABLED))
+    If strEndsWith(imageLoadFilename, ".ktx2") Then
+        If forceRGBA8 Then
+            desiredFormat = WZ_BASIS_UNCOMPRESSED_FORMAT
+        Else
+            desiredFormat = gfx_api_context_bestUncompressedPixelFormat(pixel_format_target_texture_2d_array, textureType)
+        End If
+        results_size = gfx_api_loadiVImagesFromFile_Basis(imageLoadFilename, textureType, pixel_format_target_texture_2d_array, True, desiredFormat, maxZero(maxWidth), maxZero(maxHeight), results)
+
+        If forceRGBA8 Then
+            For i = 0 To results_size - 1
+                Set pLoadedUncompressedImage = asIV_Image(results(i))
+                If pLoadedUncompressedImage Is Nothing Then
+                    debug_ 886, LOG_ERROR, "loadUncompressedImageWithMips", "Loaded image is not an uncompressed format?: %s", imageLoadFilename
+                    GoTo continue_
+                End If
+                pLoadedUncompressedImage.convert_to_rgba
+continue_:
+            Next i
+        End If
+
+        loadUncompressedImageWithMips = results_size
+        Exit Function
+    ElseIf strEndsWith(imageLoadFilename, ".png") Then
         Set pCurrentImage = gfx_api_loadUncompressedImageFromFile(imageLoadFilename, pixel_format_target_texture_2d_array, textureType, maxWidth, maxHeight, forceRGBA8)
         If pCurrentImage Is Nothing Then
             debug_ 902, LOG_ERROR, "loadUncompressedImageWithMips", "Unable to load image file: %s", imageLoadFilename
@@ -859,7 +902,7 @@ End Sub
 
 ' the lambda getDefaultTextureMipsP of loadTextureArrayFromFiles (False = nullptr; the
 ' images in defaultTextureMips)
-Private Function getDefaultTextureMipsP(ByVal layer As Long, ByVal width As Long, ByVal height As Long, ByVal mipmap_levels As Long, ByVal format As pixel_format, defaultTextureMips() As iV_Image, defaultTextureMips_size As Long, ByVal defaultTextureGenerator As GenerateDefaultTextureFunc, ByVal textureType As texture_type, ByVal maxWidth As Long, ByVal maxHeight As Long) As Boolean
+Private Function getDefaultTextureMipsP(ByVal layer As Long, ByVal width As Long, ByVal height As Long, ByVal mipmap_levels As Long, ByVal format As pixel_format, defaultTextureMips() As iV_BaseImage, defaultTextureMips_size As Long, ByVal defaultTextureGenerator As GenerateDefaultTextureFunc, ByVal textureType As texture_type, ByVal maxWidth As Long, ByVal maxHeight As Long) As Boolean
     Dim pCurrentImage As iV_Image, expectedMipLevels As Long, miplevels() As iV_Image, miplevels_size As Long, i As Long
     Dim w As Long, h As Long
     If defaultTextureMips_size = 0 Then
@@ -900,12 +943,13 @@ Public Function gfx_api_context_loadTextureArrayFromFiles(filenames() As String,
     Dim allFilesAreKTX2 As Boolean, anyFileIsKTX2 As Boolean, anyFileIsPNG As Boolean
     Dim uploadFormat As pixel_format, desiredImageExtractionFormat As pixel_format, bestAvailableCompressedFormat As pixel_format
     Dim uncompressedExtractionFormat As Boolean
-    Dim defaultTextureMips() As iV_Image, defaultTextureMips_size As Long
+    Dim defaultTextureMips() As iV_BaseImage, defaultTextureMips_size As Long
     Dim texture_array As gfx_api_texture_array, width As Long, height As Long, mipmap_levels As Long, layers_count As Long
     Dim layer As Long, imageLoadFilename As String
-    Dim loadedImagesForLayer() As iV_Image, loadedImagesForLayer_size As Long
-    Dim pImagesForLayer() As iV_Image, pImagesForLayer_size As Long, has_pImagesForLayer As Boolean
-    Dim uploadSuccess As Boolean, level As Long, image As iV_Image, compressedImage As iV_Image, uploadResult As Boolean
+    Dim loadedImagesForLayer() As iV_BaseImage, loadedImagesForLayer_size As Long
+    Dim pImagesForLayer() As iV_BaseImage, pImagesForLayer_size As Long, has_pImagesForLayer As Boolean
+    Dim uploadSuccess As Boolean, level As Long, image As iV_Image, compressedImage As iV_BaseImage, uploadResult As Boolean
+    Dim bestBasisFormat As pixel_format
 
     If Not (filenames_size <= gfx_api_context_get_context_value(context_value_MAX_ARRAY_TEXTURE_LAYERS)) Then ASSERT_FAILURE "filenames.size() <= gfx_api::context::get().get_context_value(gfx_api::context::context_value::MAX_ARRAY_TEXTURE_LAYERS)", "lib/ivis_opengl/gfx_api.cpp:921", "loadTextureArrayFromFiles", "Too many layers": Exit Function
 
@@ -930,27 +974,25 @@ Public Function gfx_api_context_loadTextureArrayFromFiles(filenames() As String,
         Next i
     End If
 
-    ' (#if !defined(BASIS_ENABLED))
-    If anyFileIsKTX2 Then
-        For i = 0 To filenames_size - 1
-            If strEndsWith(imageLoadFilenames(i), ".ktx2") Then
-                debug_ 940, LOG_ERROR, "loadTextureArrayFromFiles", "Unable to load image file: %s", imageLoadFilenames(i)
-            End If
-        Next i
-        Exit Function
-    End If
-
     uploadFormat = gfx_api_context_bestUncompressedPixelFormat(pixel_format_target_texture_2d_array, textureType)
     desiredImageExtractionFormat = uploadFormat
-    ' just use the best runtime compression format
-    If gfx_api_bestRealTimeCompressionFormat(pixel_format_target_texture_2d_array, textureType, bestAvailableCompressedFormat) Then
-        If bestAvailableCompressedFormat <> pixel_format_invalid Then
-            uploadFormat = bestAvailableCompressedFormat
-            desiredImageExtractionFormat = pixel_format_FORMAT_RGBA8_UNORM_PACK8 ' must extract to RGBA for run-time compression
+    ' (#if defined(BASIS_ENABLED))
+    If allFilesAreKTX2 Then
+        If gfx_api_getBestAvailableTranscodeFormatForBasis(pixel_format_target_texture_2d_array, textureType, bestBasisFormat) Then
+            uploadFormat = bestBasisFormat
+            desiredImageExtractionFormat = uploadFormat
         End If
-    End If
-    If anyFileIsKTX2 And anyFileIsPNG Then
-        debug_ 971, LOG_INFO, "loadTextureArrayFromFiles", "Performance info: Some files are .ktx2, but others are .png"
+    Else
+        ' just use the best runtime compression format
+        If gfx_api_bestRealTimeCompressionFormat(pixel_format_target_texture_2d_array, textureType, bestAvailableCompressedFormat) Then
+            If bestAvailableCompressedFormat <> pixel_format_invalid Then
+                uploadFormat = bestAvailableCompressedFormat
+                desiredImageExtractionFormat = pixel_format_FORMAT_RGBA8_UNORM_PACK8 ' must extract to RGBA for run-time compression
+            End If
+        End If
+        If anyFileIsKTX2 And anyFileIsPNG Then
+            debug_ 971, LOG_INFO, "loadTextureArrayFromFiles", "Performance info: Some files are .ktx2, but others are .png"
+        End If
     End If
 
     uncompressedExtractionFormat = gfx_api_is_uncompressed_format(desiredImageExtractionFormat)
@@ -987,8 +1029,16 @@ Public Function gfx_api_context_loadTextureArrayFromFiles(filenames() As String,
             End If
         Else
             ' load directly into a compressed format
-            debug_ 1050, LOG_ERROR, "loadTextureArrayFromFiles", "Unable to load image file: %s", imageLoadFilename
-            Exit Function
+            ' (#if defined(BASIS_ENABLED))
+            If strEndsWith(imageLoadFilename, ".ktx2") Then
+                loadedImagesForLayer_size = gfx_api_loadiVImagesFromFile_Basis(imageLoadFilename, textureType, pixel_format_target_texture_2d_array, True, desiredImageExtractionFormat, maxZero(maxWidth), maxZero(maxHeight), loadedImagesForLayer)
+                If loadedImagesForLayer_size > 0 Then pImagesForLayer = loadedImagesForLayer
+                pImagesForLayer_size = loadedImagesForLayer_size
+                has_pImagesForLayer = True
+            Else
+                debug_ 1050, LOG_ERROR, "loadTextureArrayFromFiles", "Unable to load image file: %s", imageLoadFilename
+                Exit Function
+            End If
         End If
 
         progressCallbackInvoke progressCallback
@@ -1019,7 +1069,7 @@ Public Function gfx_api_context_loadTextureArrayFromFiles(filenames() As String,
             If Not (uncompressedExtractionFormat) Then ASSERT_FAILURE "uncompressedExtractionFormat", "lib/ivis_opengl/gfx_api.cpp:1089", "loadTextureArrayFromFiles", "Expected uncompressed extraction format, but received: %s", gfx_api_format_to_str(desiredImageExtractionFormat): Exit Function
 
             For level = 0 To pImagesForLayer_size - 1
-                Set image = pImagesForLayer(level)
+                Set image = asIV_Image(pImagesForLayer(level))
                 If Not (Not image Is Nothing) Then ASSERT_FAILURE "image != nullptr", "lib/ivis_opengl/gfx_api.cpp:1094", "loadTextureArrayFromFiles", "Image wasn't an iV_Image?": Exit Function
                 ' Run-time compression
                 Set compressedImage = gfx_api_compressImage(image, uploadFormat)
@@ -1169,7 +1219,7 @@ Public Function gfx_api_bestRealTimeCompressionFormat(ByVal target As pixel_form
 End Function
 
 ' Compresses an iV_Image to the desired compressed image format (if possible); Nothing = nullptr
-Public Function gfx_api_compressImage(ByVal image As iV_Image, ByVal desiredFormat As pixel_format) As iV_Image
+Public Function gfx_api_compressImage(ByVal image As iV_Image, ByVal desiredFormat As pixel_format) As iV_BaseImage
     ' Runtime compress to the desired format: EtcPak for ETC1, ETC2, ETC2_EAC, BC1 and BC3 (not built in: falls through)
     debug_ 411, LOG_ERROR, "compressImage", "Unsupported compressed image format: %u", CLng(desiredFormat)
 End Function

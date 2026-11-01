@@ -1,0 +1,14 @@
+# fork S6: the title screen's links (official site, chat, donate) and the options' Open Configuration Directory;
+# run with WZ_TEST_NO_DESKTOP_EFFECTS (tools/s6_display_test.py): logged, nothing opened
+wait 90
+click 320 610
+wait 30
+click 686 330
+wait 30
+click 690 610
+wait 30
+click 512 470
+wait 90
+click 279 691
+wait 60
+quit

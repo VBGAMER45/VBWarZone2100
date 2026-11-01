@@ -1,0 +1,25 @@
+# LAN test (cluster J), the client: after the host (lan_host.txt) hosts, Multi Player, Join Game, the game
+# browser's GameID or IP:port box: 127.0.0.1:2100, Enter (the joining screen, then the host's lobby); Ready;
+# the game; two minutes of play
+wait 600
+click 512 400
+wait 60
+click 512 400
+wait 120
+click 340 57
+wait 20
+text 127.0.0.1:2100
+wait 10
+key 13
+wait 300
+shot j_lobby
+click 775 152
+wait 300
+shot j_ready
+wait 4200
+shot j_game1
+wait 3600
+shot j_game2
+log done
+wait 5
+quit

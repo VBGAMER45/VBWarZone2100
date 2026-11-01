@@ -14,16 +14,15 @@ Attribute VB_Exposed = False
 ' src/game.h, src/game.cpp: struct GameLoadDetails, what to load (a save game, a
 ' level file or a map package). Made by GameLoadDetails_makeUserSaveGameLoad,
 ' _makeMapPackageLoad and _makeLevelFileLoad (game_c; the constructor is
-' Class_Initialize plus those). A map package (a .wz archive: WzMap's
-' MapPackage, WzMapZipIO) is not ported (cluster K): getMapPackage and
-' getGamInfoFromPackage return Nothing (an Object: WzMap has no GamInfo yet).
+' Class_Initialize plus those). A map package is a .wz archive (WzMapZipIO)
+' read by WzMap's MapPackage; getGamInfoFromPackage's GamInfo is an Object.
 Option Explicit
 
 Public loadType As Long                 ' GameLoadType
 Public filePath As String
 
 Private m_logger As LoggingProtocol     ' std::shared_ptr<WzMap::LoggingProtocol>
-Private m_loadedPackage As Object       ' mutable std::shared_ptr<WzMap::MapPackage> (cluster K)
+Private m_loadedPackage As MapPackage   ' mutable std::shared_ptr<WzMap::MapPackage>
 
 Private Sub Class_Initialize()
     Set m_logger = New WzMapDebugLogger
@@ -70,17 +69,27 @@ Public Function getMap(ByVal mapSeed As Long) As Map
     Set getMap = Nothing                ' silence compiler warning
 End Function
 
-' (cluster K: no zip archives) the package of a .wz map: always Nothing, after C++'s checks
-Private Function getMapPackage() As Object
+' the package of a .wz map (Nothing: nullptr)
+Private Function getMapPackage() As MapPackage
+    Dim mapZipIO As WzMapZipIO, zipReadSource As WzZipIOPHYSFSSourceReadProvider
     If Not (loadType = GameLoadType_MapPackage) Then ASSERT_FAILURE "loadType == GameLoadType::MapPackage", "src/game.cpp:2609", "getMapPackage", "Not a map package": Set getMapPackage = Nothing: Exit Function
     If Not m_loadedPackage Is Nothing Then
         Set getMapPackage = m_loadedPackage
         Exit Function
     End If
-    ' (getSpecialInMemoryMapArchive, WzMapZipIO::openZipArchiveReadIOProvider and
-    ' WzMap::MapPackage::loadPackage come with cluster K)
-    debug_ 2622, LOG_ERROR, "getMapPackage", "Failed to open map package: %s", filePath
-    Set getMapPackage = Nothing
+    ' std::shared_ptr<WzMapZipIO> mapZipIO = getSpecialInMemoryMapArchive(filePath): (VB) the in-memory map
+    ' archive is not ported: there is none
+    If mapZipIO Is Nothing Then
+        Set zipReadSource = WzZipIOPHYSFSSourceReadProvider_make(filePath)
+        Set mapZipIO = WzMapZipIO_openZipArchiveReadIOProvider(zipReadSource)
+    End If
+    If mapZipIO Is Nothing Then
+        debug_ 2622, LOG_ERROR, "getMapPackage", "Failed to open map package: %s", filePath
+        Set getMapPackage = Nothing
+        Exit Function
+    End If
+    Set m_loadedPackage = MapPackage_loadPackage("", m_logger, mapZipIO)
+    Set getMapPackage = m_loadedPackage
 End Function
 
 ' const WzMap::GamInfo* (an Object; Nothing = nullptr)

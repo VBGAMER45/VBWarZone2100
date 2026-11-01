@@ -8,8 +8,8 @@ Attribute VB_Name = "levels_c"
 ' gamedef.h's enum GAME_TYPE is here too.
 ' levLoadData preloads the faction IMDs in the order the models were loaded
 ' (enumerateLoadedModels; C++: hash order).
-' Missing: levParse_JSON and levAddWzMap (wzmaplib's level details and map
-' packages, not ported yet); the ASSERT on the C library's LC_NUMERIC locale
+' levParse_JSON and levAddWzMap add a map package's level (wzmaplib's
+' LevelDetails). Missing: the ASSERT on the C library's LC_NUMERIC locale
 ' (the port parses numbers without it).
 Option Explicit
 
@@ -289,6 +289,97 @@ Public Function levFindBaseTileset(ByVal tileset As MAP_TILESET) As LEVEL_DATASE
     Case MAP_TILESET_ROCKIES
         Set levFindBaseTileset = levFindDataSet("MULTI_CAM_3")
     End Select
+End Function
+
+' (realFileName vbNullString: nullptr)
+Public Function levParse_JSON(ByVal mountPoint As String, ByVal filename As String, ByVal pathMode As Long, ByVal realFileName As String) As Boolean
+    Dim mapIO As WzMapPhysFSIO, details As LevelDetails
+    Set mapIO = New WzMapPhysFSIO
+    mapIO.construct mountPoint
+    Set details = loadLevelDetails_JSON(filename, mapIO)
+    If details Is Nothing Then
+        debug_ 303, LOG_ERROR, "levParse_JSON", "Level File JSON load error: Failed to load JSON: %s", filename
+        levParse_JSON = False
+        Exit Function
+    End If
+
+    levParse_JSON = levAddWzMap(details, pathMode, realFileName)
+End Function
+
+' a map package's level (wzmaplib's LevelDetails) as a LEVEL_DATASET (realFileName vbNullString: nullptr)
+Public Function levAddWzMap(ByVal details_ As LevelDetails, ByVal pathMode As Long, ByVal realFileName As String, Optional ByVal frontOfList As Boolean = False) As Boolean
+    Dim psDataSet As LEVEL_DATASET, zero As Sha256, mapIO As IOProvider, mapFolderPath As String, customMountPoint As String
+    Dim gamFilePath As String, k As Long, realFileNameText As String
+
+    ' start a new level data set
+    Set psDataSet = New LEVEL_DATASET
+
+    psDataSet.players = 1
+    psDataSet.game_ = -1
+    psDataSet.dataDir_ = pathMode
+    psDataSet.realFileName = realFileName
+    Sha256_setZero zero
+    psDataSet.realFileHash = zero   ' The hash is only calculated on demand; for example, if the map name matches.
+
+    Set mapIO = New WzMapPhysFSIO
+
+    mapFolderPath = details_.mapFolderPath
+    If Len(mapFolderPath) = 0 Then
+        ' support "flattened" plain maps
+        ' must be mounted within the virtual filesystem at the appropriate location (not at the root)
+        If Len(details_.name_) = 0 Then
+            If StrPtr(realFileName) <> 0 Then realFileNameText = realFileName
+            debug_ 337, LOG_ERROR, "levAddWzMap", "Level File map load error: Map has empty name??: %s", realFileNameText
+            levAddWzMap = False
+            Exit Function
+        End If
+        Select Case details_.type_
+            Case MapType_CAMPAIGN, MapType_SAVEGAME
+                ' FUTURE TODO: Support other map types
+                debug_ 346, LOG_ERROR, "levAddWzMap", "Level File map load error: Unsupported map type: %d", CLng(details_.type_)
+                levAddWzMap = False
+                Exit Function
+            Case MapType_SKIRMISH
+                customMountPoint = "multiplay/maps/" & details_.name_
+        End Select
+    End If
+
+    Select Case details_.type_
+        Case MapType_CAMPAIGN, MapType_SAVEGAME
+            ' FUTURE TODO: Support other map types
+            debug_ 360, LOG_ERROR, "levAddWzMap", "Level File map load error: Unsupported map type: %d", CLng(details_.type_)
+            levAddWzMap = False
+            Exit Function
+        Case MapType_SKIRMISH
+            psDataSet.typ = LEVEL_TYPE_SKIRMISH
+    End Select
+    psDataSet.players = details_.players
+    psDataSet.pName = details_.name_
+    gamFilePath = IOProvider_pathJoin(mapIO, IOProvider_pathDirName(mapIO, customMountPoint), details_.gamFilePath())
+    psDataSet.apDataFiles(0) = gamFilePath
+    psDataSet.game_ = 0
+    Set psDataSet.psBaseData = levFindBaseTileset(details_.tileset)
+    If psDataSet.psBaseData Is Nothing Then
+        debug_ 375, LOG_ERROR, "levAddWzMap", "Level File map load error: Failed to find base tileset for: %d", CLng(details_.tileset)
+        levAddWzMap = False
+        Exit Function
+    End If
+    If Len(customMountPoint) > 0 Then
+        psDataSet.customMountPoint = customMountPoint
+    End If
+
+    If Not frontOfList Then
+        PushLevel psDataSet
+    Else
+        If Not (StrPtr(psDataSet.realFileName) <> 0) Then ASSERT_FAILURE "psDataSet->realFileName != nullptr", "src/levels.cpp:390", "levAddWzMap", "Inserting built-in map at front??"
+        ' psLevels.insert(psLevels.begin(), psDataSet)
+        PushLevel psDataSet
+        For k = psLevelsCount - 1 To 1 Step -1
+            Set psLevels(k) = psLevels(k - 1)
+        Next
+        Set psLevels(0) = psDataSet
+    End If
+    levAddWzMap = True
 End Function
 
 ' parse a level description data file

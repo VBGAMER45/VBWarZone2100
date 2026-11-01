@@ -8,7 +8,7 @@ Attribute VB_Name = "physfs_win"
 ' (PHYSFS_setErrorCode, PHYSFS_getLastErrorCode, PHYSFS_getErrorByCode), the native io, openDirectory and
 ' tryOpenDir, sanitizePlatformIndependentPath, partOfMountPoint, createDirHandle, freeDirHandle, PHYSFS_init,
 ' PHYSFS_deinit (doDeinit, closeFileHandleList, freeSearchPath), PHYSFS_getPrefDir, PHYSFS_getBaseDir,
-' PHYSFS_getWriteDir, PHYSFS_setWriteDir, doMount, PHYSFS_mount, PHYSFS_unmount, PHYSFS_getSearchPath,
+' PHYSFS_getWriteDir, PHYSFS_setWriteDir, doMount, PHYSFS_mount, PHYSFS_mountHandle (with the handle io), PHYSFS_unmount, PHYSFS_getMountPoint, PHYSFS_getSearchPath,
 ' PHYSFS_permitSymbolicLinks, verifyPath, doMkdir, PHYSFS_mkdir, doDelete, PHYSFS_delete, getRealDirHandle,
 ' PHYSFS_getRealDir, locateInStringList, enumFilesCallback, PHYSFS_enumerateFiles, enumerateFromMountPoint,
 ' enumCallbackFilterSymLinks, PHYSFS_enumerate, PHYSFS_exists, doOpenWrite, PHYSFS_openWrite,
@@ -147,6 +147,7 @@ Public Const PHYSFS_ENUM_OK As Long = 1         ' Keep enumerating, no problems
 ' (VB) the PHYSFS_Io function tables: __PHYSFS_nativeIoInterface and physfs_zip_c's ZIP_Io
 Public Const PHYSFS_IO_NATIVE As Long = 1
 Public Const PHYSFS_IO_ZIP As Long = 2
+Public Const PHYSFS_IO_HANDLE As Long = 3                ' __PHYSFS_handleIoInterface (opaque: the PHYSFS_File)
 
 ' (VB) the archivers (const PHYSFS_Archiver *): __PHYSFS_Archiver_DIR and the static ones (initStaticArchivers)
 Private Const ARCHIVER_DIR As Long = 1
@@ -163,7 +164,7 @@ Private Const MODE_A As Long = 97               ' 'a'
 
 ' PHYSFS_Io (physfs.h) with the native io's NativeIoInfo
 Private Type PHYSFS_Io
-    kind As Long                        ' (VB) its function table: PHYSFS_IO_NATIVE, PHYSFS_IO_ZIP (0: free)
+    kind As Long                        ' (VB) its function table: PHYSFS_IO_NATIVE, PHYSFS_IO_ZIP, PHYSFS_IO_HANDLE (0: free)
     opaque As Long                      ' Instance data for this struct: (VB) the archiver's io's (ZIP: a ZIPfileinfo)
     handle As Long                      ' NativeIoInfo: void *handle
     path As String                      ' const char *path
@@ -659,6 +660,7 @@ Public Function PHYSFS_Io_read(ByVal io As Long, buf() As Byte, ByVal ofs As Lon
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_read = PHYSFS_platformRead__(ios(io).handle, buf, ofs, len_)    ' nativeIo_read
     Case PHYSFS_IO_ZIP: PHYSFS_Io_read = ZIP_read(io, buf, ofs, len_)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_read = PHYSFS_readBytes(ios(io).opaque, buf, ofs, len_)          ' handleIo_read
     End Select
 End Function
 
@@ -666,6 +668,7 @@ Public Function PHYSFS_Io_write(ByVal io As Long, buf() As Byte, ByVal ofs As Lo
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_write = PHYSFS_platformWrite__(ios(io).handle, buf, ofs, len_)  ' nativeIo_write
     Case PHYSFS_IO_ZIP: PHYSFS_Io_write = ZIP_write(io, buf, ofs, len_)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_write = PHYSFS_writeBytes(ios(io).opaque, buf, ofs, len_)        ' handleIo_write
     End Select
 End Function
 
@@ -673,6 +676,7 @@ Public Function PHYSFS_Io_seek(ByVal io As Long, ByVal offset As Double) As Long
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_seek = PHYSFS_platformSeek__(ios(io).handle, offset)            ' nativeIo_seek
     Case PHYSFS_IO_ZIP: PHYSFS_Io_seek = ZIP_seek(io, offset)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_seek = PHYSFS_seek(ios(io).opaque, offset)                       ' handleIo_seek
     End Select
 End Function
 
@@ -680,6 +684,7 @@ Public Function PHYSFS_Io_tell(ByVal io As Long) As Double
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_tell = PHYSFS_platformTell__(ios(io).handle)                    ' nativeIo_tell
     Case PHYSFS_IO_ZIP: PHYSFS_Io_tell = ZIP_tell(io)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_tell = PHYSFS_tell(ios(io).opaque)                               ' handleIo_tell
     End Select
 End Function
 
@@ -687,6 +692,7 @@ Public Function PHYSFS_Io_length(ByVal io As Long) As Double
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_length = PHYSFS_platformFileLength__(ios(io).handle)            ' nativeIo_length
     Case PHYSFS_IO_ZIP: PHYSFS_Io_length = ZIP_length(io)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_length = PHYSFS_fileLength(ios(io).opaque)                       ' handleIo_length
     End Select
 End Function
 
@@ -694,6 +700,7 @@ Public Function PHYSFS_Io_duplicate(ByVal io As Long) As Long
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_duplicate = PHYSFS_createNativeIo__(ios(io).path, ios(io).mode) ' nativeIo_duplicate
     Case PHYSFS_IO_ZIP: PHYSFS_Io_duplicate = ZIP_duplicate(io)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_duplicate = handleIo_duplicate(io)
     End Select
 End Function
 
@@ -701,6 +708,7 @@ Public Function PHYSFS_Io_flush(ByVal io As Long) As Long
     Select Case ios(io).kind
     Case PHYSFS_IO_NATIVE: PHYSFS_Io_flush = PHYSFS_platformFlush__(ios(io).handle)                  ' nativeIo_flush
     Case PHYSFS_IO_ZIP: PHYSFS_Io_flush = ZIP_flush(io)
+    Case PHYSFS_IO_HANDLE: PHYSFS_Io_flush = PHYSFS_flush(ios(io).opaque)                             ' handleIo_flush
     End Select
 End Function
 
@@ -713,8 +721,28 @@ Public Sub PHYSFS_Io_destroy(ByVal io As Long)
     Case PHYSFS_IO_ZIP
         ZIP_destroy io
         PHYSFS_Io_free io                               ' (ZIP_destroy's allocator.Free(io))
+    Case PHYSFS_IO_HANDLE                                                                               ' handleIo_destroy
+        If ios(io).opaque <> 0 Then
+            PHYSFS_close ios(io).opaque
+        End If
+        PHYSFS_Io_free io
     End Select
 End Sub
+
+' handleIo_duplicate: there's no duplicate at the PHYSFS_File level, so we break the abstraction. We're allowed to:
+' we're physfs.c! (We don't buffer the duplicate, at least not at the moment.)
+Private Function handleIo_duplicate(ByVal io As Long) As Long
+    Dim origfh As Long, newfh As Long, retval As Long, newio As Long
+    origfh = ios(io).opaque
+    newio = PHYSFS_Io_duplicate(files(origfh).io)
+    If newio = 0 Then Exit Function                    ' GOTO_IF_ERRPASS(!newfh->io, handleIo_dupe_failed)
+    newfh = newFileHandle()                             ' (VB) cannot fail
+    files(newfh).io = newio
+    files(newfh).forReading = files(origfh).forReading
+    files(newfh).dirHandle = files(origfh).dirHandle
+    retval = PHYSFS_Io_new(PHYSFS_IO_HANDLE, newfh)     ' memcpy(retval, io, sizeof (PHYSFS_Io)); retval->opaque = newfh
+    handleIo_duplicate = retval
+End Function ' handleIo_duplicate
 
 ' (VB) mode: 'r', 'w' or 'a' (MODE_R ...); the io, 0 = NULL
 Public Function PHYSFS_createNativeIo__(ByVal path As String, ByVal mode As Long) As Long
@@ -1372,6 +1400,23 @@ Public Function PHYSFS_mount(ByVal newDir As String, ByVal mountPoint As String,
     PHYSFS_mount = doMount(0, newDir, mountPoint, appendToPath)
 End Function ' PHYSFS_mount
 
+' file: a PHYSFS_File (a handle); on success the search path owns it (it is closed when the archive is unmounted)
+Public Function PHYSFS_mountHandle(ByVal file As Long, ByVal fname As String, ByVal mountPoint As String, ByVal appendToPath As Long) As Long
+    Dim retval As Long, io As Long
+    If Not ValidHandle(file) Then PHYSFS_setErrorCode PHYSFS_ERR_INVALID_ARGUMENT: Exit Function
+    If StrPtr(fname) = 0 Then PHYSFS_setErrorCode PHYSFS_ERR_INVALID_ARGUMENT: Exit Function
+
+    io = PHYSFS_Io_new(PHYSFS_IO_HANDLE, file)          ' __PHYSFS_createHandleIo(file)
+    retval = doMount(io, fname, mountPoint, appendToPath)
+    If retval = 0 Then
+        ' docs say not to destruct in case of failure, so cheat.
+        ios(io).opaque = 0
+        PHYSFS_Io_destroy io
+    End If
+
+    PHYSFS_mountHandle = retval
+End Function ' PHYSFS_mountHandle
+
 Public Function PHYSFS_unmount(ByVal oldDir As String) As Long
     Dim i As Long, j As Long
 
@@ -1407,6 +1452,24 @@ Public Function PHYSFS_getSearchPath(out() As String) As Long
     Next
     PHYSFS_getSearchPath = searchCount
 End Function ' PHYSFS_getSearchPath (PHYSFS_getSearchPathCallback)
+
+' The mount point of the search path element dir_ ("/" for the root); vbNullString (NULL) when it is not mounted.
+Public Function PHYSFS_getMountPoint(ByVal dir_ As String) As String
+    Dim i As Long
+    For i = 0 To searchCount - 1
+        If StrComp(searchPath(i).dirName, dir_, vbBinaryCompare) = 0 Then
+            If StrPtr(searchPath(i).mountPoint) <> 0 Then
+                PHYSFS_getMountPoint = searchPath(i).mountPoint
+            Else
+                PHYSFS_getMountPoint = "/"
+            End If
+            Exit Function
+        End If
+    Next
+
+    PHYSFS_setErrorCode PHYSFS_ERR_NOT_MOUNTED
+    PHYSFS_getMountPoint = vbNullString
+End Function ' PHYSFS_getMountPoint
 
 Public Sub PHYSFS_permitSymbolicLinks(ByVal allow As Long)
     allowSymLinks = (allow <> 0)

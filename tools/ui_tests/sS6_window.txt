@@ -1,0 +1,40 @@
+# fork S6: Options > Graphics > Advanced (Vertical Sync Off), Controls (Cursor Size 200%), Window (a fullscreen mode
+# chosen: stored, the window stays windowed; Minimize on Focus Loss Off; Window Mode Fullscreen: refused under
+# WZ_TEST_NO_DESKTOP_EFFECTS, last)
+wait 90
+click 512 470
+wait 90
+click 530 87
+wait 60
+click 682 128
+wait 60
+click 693 641
+wait 30
+click 694 672
+wait 30
+shot vsync_off
+click 709 87
+wait 60
+click 693 291
+wait 30
+click 686 394
+wait 30
+shot cursor_200
+click 785 87
+wait 60
+click 693 281
+wait 30
+shot fullscreen_modes
+click 700 360
+wait 30
+click 693 361
+wait 30
+click 681 416
+wait 30
+click 693 201
+wait 30
+click 663 256
+wait 60
+shot window_page
+wait 30
+quit
